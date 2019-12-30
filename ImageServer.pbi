@@ -115,20 +115,16 @@ Procedure ImageServerThread(Parameter)
       iNetworkEvent = NetworkServerEvent()
       hSocket = EventClient()
       
-      If hSocket
-        If iNetworkEvent = #PB_NetworkEvent_Data
+      If hSocket And iNetworkEvent = #PB_NetworkEvent_Data
           ReceiveNetworkData(hSocket, *pReceivedData, #RECEIVEBUFFER)
           HandleHTTPRequest(hSocket, *pReceivedData)
-        EndIf
       EndIf
     Until g_fStopNetwork
     
-    If g_iNetworkStatus = #SERVERSTARTED
-      FreeMemory(*pReceivedData)
+    FreeMemory(*pReceivedData)
       
-      CloseNetworkServer(1)
-      ClearClientList()
-    EndIf
+    CloseNetworkServer(1)
+    ClearClientList()
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
