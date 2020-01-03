@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-02 21:48" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-01-03 11:44" user="bytecave" host="MENWY"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,15 +17,15 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="19b2ef7c72bd38cb0fc876769ac5fe95"/>
+      <fingerprint md5="3a6adce504921c0eda0c1aeaae0a3061"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5e85e0d27d73cde1fe9f20a52c62f04d"/>
+      <fingerprint md5="7da17641e88c48d01cc49717629df272"/>
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="7aa0603964fa3b322ee2f51478410ca5"/>
+      <fingerprint md5="82e6b59093d42d34d346cebe85166cd9"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -40,7 +40,7 @@
     <target name="Debug x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BISDebug_x86.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
@@ -64,7 +64,7 @@
     <target name="Release x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BIS_x86.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
@@ -88,7 +88,7 @@
     <target name="Release x64" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BIS_x64.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
@@ -112,7 +112,7 @@
     <target name="Debug x64" enabled="1" default="1">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BISDebug_x64.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>

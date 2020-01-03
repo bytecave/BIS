@@ -49,9 +49,6 @@ Define Event
 Define s_imgAppIcon.i
 Define s_iWindowX.i, s_iWindowY.i
 
-UseGIFImageDecoder()
-UseJPEGImageDecoder()
-
 Declare AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i = #Black)
 Declare ProcessWindowEvent(Event)
 Declare.s GetNextImage(strClientIP.s)
@@ -59,10 +56,9 @@ Declare ShuffleImageList(strClientIP.s)
 Declare CreateClientList(strClientIP.s)
 Declare ClearClientList()
 
-XIncludeFile "frmBIS.pbf"
-XIncludeFile "ImageServer.pbi"
-XIncludeFile "About.pbi"
-XIncludeFile "Helpers.pbi"
+;initialize decoders before referencing in About.pbi and main program code
+UseGIFImageDecoder()
+UseJPEGImageDecoder()
 
 DataSection
   Connections:
@@ -82,6 +78,11 @@ DataSection
   Placeholder:
     IncludeBinary "resources\placeholder.png"
 EndDataSection
+
+XIncludeFile "frmBIS.pbf"
+XIncludeFile "ImageServer.pbi"
+XIncludeFile "About.pbi"
+XIncludeFile "Helpers.pbi"
 
 Procedure PlaySearchAnimation(*hGIF)
   Protected iFrameCount.i, iFrame.i
@@ -414,12 +415,15 @@ Procedure.s GetNextImage(strClientIP.s)
     g_iImagesServed + 1
     g_iForeverImagesServed + 1
     
-    LockMutex(g_MUTEX\Rotate)
-    
-    AddElement(g_listRotate())
-    g_listRotate() = strImage
-    
-    UnlockMutex(g_MUTEX\Rotate)
+    ;we don't rotate images when app is minimied
+    If Not g_fMinimized
+      LockMutex(g_MUTEX\Rotate)
+      
+      AddElement(g_listRotate())
+      g_listRotate() = strImage
+      
+      UnlockMutex(g_MUTEX\Rotate)
+    EndIf
   Else
     ShuffleImageList(strClientIP)
     strImage = GetNextImage(strClientIP)
@@ -564,6 +568,7 @@ Procedure ProcessWindowEvent(Event)
   EndSelect
 EndProcedure
 
+;Start Main Program
 g_MUTEX\Clients = CreateMutex()
 g_MUTEX\Rotate = CreateMutex()
 
@@ -612,7 +617,7 @@ Until g_fTerminateProgram
 
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 590
-; FirstLine = 557
+; CursorPosition = 58
+; FirstLine = 34
 ; Folding = ---
 ; EnableXP
