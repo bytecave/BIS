@@ -6,8 +6,6 @@
 Define fAbout.i
 
 DataSection
-  miniLOGO:
-    IncludeBinary "resources\minilogo.png"
   StartAbout:
     IncludeBinary "README.MD"
   EndAbout:
@@ -17,15 +15,6 @@ DataSection
 EndDataSection
 
 XIncludeFile "frmAbout.pbf"
-
-;PB Form Designer attempts to load images from disk, which only works at development time
-;So free these at run time, and fall through to CatchImage statements below that work at dev and run time
-If IsImage(Img_wndAbout_0)
-  FreeImage(Img_wndAbout_0)
-EndIf
-
-;Replace the images with those embedded in the executable
-Img_wndAbout_0 = CatchImage(#PB_Any, ?miniLOGO)
 
 Procedure HandleAboutEvents(Event)
   If EventMenu() = #ABOUTESCPRESSED
@@ -75,7 +64,7 @@ Procedure CloseAboutBox(EventType)
   CloseWindow(wndAbout)
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 14
-; FirstLine = 7
+; CursorPosition = 25
+; FirstLine = 14
 ; Folding = -
 ; EnableXP

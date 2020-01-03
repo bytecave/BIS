@@ -13,6 +13,7 @@ EnableExplicit
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "config.bis"
+#BISTITLE = "ByteCave Image Server"
 
 Structure sLIST
   List listClient.s()
@@ -31,6 +32,7 @@ Global g_iNetworkStatus.i
 Global g_iImagesServed.i
 Global g_iImagesQueued.i
 Global g_fSearchingImages.i
+Global g_fMinimized.i
 Global g_iForeverImagesServed.i
 Global g_strServerIP.s
 Global g_strPathFromPrefs.s
@@ -42,6 +44,7 @@ Global NewList g_listRotate.s()
 Global NewMap g_Lists.sLIST()
 
 Define Event
+Define s_imgAppIcon.i
 
 UseGIFImageDecoder()
 UseJPEGImageDecoder()
@@ -66,6 +69,8 @@ DataSection
     IncludeBinary "resources\foreverimages.ico"
   QueuedImages:
     IncludeBinary "resources\imagesqueued.ico"
+  AppIcon:
+    IncludeBinary "bis.ico"
   LOGO:
     IncludeBinary "resources\logo.png"
   Searching:
@@ -542,6 +547,8 @@ Procedure ToggleImageServer(EventType)
 EndProcedure
 
 Procedure ProcessWindowEvent(Event)
+  Shared s_imgAppIcon
+  
   Select EventWindow()
     Case wndMain
       Select Event
@@ -551,12 +558,65 @@ Procedure ProcessWindowEvent(Event)
           SetGadgetState(imgSearching, ImageID(Img_wndMain_1))
         Case #PB_Event_Timer
           UpdateStatusBar()
+        Case #PB_Event_MinimizeWindow
+          If Not g_fMinimized
+            AddSysTrayIcon(0, WindowID(wndMain), ImageID(s_imgAppIcon))
+            SysTrayIconToolTip(0, #BISTITLE)
+            HideWindow(wndMain, #True)
+          
+            g_fMinimized = #True
+        EndIf
+            
+        Case #PB_Event_RestoreWindow
+          g_fMinimized = #False
+          
+       Case #PB_Event_SysTray
+          Select EventType()
+            Case #PB_EventType_LeftClick, #PB_EventType_RightClick, #PB_EventType_LeftDoubleClick, #PB_EventType_RightDoubleClick
+              If g_fMinimized
+                RemoveSysTrayIcon(0)
+                SetWindowState(wndMain, #PB_Window_Normal)  
+                HideWindow(wndMain, #False)
+                 
+                g_fMinimized = #False
+              EndIf
+          EndSelect
         Default
           wndMain_Events(Event)
       EndSelect
     Case wndAbout
       HandleAboutEvents(Event)
   EndSelect
+EndProcedure
+
+Procedure wndMainCallBack(ihWnd.i, iMessage, wParam, lParam)
+  Protected iRC.i = #PB_ProcessPureBasicEvents
+  Shared s_imgAppIcon
+   
+   Select iMessage
+      Case #WM_SIZE
+        Select wParam
+          Case #SIZE_MINIMIZED
+            If Not g_fMinimized
+              Debug "WMSIZE Created tray icon because window was minimized"
+              AddSysTrayIcon(0, WindowID(wndMain), ImageID(s_imgAppIcon))
+              SysTrayIconToolTip(0, #BISTITLE)
+              
+              g_fMinimized = #True
+            EndIf
+            
+          Case #SIZE_RESTORED
+            Debug "WMSIZW RESTORE"
+            If g_fMinimized
+              Debug "Removed tray icon because window was maximized"
+              RemoveSysTrayIcon(0)
+              
+              g_fMinimized = #False
+            EndIf
+        EndSelect
+    EndSelect
+      
+   ProcedureReturn iRC
 EndProcedure
 
 g_MUTEX\Clients = CreateMutex()
@@ -575,11 +635,15 @@ Img_wndMain_0 = CatchImage(#PB_Any, ?LOGO)
 Img_wndMain_1 = CatchImage(#PB_Any, ?Searching)
 Img_wndMain_2 = CatchImage(#PB_Any, ?Placeholder)
 
+s_imgAppIcon = CatchImage(#PB_Any, ?AppIcon)
+
 OpenwndMain()
 HideGadget(imgSearching, 1)
 HideGadget(lblNoNetwork, 1)
 
 LoadSettings()
+;SetWindowCallback(@wndMainCallback())
+
 UpdateStatusBar()
 GetServerIPs()
 
@@ -599,7 +663,7 @@ Until g_fTerminateProgram
 
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 74
-; FirstLine = 58
+; CursorPosition = 582
+; FirstLine = 546
 ; Folding = ----
 ; EnableXP

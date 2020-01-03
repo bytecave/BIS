@@ -2,6 +2,7 @@
 
 #RECEIVEBUFFER = 4096
 #RETRYCOUNT = 100
+#SERVERIDSTRING = "Server: " + #BISTITLE + " " + #VER_MAJORVERSION
 
 Enumeration
   #SERVERSTARTING = 5000
@@ -48,7 +49,7 @@ Procedure SendImage(hSocket.i, strImageToSend.s, strClientIP.s)
   iImageLength = MemorySize(*pImageData)
 
   strHeader= "HTTP/1.1 200 OK" + #CRLF$ +
-             "Server: ByteCave Image Server " + #VER_MAJORVERSION + #CRLF$ +
+             #SERVERIDSTRING + #CRLF$ +
              "Content-Length: " + Str(iImageLength) + #CRLF$ +
              "Content-Type: " + strContentType + #CRLF$ + #CRLF$
   
@@ -104,8 +105,11 @@ Procedure ImageServerThread(Parameter)
   Protected *pReceivedData
   Protected hSocket.i
   Protected iNetworkEvent.i
+  Protected iServerID.i
   
-  If Not CreateNetworkServer(1, g_iPort, #PB_Network_TCP, g_strServerIP)
+  iServerID = CreateNetworkServer(#PB_Any, g_iPort, #PB_Network_TCP, g_strServerIP)
+  
+  If iServerID = 0
     g_iNetworkStatus = #SERVERNOTSTARTED
   Else
     *pReceivedData = AllocateMemory(#RECEIVEBUFFER)
@@ -123,13 +127,12 @@ Procedure ImageServerThread(Parameter)
     
     FreeMemory(*pReceivedData)
       
-    CloseNetworkServer(1)
+    CloseNetworkServer(iServerID)
     ClearClientList()
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 36
-; FirstLine = 20
+; CursorPosition = 4
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\
