@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-03 11:44" user="bytecave" host="MENWY"/>
+    <lastopen date="2020-01-03 15:30" user="bytecave" host="MENWY"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -25,7 +25,7 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="82e6b59093d42d34d346cebe85166cd9"/>
+      <fingerprint md5="efa567ef48876718af3e9924e40d9248"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -88,7 +88,7 @@
     <target name="Release x64" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BIS_x64.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
@@ -112,7 +112,7 @@
     <target name="Debug x64" enabled="1" default="1">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BISDebug_x64.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
