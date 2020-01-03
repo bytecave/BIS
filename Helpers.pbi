@@ -38,10 +38,6 @@ EndProcedure
   g_strServerIP = ReadPreferenceString("ServerIP", g_strServerIP)
   g_strPathFromPrefs = ReadPreferenceString("ImagesPath", "")
   
-  If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
-    GetImagesPath(0)
-  EndIf
-  
   s_iWindowX = ReadPreferenceInteger("WindowX", #PB_Ignore)
   s_iWindowY = ReadPreferenceInteger("WIndowY", #PB_Ignore)
   
@@ -70,7 +66,6 @@ Procedure SaveSettings()
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 70
-; FirstLine = 20
+; CursorPosition = 40
 ; Folding = -
 ; EnableXP

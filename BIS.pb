@@ -588,6 +588,11 @@ OpenwndMain(s_iWindowX, s_iWindowY)
 HideGadget(imgSearching, 1)
 HideGadget(lblNoNetwork, 1)
 
+;Set initial path to path from settings file, if it's a valid path
+If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
+  GetImagesPath(0)
+EndIf
+
 UpdateStatusBar()
 GetServerIPs()
 
@@ -607,7 +612,7 @@ Until g_fTerminateProgram
 
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 550
-; FirstLine = 521
+; CursorPosition = 590
+; FirstLine = 557
 ; Folding = ---
 ; EnableXP
