@@ -33,6 +33,8 @@ Global g_iImagesServed.i
 Global g_iImagesQueued.i
 Global g_fSearchingImages.i
 Global g_fMinimized.i
+Global g_iRunAtLogin.i
+Global g_iMinimizeToTray.i
 Global g_iForeverImagesServed.i
 Global g_strServerIP.s
 Global g_strPathFromPrefs.s
@@ -45,6 +47,7 @@ Global NewMap g_Lists.sLIST()
 
 Define Event
 Define s_imgAppIcon.i
+Define s_iWindowX.i, s_iWindowY.i
 
 UseGIFImageDecoder()
 UseJPEGImageDecoder()
@@ -59,6 +62,7 @@ Declare ClearClientList()
 XIncludeFile "frmBIS.pbf"
 XIncludeFile "ImageServer.pbi"
 XIncludeFile "About.pbi"
+XIncludeFile "Helpers.pbi"
 
 DataSection
   Connections:
@@ -120,39 +124,6 @@ Procedure GetImagesPath(EventType)
   EndIf
  EndProcedure
  
- Procedure LoadSettings()
-  Protected strPrefs.s
-  Protected strImagesPath.s
-  
-  strPrefs = GetHomeDirectory() + #PREFSFILENAME
-  OpenPreferences(strPrefs)
-  
-  g_qMinTimeBetweenImages = ReadPreferenceInteger("MinTimeBetweenImages", g_qMinTimeBetweenImages)
-  g_iPort = ReadPreferenceInteger("Port", g_iPort)
-  g_iForeverImagesServed = ReadPreferenceInteger("ForeverImagesServed", g_iForeverImagesServed)
-  g_strServerIP = ReadPreferenceString("ServerIP", g_strServerIP)
-  g_strPathFromPrefs = ReadPreferenceString("ImagesPath", "")
-  
-  If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
-    GetImagesPath(0)
-  EndIf
-EndProcedure
-
-Procedure SaveSettings()
-  Protected strPrefs.s
-  
-  strPrefs = GetHomeDirectory() + #PREFSFILENAME
-  If CreatePreferences(strPrefs)
-    WritePreferenceInteger("MinTimeBetweenImages", g_qMinTimeBetweenImages)
-    WritePreferenceInteger("Port", g_iPort)
-    WritePreferenceInteger("ForeverImagesServed", g_iForeverImagesServed)
-    WritePreferenceString("ServerIP", g_strServerIP)
-    WritePreferenceString("ImagesPath", GetGadgetText(edtImagesPath))
-    
-    ClosePreferences()   
-  EndIf
-EndProcedure
-
 Procedure GetImagesList(strDir.s)
   NewList Directories.s()
   Protected strFileName.s
@@ -392,39 +363,43 @@ Procedure RotateImages(Parameter)
   Static Count.i = 0
   Static fInit.i = #False
   
-  If Not fInit
-    idImage(0) = imgLast_1
-    idImage(1) = imgLast_2
-    idImage(2) = imgLast_3
-  EndIf
-  
-  Repeat
-    Delay(1)
-    
-    LockMutex(g_MUTEX\Rotate)
-    
-    If FirstElement(g_listRotate())
-      If IsImage(img(iPass))
-        FreeImage(img(iPass))
-      EndIf
-      
-      img(iPass) = LoadImage(#PB_Any, g_listRotate())
-      DeleteElement(g_listRotate(), 1)
-      UnlockMutex(g_MUTEX\Rotate)
-      
-      If IsImage(img(iPass))
-        ResizeImage(img(iPass), 110, 110, #PB_Image_Raw)
-        SetGadgetState(idImage(iPass), ImageID(img(iPass)))
-        
-        iPass + 1
-        If iPass = 3
-          iPass = 0
-        EndIf
-      EndIf
-    Else
-      UnlockMutex(g_MUTEX\Rotate)
+  If Not g_fMinimized
+    If Not fInit
+      idImage(0) = imgLast_1
+      idImage(1) = imgLast_2
+      idImage(2) = imgLast_3
     EndIf
-  Until g_fStopNetwork = #True And ListSize(g_listRotate()) = 0
+    
+    Repeat
+      Delay(1)
+      
+      LockMutex(g_MUTEX\Rotate)
+      
+      If FirstElement(g_listRotate())
+        If IsImage(img(iPass))
+          FreeImage(img(iPass))
+        EndIf
+        
+        img(iPass) = LoadImage(#PB_Any, g_listRotate())
+        DeleteElement(g_listRotate(), 1)
+        UnlockMutex(g_MUTEX\Rotate)
+        
+        If IsImage(img(iPass))
+          ResizeImage(img(iPass), 110, 110, #PB_Image_Raw)
+          SetGadgetState(idImage(iPass), ImageID(img(iPass)))
+          
+          iPass + 1
+          If iPass = 3
+            iPass = 0
+          EndIf
+        EndIf
+      Else
+        UnlockMutex(g_MUTEX\Rotate)
+      EndIf
+    Until g_fStopNetwork = #True And ListSize(g_listRotate()) = 0
+  Else
+    Delay(1)
+  EndIf
   
   ClearList(g_listRotate())
 EndProcedure
@@ -559,7 +534,7 @@ Procedure ProcessWindowEvent(Event)
         Case #PB_Event_Timer
           UpdateStatusBar()
         Case #PB_Event_MinimizeWindow
-          If Not g_fMinimized
+          If Not g_fMinimized And g_iMinimizeToTray = #PB_Checkbox_Checked
             AddSysTrayIcon(0, WindowID(wndMain), ImageID(s_imgAppIcon))
             SysTrayIconToolTip(0, #BISTITLE)
             HideWindow(wndMain, #True)
@@ -573,10 +548,10 @@ Procedure ProcessWindowEvent(Event)
        Case #PB_Event_SysTray
           Select EventType()
             Case #PB_EventType_LeftClick, #PB_EventType_RightClick, #PB_EventType_LeftDoubleClick, #PB_EventType_RightDoubleClick
-              If g_fMinimized
+              If g_fMinimized And g_iMinimizeToTray = #PB_Checkbox_Checked
                 RemoveSysTrayIcon(0)
-                SetWindowState(wndMain, #PB_Window_Normal)  
                 HideWindow(wndMain, #False)
+                SetWindowState(wndMain, #PB_Window_Normal)  
                  
                 g_fMinimized = #False
               EndIf
@@ -587,36 +562,6 @@ Procedure ProcessWindowEvent(Event)
     Case wndAbout
       HandleAboutEvents(Event)
   EndSelect
-EndProcedure
-
-Procedure wndMainCallBack(ihWnd.i, iMessage, wParam, lParam)
-  Protected iRC.i = #PB_ProcessPureBasicEvents
-  Shared s_imgAppIcon
-   
-   Select iMessage
-      Case #WM_SIZE
-        Select wParam
-          Case #SIZE_MINIMIZED
-            If Not g_fMinimized
-              Debug "WMSIZE Created tray icon because window was minimized"
-              AddSysTrayIcon(0, WindowID(wndMain), ImageID(s_imgAppIcon))
-              SysTrayIconToolTip(0, #BISTITLE)
-              
-              g_fMinimized = #True
-            EndIf
-            
-          Case #SIZE_RESTORED
-            Debug "WMSIZW RESTORE"
-            If g_fMinimized
-              Debug "Removed tray icon because window was maximized"
-              RemoveSysTrayIcon(0)
-              
-              g_fMinimized = #False
-            EndIf
-        EndSelect
-    EndSelect
-      
-   ProcedureReturn iRC
 EndProcedure
 
 g_MUTEX\Clients = CreateMutex()
@@ -637,12 +582,11 @@ Img_wndMain_2 = CatchImage(#PB_Any, ?Placeholder)
 
 s_imgAppIcon = CatchImage(#PB_Any, ?AppIcon)
 
-OpenwndMain()
+LoadSettings()
+
+OpenwndMain(s_iWindowX, s_iWindowY)
 HideGadget(imgSearching, 1)
 HideGadget(lblNoNetwork, 1)
-
-LoadSettings()
-;SetWindowCallback(@wndMainCallback())
 
 UpdateStatusBar()
 GetServerIPs()
@@ -663,7 +607,7 @@ Until g_fTerminateProgram
 
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 582
-; FirstLine = 546
-; Folding = ----
+; CursorPosition = 550
+; FirstLine = 521
+; Folding = ---
 ; EnableXP

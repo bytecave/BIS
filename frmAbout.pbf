@@ -17,7 +17,9 @@ LoadFont(#Font_wndAbout_0,"Consolas", 14, #PB_Font_Bold)
 LoadFont(#Font_wndAbout_1,"Consolas", 12)
 
 Declare CloseAboutBox(EventType)
+Declare SetMinToTray(EventType)
 Declare DisplayContent(EventType)
+Declare SetRunAtLogin(EventType)
 
 Procedure OpenwndAbout(x = 0, y = 0, width = 600, height = 350)
   wndAbout = OpenWindow(#PB_Any, x, y, width, height, "ByteCave Image Server Settings", #PB_Window_SystemMenu | #PB_Window_TitleBar | #PB_Window_WindowCentered)
@@ -52,6 +54,10 @@ Procedure wndAbout_Events(event)
           DisplayContent(EventType())          
         Case btnClose
           CloseAboutBox(EventType())          
+        Case chkTray
+          SetMinToTray(EventType())          
+        Case chkStartup
+          SetRunAtLogin(EventType())          
       EndSelect
   EndSelect
   ProcedureReturn #True
@@ -59,7 +65,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 59
-; FirstLine = 9
+; CursorPosition = 61
+; FirstLine = 15
 ; Folding = -
 ; EnableXP

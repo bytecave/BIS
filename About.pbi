@@ -37,6 +37,9 @@ Procedure DisplayAboutBox(EventType)
   
   AddKeyboardShortcut(wndAbout, #PB_Shortcut_Escape, #ABOUTESCPRESSED)
   
+  SetGadgetState(chkTray, g_iMinimizeToTray)
+  SetGadgetState(chkStartup, g_iRunAtLogin)
+  
   fAbout = #True
   
   DisplayContent(0)
@@ -48,7 +51,7 @@ Procedure DisplayContent(EventType)
   
   If fAbout
     SetGadgetText(edtAbout, PeekS(?StartAbout, ?EndAbout - ?StartAbout, #PB_Ascii))
-    SetGadgetText(btnContent, "Display ByteCave (c) 2020, MIT License")
+    SetGadgetText(btnContent, "Display ByteCave (c) 2019-2020, MIT License")
     
     fAbout = #False
   Else
@@ -63,8 +66,18 @@ Procedure CloseAboutBox(EventType)
   DisableWindow(wndMain, #False)
   CloseWindow(wndAbout)
 EndProcedure
+
+Procedure SetMinToTray(EventType)
+  g_fMinimized = #False
+  g_iMinimizeToTray = GetGadgetState(chkTray)
+EndProcedure
+
+Procedure SetRunAtLogin(EventType)
+  g_iRunAtLogin = GetGadgetState(chkStartup)
+EndProcedure
+
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 25
-; FirstLine = 14
-; Folding = -
+; CursorPosition = 75
+; FirstLine = 27
+; Folding = --
 ; EnableXP

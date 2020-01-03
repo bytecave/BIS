@@ -8,39 +8,43 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-02 17:33" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-01-02 21:08" user="riche" host="RICHE-LAPTOP"/>
   </section>
   <section name="files">
     <file name="About.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="32525d201c4d574c6fc00128b3912a6d"/>
+      <fingerprint md5="797db71831efb1db9b773f1b8b59578c"/>
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="22d059a73cb514d35d1c318d4e102b06"/>
+      <fingerprint md5="ac1a7694f611fedfbec44043ad695916"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="305d0c8f23d94ab26fb417a8556651ea"/>
+      <fingerprint md5="5e85e0d27d73cde1fe9f20a52c62f04d"/>
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="91e3c1b23adc906800659caa09b8bcf7"/>
+      <fingerprint md5="7aa0603964fa3b322ee2f51478410ca5"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
       <fingerprint md5="f6ceb82291190fe7a79ff531b9da68ca"/>
+    </file>
+    <file name="Helpers.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="ad4dab9e01ce23dcec329c1716026379"/>
     </file>
   </section>
   <section name="targets">
     <target name="Debug x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BISDebug_x86.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
-      <icon enable="1">bytecave.ico</icon>
+      <icon enable="1">bis.ico</icon>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -64,7 +68,7 @@
       <executable value="BIS_x86.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
-      <icon enable="1">bytecave.ico</icon>
+      <icon enable="1">bis.ico</icon>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -88,7 +92,7 @@
       <executable value="BIS_x64.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
-      <icon enable="1">bytecave.ico</icon>
+      <icon enable="1">bis.ico</icon>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
