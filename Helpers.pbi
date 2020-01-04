@@ -28,6 +28,7 @@ EndProcedure
   Protected strImagesPath.s
   Protected strIP.s, strPath.s
   Protected iCount.i
+  Protected fFoundDefault.i = #False
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   OpenPreferences(strPrefs)
@@ -44,28 +45,35 @@ EndProcedure
   
   Repeat
     strIP = ReadPreferenceString("ClientIP" + Str(iCount), "END")
+    
     If strIP = "END"
       Break
     Else
       strPath = ReadPreferenceString("ImagePath" + Str(iCount), "")
       
       If FileSize(strPath) = -2  ;if it's a valid directory
-        
-        ;first item added to list becomes the default images folder
-        If CountGadgetItems(lstClientFolders) = 0
-          strIP = "255.255.255.255"
-          
-          ;SetGadgetText(edtImagesPath, strPath)
+        If strIP = #DEFAULTCLIENTIP
+          fFoundDefault = #True
+          ;SetGadgetText(txtImagesPath, strPath)
         EndIf
-        
+;          SetGadgetState(ipClientAddress, MakeIPAddress(Val(StringField(strIP, 1, ".")),
+;                                                        Val(StringField(strIP, 2, ".")),
+;                                                        Val(StringField(strIP, 3, ".")),
+;                                                        Val(StringField(strIP, 4, "."))))
+       
         AddGadgetItem(lstClientFolders, -1, strIP + #LF$ + strPath)
       EndIf
     EndIf
     
     iCount + 1
   ForEver
-    
-  ;g_strPathFromPrefs = ReadPreferenceString("ImagesPath", "")
+  
+  If Not fFoundDefault
+    SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))  ;#DEFAULTCLIENTIP
+    DisableGadget(ipClientAddress, 1)
+  Else
+    HideGadget(lblDefaultFolder, 1)
+  EndIf
   
   ClosePreferences()
 EndProcedure
@@ -103,16 +111,29 @@ Procedure SaveSettings()
       WritePreferenceString("ClientIP" + Str(iCount), strIP)
       WritePreferenceString("ImagePath" + Str(iCount), strPath)
     Wend
-    
-    ;WritePreferenceString("ImagesPath", GetGadgetText(edtImagesPath))
 
     ClosePreferences()   
     
     RunAtLogin(g_iRunAtLogin)
   EndIf
 EndProcedure
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 109
-; FirstLine = 62
+
+Procedure ColorClientIPList()
+  Protected i.i, iItems.i
+  Dim rgRowColor.q(1)
+  
+  rgRowColor(0) = RGB(230, 250, 255)  ;blueish
+  rgRowColor(1) = RGB(240, 240, 240)  ;grayish
+  
+  iItems = CountGadgetItems(lstClientFolders)
+  
+  For i = 0 To iItems
+    SetGadgetItemColor(lstClientFolders, i, #PB_Gadget_BackColor, rgRowColor(i % 2), #PB_All)
+  Next
+EndProcedure
+
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 56
+; FirstLine = 38
 ; Folding = -
 ; EnableXP

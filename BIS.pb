@@ -14,6 +14,7 @@ EnableExplicit
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "config.bis"
 #BISTITLE = "ByteCave Image Server"
+#DEFAULTCLIENTIP = "255.255.255.255"
 
 Structure sLIST
   List listClient.s()
@@ -114,12 +115,12 @@ Procedure GetImagesPath(EventType)
   EndIf
   
   If strImagesPath <> ""
-    If GetGadgetText(edtImagesPath) <> strImagesPath
+    If GetGadgetText(txtImagesPath) <> strImagesPath
       AddStatusEvent("Changed image path: " + strImagesPath)
     EndIf
     
-    SetGadgetText(edtImagesPath, strImagesPath)
-    SetGadgetColor(edtImagesPath, #PB_Gadget_FrontColor, $000000)
+    SetGadgetText(txtImagesPath, strImagesPath)
+    SetGadgetColor(txtImagesPath, #PB_Gadget_FrontColor, $000000)
     DisableGadget(btnControl, 0)
     
   EndIf
@@ -233,7 +234,7 @@ Procedure GetServerIPs()
     HideGadget(cmbServerIP, 1)
     HideGadget(lblNoNetwork, 0)
     DisableGadget(btnImagesPath, 1)
-    DisableGadget(edtImagesPath, 1)
+    DisableGadget(txtImagesPath, 1)
     DisableGadget(edtPort, 1)
     DisableGadget(edtMinTime, 1)
   EndIf
@@ -457,7 +458,7 @@ Procedure ToggleImageServer(EventType)
     
     ClearList(g_listImages())
     g_iImagesQueued = 0
-    GetImagesList(GetGadgetText(edtImagesPath))
+    GetImagesList(GetGadgetText(txtImagesPath))
     g_fSearchingImages = #False
     
     HideGadget(imgSearching, 1)
@@ -572,9 +573,9 @@ Procedure ProcessWindowEvent(Event)
                 g_fMinimized = #False
               EndIf
           EndSelect
-        Default
-          wndMain_Events(Event)
       EndSelect
+      
+      wndMain_Events(Event)
     Case wndAbout
       HandleAboutEvents(Event)
   EndSelect
@@ -600,23 +601,23 @@ Img_wndMain_2 = CatchImage(#PB_Any, ?Placeholder)
 s_imgAppIcon = CatchImage(#PB_Any, ?AppIcon)
 
 OpenwndMain()
+HideWindow(wndMain, 1)
+
 HideGadget(imgSearching, 1)
 HideGadget(lblNoNetwork, 1)
-;HideGadget(ipClientAddress, 1)
 
 AddGadgetColumn(lstClientFolders, 0, "Client IP", 100)
-AddGadgetColumn(lstClientFolders, 1, "Image Folder", GadgetWidth(lstClientFolders) - 105)
+AddGadgetColumn(lstClientFolders, 1, "Image Folder", GadgetWidth(lstClientFolders) - 125)
 RemoveGadgetColumn(lstClientFolders, 2)
 
 LoadSettings()
 
-If CountGadgetItems(lstClientFolders) > 0
-  ;HideGadget(ipClientAddress, 1)
-  HideGadget(lblDefaultFolder, 1)
-  SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))
-  SetGadgetText(edtImagesPath, GetGadgetItemText(lstClientFolders, 0, 1))
-  SetGadgetState(lstClientFolders, 0)
-EndIf
+
+;If CountGadgetItems(lstClientFolders) > 0
+;  HideGadget(ipClientAddress, 0)
+;EndIf
+
+ColorClientIPList()
 
 ResizeWindow(wndMain, s_iWindowX, s_iWindowY, #PB_Ignore, #PB_Ignore)
 HideWindow(wndMain, 0)
@@ -633,7 +634,7 @@ GetServerIPs()
 UpdateStatusBar()
 
 ;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
-ResizeGadget(lblDefaultFolder, GadgetX(ipClientAddress), GadgetY(ipClientAddress), #PB_Ignore, #PB_Ignore)
+;ResizeGadget(lblDefaultFolder, GadgetX(ipClientAddress), GadgetY(ipClientAddress), #PB_Ignore, #PB_Ignore)
 ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
 
 
@@ -642,7 +643,7 @@ SetGadgetText(edtPort, Str(g_iPort))
 ChangePort(#CHANGEPORT)
 
 ;auto-start server if old preferences were read from config file
-;If g_strServerIP <> "" And GetGadgetText(edtImagesPath) <> ""
+;If g_strServerIP <> "" And GetGadgetText(txtImagesPath) <> ""
 ;  ToggleImageServer(#STARTSERVER)
 ;EndIf
 
@@ -653,8 +654,7 @@ Until g_fTerminateProgram
 
 ;save user preferences on exit
 SaveSettings()
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 615
-; FirstLine = 582
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 16
 ; Folding = ---
 ; EnableXP

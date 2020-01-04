@@ -9,7 +9,7 @@
 
 Global wndMain
 
-Global lblTitle, btnImagesPath, edtImagesPath, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, lblNoNetwork, cmbServerIP, lstEvents, imgLast_1, imgLast_2, imgLast_3, btnAbout, btnControl, lblStatus, imgSearching, ipClientAddress, btnAddFolder, btnRemoveFolder, lstClientFolders, lblDefaultFolder
+Global lblTitle, btnAbout, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, cmbServerIP, ipClientAddress, btnImagesPath, btnAddFolder, btnRemoveFolder, btnControl, imgSearching, lstClientFolders, lstEvents, lblStatus, lblDefaultFolder, lblNoNetwork, imgLast_1, imgLast_2, imgLast_3, txtImagesPath
 
 Global Img_wndMain_0, Img_wndMain_1, Img_wndMain_2
 
@@ -28,8 +28,8 @@ Enumeration FormFont
 EndEnumeration
 
 LoadFont(#Font_wndMain_0,"Consolas", 24, #PB_Font_Bold)
-LoadFont(#Font_wndMain_1,"Consolas", 12)
-LoadFont(#Font_wndMain_2,"Consolas", 12, #PB_Font_Bold)
+LoadFont(#Font_wndMain_1,"Consolas", 12, #PB_Font_Bold)
+LoadFont(#Font_wndMain_2,"Consolas", 12)
 LoadFont(#Font_wndMain_3,"Consolas", 14, #PB_Font_Bold)
 LoadFont(#Font_wndMain_4,"Consolas", 12, #PB_Font_Bold | #PB_Font_Italic)
 
@@ -42,59 +42,56 @@ Declare ChangeServerIP(EventType)
 
 Procedure OpenwndMain(x = 0, y = 0, width = 800, height = 600)
   wndMain = OpenWindow(#PB_Any, x, y, width, height, "", #PB_Window_SystemMenu | #PB_Window_MinimizeGadget)
-  HideWindow(wndMain, 1)
   lblTitle = TextGadget(#PB_Any, 10, 10, 400, 40, "ByteCave Image Server")
   SetGadgetFont(lblTitle, FontID(#Font_wndMain_0))
-  btnImagesPath = ButtonGadget(#PB_Any, 160, 150, 270, 25, "Select folder for images ...")
-  GadgetToolTip(btnImagesPath, "Select images folder for this IP address")
-  SetGadgetFont(btnImagesPath, FontID(#Font_wndMain_1))
-  edtImagesPath = StringGadget(#PB_Any, 20, 180, 620, 25, "Press button to right to select path to images", #PB_String_ReadOnly)
-  GadgetToolTip(edtImagesPath, "Path to images. Images will be selected recursively.")
-  SetGadgetColor(edtImagesPath, #PB_Gadget_FrontColor,RGB(128,128,128))
+  btnAbout = ButtonImageGadget(#PB_Any, 650, 10, 128, 70, ImageID(Img_wndMain_0))
+  GadgetToolTip(btnAbout, "Click to learn more about ByteCave Image Server")
   lblPort = TextGadget(#PB_Any, 20, 100, 100, 20, "HTTP Port:")
   GadgetToolTip(lblPort, "Port for image server to run on.")
-  SetGadgetFont(lblPort, FontID(#Font_wndMain_2))
+  SetGadgetFont(lblPort, FontID(#Font_wndMain_1))
   edtPort = StringGadget(#PB_Any, 120, 100, 60, 25, "80", #PB_String_Numeric)
   GadgetToolTip(edtPort, "Port for image server to run on.")
   SetGadgetColor(edtPort, #PB_Gadget_FrontColor,RGB(0,0,0))
   lblMinTime = TextGadget(#PB_Any, 200, 100, 270, 20, "Minimum time between images:")
-  SetGadgetFont(lblMinTime, FontID(#Font_wndMain_2))
+  SetGadgetFont(lblMinTime, FontID(#Font_wndMain_1))
   edtMinTime = StringGadget(#PB_Any, 460, 100, 60, 25, "2000", #PB_String_Numeric)
   GadgetToolTip(edtMinTime, "Throttle requests from same client.")
   SetGadgetColor(edtMinTime, #PB_Gadget_FrontColor,RGB(0,0,0))
   lblServerIP = TextGadget(#PB_Any, 540, 100, 100, 20, "Server IP:")
-  SetGadgetFont(lblServerIP, FontID(#Font_wndMain_2))
-  lblNoNetwork = TextGadget(#PB_Any, 640, 80, 140, 25, "NO NETWORK", #PB_Text_Center)
-  SetGadgetColor(lblNoNetwork, #PB_Gadget_FrontColor,RGB(255,0,0))
-  SetGadgetFont(lblNoNetwork, FontID(#Font_wndMain_3))
+  SetGadgetFont(lblServerIP, FontID(#Font_wndMain_1))
   cmbServerIP = ComboBoxGadget(#PB_Any, 640, 100, 140, 25)
   GadgetToolTip(cmbServerIP, "Select local IP address where image server is available.")
-  lstEvents = ListViewGadget(#PB_Any, 20, 400, 620, 170)
-  SetGadgetColor(lstEvents, #PB_Gadget_FrontColor,RGB(0,0,0))
-  imgLast_1 = ImageGadget(#PB_Any, 670, 220, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
-  imgLast_2 = ImageGadget(#PB_Any, 670, 340, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
-  imgLast_3 = ImageGadget(#PB_Any, 670, 460, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
-  btnAbout = ButtonImageGadget(#PB_Any, 660, 10, 128, 70, ImageID(Img_wndMain_0))
-  GadgetToolTip(btnAbout, "Click to learn more about ByteCave Image Server")
+  ipClientAddress = IPAddressGadget(#PB_Any, 20, 150, 120, 25)
+  GadgetToolTip(ipClientAddress, "IP address this list applies to.")
+  btnImagesPath = ButtonGadget(#PB_Any, 150, 150, 270, 25, "Select folder for images ...")
+  GadgetToolTip(btnImagesPath, "Select images folder for this IP address")
+  SetGadgetFont(btnImagesPath, FontID(#Font_wndMain_2))
+  btnAddFolder = ButtonGadget(#PB_Any, 470, 150, 80, 25, "Add")
+  GadgetToolTip(btnAddFolder, "Add IP specific folder to list")
+  SetGadgetFont(btnAddFolder, FontID(#Font_wndMain_2))
+  btnRemoveFolder = ButtonGadget(#PB_Any, 560, 150, 80, 25, "Remove")
+  GadgetToolTip(btnRemoveFolder, "Remove folder(s) selected in Listbox below")
   btnControl = ButtonGadget(#PB_Any, 670, 150, 110, 55, "START", #PB_Button_Toggle)
   GadgetToolTip(btnControl, "Toggle to start/stop image server.")
   SetGadgetFont(btnControl, FontID(#Font_wndMain_3))
   DisableGadget(btnControl, 1)
-  lblStatus = TextGadget(#PB_Any, 20, 60, 620, 20, "Start server to see connection string for clients.")
-  SetGadgetFont(lblStatus, FontID(#Font_wndMain_4))
   imgSearching = ImageGadget(#PB_Any, 700, 140, 45, 60, ImageID(Img_wndMain_1))
-  ipClientAddress = IPAddressGadget(#PB_Any, 20, 150, 130, 25)
-  GadgetToolTip(ipClientAddress, "IP address this list applies to.")
-  btnAddFolder = ButtonGadget(#PB_Any, 470, 150, 80, 25, "Add")
-  GadgetToolTip(btnAddFolder, "Add IP specific folder to list")
-  SetGadgetFont(btnAddFolder, FontID(#Font_wndMain_1))
-  btnRemoveFolder = ButtonGadget(#PB_Any, 560, 150, 80, 25, "Remove")
-  GadgetToolTip(btnRemoveFolder, "Remove folder(s) selected in Listbox below")
-  lstClientFolders = ListIconGadget(#PB_Any, 20, 280, 620, 110, "Column 1", 100, #PB_ListIcon_MultiSelect | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
+  lstClientFolders = ListIconGadget(#PB_Any, 20, 220, 620, 100, "Column 1", 100, #PB_ListIcon_MultiSelect | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
   GadgetToolTip(lstClientFolders, "Image folder for associated IP address")
-  lblDefaultFolder = TextGadget(#PB_Any, 20, 130, 130, 25, "Default Folder", #PB_Text_Center)
+  lstEvents = ListViewGadget(#PB_Any, 20, 330, 620, 240)
+  SetGadgetColor(lstEvents, #PB_Gadget_FrontColor,RGB(0,0,0))
+  lblStatus = TextGadget(#PB_Any, 20, 60, 620, 20, "Select default [255.255.255.255] images folder.")
+  SetGadgetFont(lblStatus, FontID(#Font_wndMain_4))
+  lblDefaultFolder = TextGadget(#PB_Any, 20, 131, 120, 19, "Set Default", #PB_Text_Center)
   SetGadgetColor(lblDefaultFolder, #PB_Gadget_FrontColor,RGB(0,128,255))
-  SetGadgetFont(lblDefaultFolder, FontID(#Font_wndMain_2))
+  SetGadgetFont(lblDefaultFolder, FontID(#Font_wndMain_1))
+  lblNoNetwork = TextGadget(#PB_Any, 640, 80, 140, 25, "NO NETWORK", #PB_Text_Center)
+  SetGadgetColor(lblNoNetwork, #PB_Gadget_FrontColor,RGB(255,0,0))
+  SetGadgetFont(lblNoNetwork, FontID(#Font_wndMain_3))
+  imgLast_1 = ImageGadget(#PB_Any, 670, 220, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
+  imgLast_2 = ImageGadget(#PB_Any, 670, 340, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
+  imgLast_3 = ImageGadget(#PB_Any, 670, 460, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
+  txtImagesPath = TextGadget(#PB_Any, 20, 180, 620, 25, "Press button above to select path to images", #PB_Text_Border)
 EndProcedure
 
 Procedure wndMain_Events(event)
@@ -108,16 +105,16 @@ Procedure wndMain_Events(event)
 
     Case #PB_Event_Gadget
       Select EventGadget()
-        Case btnImagesPath
-          GetImagesPath(EventType())          
+        Case btnAbout
+          DisplayAboutBox(EventType())          
         Case edtPort
           ChangePort(EventType())          
         Case edtMinTime
           ChangeMinTime(EventType())          
         Case cmbServerIP
           ChangeServerIP(EventType())          
-        Case btnAbout
-          DisplayAboutBox(EventType())          
+        Case btnImagesPath
+          GetImagesPath(EventType())          
         Case btnControl
           ToggleImageServer(EventType())          
       EndSelect
