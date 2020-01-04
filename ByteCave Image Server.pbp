@@ -3,12 +3,12 @@
 <project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
-    <comment>ByteCave Image Server, (c) 2020 ByteCave</comment>
+    <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
   </section>
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-03 11:44" user="bytecave" host="MENWY"/>
+    <lastopen date="2020-01-03 17:00" user="riche" host="RICHE-LAPTOP"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,7 +17,7 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="3a6adce504921c0eda0c1aeaae0a3061"/>
+      <fingerprint md5="39ee8ef72e7f8dd931e513d913053840"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -25,11 +25,11 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="82e6b59093d42d34d346cebe85166cd9"/>
+      <fingerprint md5="fa1d620219a67e6ccb7de78f9fb049de"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="f60990464b1a0ad9e4ef0fa1efc5305c"/>
+      <fingerprint md5="fcd7218c49f84d491de6e3b28ba15c65"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -40,7 +40,7 @@
     <target name="Debug x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BISDebug_x86.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
@@ -64,7 +64,7 @@
     <target name="Release x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BIS_x86.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
@@ -88,7 +88,7 @@
     <target name="Release x64" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BIS_x64.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
@@ -112,7 +112,7 @@
     <target name="Debug x64" enabled="1" default="1">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BISDebug_x64.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>

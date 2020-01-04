@@ -525,13 +525,25 @@ Procedure ToggleImageServer(EventType)
   UpdateStatusBar()
 EndProcedure
 
+Procedure ProcessClientListEvents(EventType)
+  If EventType() = #PB_EventType_LeftClick
+    Debug "left click on listclientfolders"
+  EndIf
+EndProcedure
+  
 Procedure ProcessWindowEvent(Event)
   Shared s_imgAppIcon
   
   Select EventWindow()
     Case wndMain
       Select Event
-        Case #PB_Event_CloseWindow
+    Case #PB_Event_Gadget
+      Select EventGadget()
+        Case lstClientFolders
+          ProcessClientListEvents(EventType())
+      EndSelect
+      
+    Case #PB_Event_CloseWindow
           g_fTerminateProgram = #True
         Case #UPDATESEARCHIMAGE
           SetGadgetState(imgSearching, ImageID(Img_wndMain_1))
@@ -573,7 +585,7 @@ g_MUTEX\Clients = CreateMutex()
 g_MUTEX\Rotate = CreateMutex()
 
 ;PB Form Designer attempts to load images from disk, which only works at development time
-;So free these at run time, and fall through to CatchImage statements below that work at dev and run time
+;So free these at run time, and fall through to CatchImage statements below that work at both dev and run time
 If IsImage(Img_wndMain_0)
   FreeImage(Img_wndMain_0)
   FreeImage(Img_wndMain_1)
@@ -587,37 +599,62 @@ Img_wndMain_2 = CatchImage(#PB_Any, ?Placeholder)
 
 s_imgAppIcon = CatchImage(#PB_Any, ?AppIcon)
 
-LoadSettings()
-
-OpenwndMain(s_iWindowX, s_iWindowY)
+OpenwndMain()
 HideGadget(imgSearching, 1)
 HideGadget(lblNoNetwork, 1)
+;HideGadget(ipClientAddress, 1)
 
-;Set initial path to path from settings file, if it's a valid path
-If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
-  GetImagesPath(0)
+AddGadgetColumn(lstClientFolders, 0, "Client IP", 100)
+AddGadgetColumn(lstClientFolders, 1, "Image Folder", GadgetWidth(lstClientFolders) - 105)
+RemoveGadgetColumn(lstClientFolders, 2)
+
+LoadSettings()
+
+If CountGadgetItems(lstClientFolders) > 0
+  ;HideGadget(ipClientAddress, 1)
+  HideGadget(lblDefaultFolder, 1)
+  SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))
+  SetGadgetText(edtImagesPath, GetGadgetItemText(lstClientFolders, 0, 1))
+  SetGadgetState(lstClientFolders, 0)
 EndIf
 
-UpdateStatusBar()
+ResizeWindow(wndMain, s_iWindowX, s_iWindowY, #PB_Ignore, #PB_Ignore)
+HideWindow(wndMain, 0)
+
+
+
 GetServerIPs()
+
+;Set initial path to path from settings file, if it's a valid path
+;If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
+;  GetImagesPath(0)
+;EndIf
+
+UpdateStatusBar()
+
+;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
+ResizeGadget(lblDefaultFolder, GadgetX(ipClientAddress), GadgetY(ipClientAddress), #PB_Ignore, #PB_Ignore)
+ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
+
 
 SetGadgetText(edtMinTime, Str(g_qMinTimeBetweenImages))
 SetGadgetText(edtPort, Str(g_iPort))
 ChangePort(#CHANGEPORT)
 
 ;auto-start server if old preferences were read from config file
-If g_strServerIP <> "" And GetGadgetText(edtImagesPath) <> ""
-  ToggleImageServer(#STARTSERVER)
-EndIf
+;If g_strServerIP <> "" And GetGadgetText(edtImagesPath) <> ""
+;  ToggleImageServer(#STARTSERVER)
+;EndIf
 
 Repeat
   Event = WaitWindowEvent(1)
   ProcessWindowEvent(Event)
 Until g_fTerminateProgram
 
+;save user preferences on exit
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 58
-; FirstLine = 34
+; CursorPosition = 615
+; FirstLine = 582
 ; Folding = ---
 ; EnableXP

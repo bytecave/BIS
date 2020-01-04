@@ -26,6 +26,8 @@ EndProcedure
   Shared s_iWindowX, s_iWindowY
   Protected strPrefs.s
   Protected strImagesPath.s
+  Protected strIP.s, strPath.s
+  Protected iCount.i
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   OpenPreferences(strPrefs)
@@ -36,18 +38,50 @@ EndProcedure
   g_iPort = ReadPreferenceInteger("Port", g_iPort)
   g_iForeverImagesServed = ReadPreferenceInteger("ForeverImagesServed", g_iForeverImagesServed)
   g_strServerIP = ReadPreferenceString("ServerIP", g_strServerIP)
-  g_strPathFromPrefs = ReadPreferenceString("ImagesPath", "")
   
   s_iWindowX = ReadPreferenceInteger("WindowX", #PB_Ignore)
   s_iWindowY = ReadPreferenceInteger("WIndowY", #PB_Ignore)
   
+  Repeat
+    strIP = ReadPreferenceString("ClientIP" + Str(iCount), "END")
+    If strIP = "END"
+      Break
+    Else
+      strPath = ReadPreferenceString("ImagePath" + Str(iCount), "")
+      
+      If FileSize(strPath) = -2  ;if it's a valid directory
+        
+        ;first item added to list becomes the default images folder
+        If CountGadgetItems(lstClientFolders) = 0
+          strIP = "255.255.255.255"
+          
+          ;SetGadgetText(edtImagesPath, strPath)
+        EndIf
+        
+        AddGadgetItem(lstClientFolders, -1, strIP + #LF$ + strPath)
+      EndIf
+    EndIf
+    
+    iCount + 1
+  ForEver
+    
+  ;g_strPathFromPrefs = ReadPreferenceString("ImagesPath", "")
+  
   ClosePreferences()
 EndProcedure
 
+;Set initial path to path from settings file, if it's a valid path
+;If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
+;  GetImagesPath(0)
+;EndIf
+
+
 Procedure SaveSettings()
-  Protected strPrefs.s
+  Protected strPrefs.s, strIP.s, strPath.s
+  Protected iCount.i
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
+  
   If CreatePreferences(strPrefs)
     WritePreferenceInteger("MinTimeBetweenImages", g_qMinTimeBetweenImages)
     WritePreferenceInteger("MinimizeToTray", g_iMinimizeToTray)
@@ -55,17 +89,30 @@ Procedure SaveSettings()
     WritePreferenceInteger("Port", g_iPort)
     WritePreferenceInteger("ForeverImagesServed", g_iForeverImagesServed)
     WritePreferenceString("ServerIP", g_strServerIP)
-    WritePreferenceString("ImagesPath", GetGadgetText(edtImagesPath))
     
     WritePreferenceInteger("WindowX", WindowX(wndMain, #PB_Window_FrameCoordinate))
-    WritePreferenceInteger("WIndowY", WindowY(wndMain, #PB_Window_FrameCoordinate))
+    WritePreferenceInteger("WindowY", WindowY(wndMain, #PB_Window_FrameCoordinate))
     
+    iCount = CountGadgetItems(lstClientFolders)
+    While iCount
+      iCount - 1
+      
+      strIP = GetGadgetItemText(lstClientFolders, iCount , 0)  ;ip address
+      strPath = GetGadgetItemText(lstClientFolders, iCount, 1) ;image folder
+      
+      WritePreferenceString("ClientIP" + Str(iCount), strIP)
+      WritePreferenceString("ImagePath" + Str(iCount), strPath)
+    Wend
+    
+    ;WritePreferenceString("ImagesPath", GetGadgetText(edtImagesPath))
+
     ClosePreferences()   
     
     RunAtLogin(g_iRunAtLogin)
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 40
+; CursorPosition = 109
+; FirstLine = 62
 ; Folding = -
 ; EnableXP
