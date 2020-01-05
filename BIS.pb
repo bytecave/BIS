@@ -16,6 +16,13 @@ EnableExplicit
 #BISTITLE = "ByteCave Image Server"
 #DEFAULTCLIENTIP = "255.255.255.255"
 
+Structure sUISTATE
+  IPMultiSelect.i
+  HaveValidIP.i
+  HaveImagePath.i
+  HaveDefaultFolderInList.i
+EndStructure
+  
 Structure sLIST
   List listClient.s()
   qTimeSinceLastRequest.q
@@ -27,6 +34,7 @@ Structure MUTEX
 EndStructure
 
 Global g_MUTEX.MUTEX
+Global g_UIState.sUISTATE
 Global g_fStopNetwork.i
 Global g_fTerminateProgram.i
 Global g_iNetworkStatus.i
@@ -253,6 +261,19 @@ Procedure ChangePort(EventType)
       SetGadgetText(edtPort, Str(g_iPort))
       SetActiveGadget(edtPort)
     EndIf
+  ElseIf EventType = #PB_EventType_Focus
+    Protected iSelected.i, i.i, iCount.i, iRow.i
+    Protected strIP.s
+  
+    iCount = CountGadgetItems(lstClientFolders)
+    
+    For i = 0 To iCount - 1
+      If GetGadgetItemState(lstClientFolders, i) = #PB_ListIcon_Selected
+        Debug "Selected " + Str(i)
+        iSelected + 1
+        iRow = i
+      EndIf
+    Next
   EndIf
 EndProcedure
 
@@ -406,6 +427,8 @@ Procedure RotateImages(Parameter)
   ClearList(g_listRotate())
 EndProcedure
 
+;TODO:Rotate only last 5 images?
+
 ;MUTEX locked before calling this
 Procedure.s GetNextImage(strClientIP.s)
   Protected strImage.s
@@ -527,9 +550,82 @@ Procedure ToggleImageServer(EventType)
 EndProcedure
 
 Procedure ProcessClientListEvents(EventType)
-  If EventType() = #PB_EventType_LeftClick
-    Debug "left click on listclientfolders"
+  Protected iSelected.i, i.i, iCount.i, iRow.i
+  Protected strIP.s
+  
+  Select EventType()
+      Case #PB_EventType_LeftClick, #PB_EventType_Change
+        iCount = CountGadgetItems(lstClientFolders)
+        
+        For i = 0 To iCount - 1
+          If GetGadgetItemState(lstClientFolders, i) = #PB_ListIcon_Selected
+            iSelected + 1
+            iRow = i
+          EndIf
+        Next
+        
+        If iSelected = 1
+          strIP = GetGadgetItemText(lstClientFolders, iRow, 0)
+          
+          SetGadgetState(ipClientAddress, MakeIPAddress(Val(StringField(strIP, 1, ".")),
+                                                        Val(StringField(strIP, 2, ".")),
+                                                        Val(StringField(strIP, 3, ".")),
+                                                        Val(StringField(strIP, 4, "."))))
+          SetGadgetText(txtImagesPath, GetGadgetItemText(lstClientFolders, iRow, 1))
+          ;do we need something like this? g_strPathFromPrefs = txtpath
+          
+          HideGadget(lblDefaultFolder, 1)
+          DisableGadget(btnAddFolder, 0)
+          SetGadgetText(btnAddFolder, "Update")
+          
+          g_UIState\HaveFolder = #True
+          g_UIState\HaveValidIP = #True
+        Else
+          ;SetGadgetState(ipClientAddress, MakeIPAddress(0, 0, 0, 0))
+          ;SetGadgetText(lblDefaultFolder, "Multiselect")
+          ;HideGadget(lblDefaultFolder, 0)
+          ;DisableGadget(btnImagesPath, 1)
+          ;DisableGadget(btnAddFolder, 1)
+          ;SetGadgetText(txtImagesPath, "Click Remove to remove selected.")
+          
+          g_UIState\IPMultiSelect = #True
+          g_UIState\HaveFolder = #False
+          g_UIState\HaveValidIP = #False
+          
+          SetUIState()
+        EndIf
+        
+        If GetGadgetText(ipClientAddress) <> #DEFAULTCLIENTIP
+          DisableGadget(btnRemoveFolder, 0)
+        EndIf
+    EndSelect
+EndProcedure
+
+Procedure SetUIState()
+  If g_UIState\IPMultiSelect
+    HideGadget(lblDefaultFolder, 0)
+    SetGadgetState(ipClientAddress, MakeIPAddress(0, 0, 0, 0))
+    DisableGadget(ipClientAddress, 1)
+    SetGadgetText(lblDefaultFolder, "Multiselect")
+    
+    DisableGadget(btnImagesPath, 1)
+    DisableGadget(btnAddFolder, 1)
+    SetGadgetText(txtImagesPath, "Click Remove to remove selected.")
+  Else    
+    DisableGadget(ipClientAddress, 0)
+    If g_UIState\HaveDefaultFolderInList
+      HideGadget(lblDefaultFolder, 1)
+      DisableGadget(btnAddFolder, 0)
+      SetGadgetText(btnAddFolder, "Update")
+        Else
+          
+      If Not g_UIState\HaveDefaultFolderInList
+    SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))  ;#DEFAULTCLIENTIP
+    DisableGadget(ipClientAddress, 1)
+  Else
+    HideGadget(lblDefaultFolder, 1)
   EndIf
+
 EndProcedure
   
 Procedure ProcessWindowEvent(Event)
@@ -605,17 +701,14 @@ HideWindow(wndMain, 1)
 
 HideGadget(imgSearching, 1)
 HideGadget(lblNoNetwork, 1)
+DisableGadget(btnAddFolder, 1)
+DisableGadget(btnRemoveFolder, 1)
 
 AddGadgetColumn(lstClientFolders, 0, "Client IP", 100)
 AddGadgetColumn(lstClientFolders, 1, "Image Folder", GadgetWidth(lstClientFolders) - 125)
 RemoveGadgetColumn(lstClientFolders, 2)
 
 LoadSettings()
-
-
-;If CountGadgetItems(lstClientFolders) > 0
-;  HideGadget(ipClientAddress, 0)
-;EndIf
 
 ColorClientIPList()
 
@@ -655,6 +748,7 @@ Until g_fTerminateProgram
 ;save user preferences on exit
 SaveSettings()
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 16
-; Folding = ---
+; CursorPosition = 614
+; FirstLine = 601
+; Folding = ----
 ; EnableXP

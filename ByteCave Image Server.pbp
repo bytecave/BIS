@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-03 22:54" user="bytecave" host="VILM"/>
+    <lastopen date="2020-01-05 01:35" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,7 +17,7 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="3b0f464be2aa2cbd5328fd825b98ecec"/>
+      <fingerprint md5="870751eb211ae08b71372eba98410f24"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -25,11 +25,11 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5f0848de2d536f147d369e80f3989cad"/>
+      <fingerprint md5="5d09799caea8a7dfbb229ffaffbe2a71"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5912a0779853faf645ded8f322feb27b"/>
+      <fingerprint md5="1764c86a9f20d1b8f9eb5bc509e422d9"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>

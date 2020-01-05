@@ -28,7 +28,7 @@ EndProcedure
   Protected strImagesPath.s
   Protected strIP.s, strPath.s
   Protected iCount.i
-  Protected fFoundDefault.i = #False
+  ;Protected fFoundDefault.i = #False
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   OpenPreferences(strPrefs)
@@ -53,14 +53,11 @@ EndProcedure
       
       If FileSize(strPath) = -2  ;if it's a valid directory
         If strIP = #DEFAULTCLIENTIP
-          fFoundDefault = #True
+          g_UIState\HaveDefaultFolderInList = #True
+          ;fFoundDefault = #True
           ;SetGadgetText(txtImagesPath, strPath)
         EndIf
-;          SetGadgetState(ipClientAddress, MakeIPAddress(Val(StringField(strIP, 1, ".")),
-;                                                        Val(StringField(strIP, 2, ".")),
-;                                                        Val(StringField(strIP, 3, ".")),
-;                                                        Val(StringField(strIP, 4, "."))))
-       
+        
         AddGadgetItem(lstClientFolders, -1, strIP + #LF$ + strPath)
       EndIf
     EndIf
@@ -68,7 +65,7 @@ EndProcedure
     iCount + 1
   ForEver
   
-  If Not fFoundDefault
+  If Not g_UIState\HaveDefaultFolderInList
     SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))  ;#DEFAULTCLIENTIP
     DisableGadget(ipClientAddress, 1)
   Else
@@ -122,6 +119,9 @@ Procedure ColorClientIPList()
   Protected i.i, iItems.i
   Dim rgRowColor.q(1)
   
+  ProcedureReturn
+  Debug "Color Client IP List"
+  
   rgRowColor(0) = RGB(230, 250, 255)  ;blueish
   rgRowColor(1) = RGB(240, 240, 240)  ;grayish
   
@@ -133,7 +133,7 @@ Procedure ColorClientIPList()
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 56
-; FirstLine = 38
+; CursorPosition = 73
+; FirstLine = 37
 ; Folding = -
 ; EnableXP
