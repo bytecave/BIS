@@ -21,7 +21,7 @@ Procedure GetImageData(strPath.s)
     iFileLen = Lof(hFile)
     
     If iFileLen > 0
-      *pImageData = AllocateMemory(iFileLen)
+      *pImageData = AllocateMemory(iFileLen, #PB_Memory_NoClear)
       ReadData(hFile, *pImageData, iFileLen)
     EndIf
     
@@ -54,13 +54,13 @@ Procedure SendImage(hSocket.i, strImageToSend.s, strClientIP.s)
              "Content-Type: " + strContentType + #CRLF$ + #CRLF$
   
   iPacketSize = StringByteLength(strHeader, #PB_UTF8) + iImageLength
-  *pSendBuffer = AllocateMemory(iPacketSize)
+  *pSendBuffer = AllocateMemory(iPacketSize, #PB_Memory_NoClear)
   *pData = *pSendBuffer + PokeS(*pSendBuffer, strHeader, -1, #PB_UTF8)
   
   CopyMemory(*pImageData, *pData, iImageLength)
   FreeMemory(*pImageData)
   
-  AddStatusEvent(strClientIP + ": " + strImageToSend)
+  ;TODO:This should modify client list instead: AddStatusEvent(strClientIP + ": " + strImageToSend)
   
   Repeat
     iSentBytes + SendNetworkData(hSocket, *pSendBuffer + iSentBytes, iPacketSize - iSentBytes)
@@ -132,7 +132,8 @@ Procedure ImageServerThread(Parameter)
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 4
+; CursorPosition = 23
+; FirstLine = 20
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\
