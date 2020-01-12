@@ -326,11 +326,11 @@ Procedure UpdateStatusBar()
     
     AddStatusBarField(20)  ;blank space
     AddStatusBarField(24)  ;connections icon
-    AddStatusBarField(167) ;connections text
+    AddStatusBarField(135) ;connections text
     AddStatusBarField(24)  ;session images icon
-    AddStatusBarField(185) ;session images text
+    AddStatusBarField(200) ;session images text
     AddStatusBarField(24)  ;all-time images icon
-    AddStatusBarField(185) ;session images text
+    AddStatusBarField(200) ;session images text
     AddStatusBarField(24)  ;queued images icon
     AddStatusBarField(135) ;images queued for serving
     
@@ -549,6 +549,31 @@ Procedure ToggleImageServer(EventType)
   UpdateStatusBar()
 EndProcedure
 
+Procedure SetUIState()
+  If g_UIState\IPMultiSelect
+    HideGadget(lblDefaultFolder, 0)
+    SetGadgetState(ipClientAddress, MakeIPAddress(0, 0, 0, 0))
+    DisableGadget(ipClientAddress, 1)
+    SetGadgetText(lblDefaultFolder, "Multiselect")
+    
+    DisableGadget(btnImagesPath, 1)
+    DisableGadget(btnAddFolder, 1)
+    SetGadgetText(txtImagesPath, "Click Remove to remove selected.")
+  Else    
+    DisableGadget(ipClientAddress, 0)
+    If g_UIState\HaveDefaultFolderInList
+      HideGadget(lblDefaultFolder, 1)
+      DisableGadget(btnAddFolder, 0)
+      SetGadgetText(btnAddFolder, "Update")
+    ElseIf Not g_UIState\HaveDefaultFolderInList
+        SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))  ;#DEFAULTCLIENTIP
+        DisableGadget(ipClientAddress, 1)
+      Else
+        HideGadget(lblDefaultFolder, 1)
+      EndIf
+  EndIf
+EndProcedure
+  
 Procedure ProcessClientListEvents(EventType)
   Protected iSelected.i, i.i, iCount.i, iRow.i
   Protected strIP.s
@@ -578,7 +603,7 @@ Procedure ProcessClientListEvents(EventType)
           DisableGadget(btnAddFolder, 0)
           SetGadgetText(btnAddFolder, "Update")
           
-          g_UIState\HaveFolder = #True
+          ;g_UIState\HaveFolder = #True
           g_UIState\HaveValidIP = #True
         Else
           ;SetGadgetState(ipClientAddress, MakeIPAddress(0, 0, 0, 0))
@@ -589,7 +614,7 @@ Procedure ProcessClientListEvents(EventType)
           ;SetGadgetText(txtImagesPath, "Click Remove to remove selected.")
           
           g_UIState\IPMultiSelect = #True
-          g_UIState\HaveFolder = #False
+          ;g_UIState\HaveFolder = #False
           g_UIState\HaveValidIP = #False
           
           SetUIState()
@@ -601,33 +626,6 @@ Procedure ProcessClientListEvents(EventType)
     EndSelect
 EndProcedure
 
-Procedure SetUIState()
-  If g_UIState\IPMultiSelect
-    HideGadget(lblDefaultFolder, 0)
-    SetGadgetState(ipClientAddress, MakeIPAddress(0, 0, 0, 0))
-    DisableGadget(ipClientAddress, 1)
-    SetGadgetText(lblDefaultFolder, "Multiselect")
-    
-    DisableGadget(btnImagesPath, 1)
-    DisableGadget(btnAddFolder, 1)
-    SetGadgetText(txtImagesPath, "Click Remove to remove selected.")
-  Else    
-    DisableGadget(ipClientAddress, 0)
-    If g_UIState\HaveDefaultFolderInList
-      HideGadget(lblDefaultFolder, 1)
-      DisableGadget(btnAddFolder, 0)
-      SetGadgetText(btnAddFolder, "Update")
-        Else
-          
-      If Not g_UIState\HaveDefaultFolderInList
-    SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))  ;#DEFAULTCLIENTIP
-    DisableGadget(ipClientAddress, 1)
-  Else
-    HideGadget(lblDefaultFolder, 1)
-  EndIf
-
-EndProcedure
-  
 Procedure ProcessWindowEvent(Event)
   Shared s_imgAppIcon
   
@@ -748,7 +746,7 @@ Until g_fTerminateProgram
 ;save user preferences on exit
 SaveSettings()
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 614
-; FirstLine = 601
+; CursorPosition = 366
+; FirstLine = 339
 ; Folding = ----
 ; EnableXP

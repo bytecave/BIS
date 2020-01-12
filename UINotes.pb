@@ -102,9 +102,9 @@ Else
 UsePNGImageDecoder()
 ; Shows possible flags of ListIconGadget in action...
   If OpenWindow(0, 0, 0, 700, 300, "ListIconGadgets", #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
-    ListIconGadget(5, 10, 10, 620, 65, "Client", 55, #PB_ListIcon_GridLines)
+    ListIconGadget(5, 10, 10, 620, 65, "Client", 55, #PB_ListIcon_GridLines|#LVS_NOCOLUMNHEADER)
     ; Here we change the ListIcon display to large icons and show an image
-    If LoadImage(0, "d:\code\listicongadgettest.png")     ; change path/filename to your own 32x32 pixel image
+    If LoadImage(0, "d:\code\bis\resources\logo.png")     ; change path/filename to your own 32x32 pixel image
       SetGadgetAttribute(5, #PB_ListIcon_DisplayMode, #PB_ListIcon_Report)
       ;AddGadgetColumn(5, 1, "", 35)
       AddGadgetColumn(5, 1, "IP", 100)
@@ -142,8 +142,17 @@ abbrpath(path.s,"/",1)
 abbrpath(path.s,"/",2)
 abbrpath(path.s,"/",4)
 abbrpath(path.s,"/",5)
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 120
-; FirstLine = 92
+
+
+    Procedure.I GetRowHeight(ListIconID.I)
+      Protected Rectangle.RECT
+     
+      Rectangle\left = #LVIR_BOUNDS
+      SendMessage_(GadgetID(ListIconID), #LVM_GETITEMRECT, 0, Rectangle)
+      ProcedureReturn Rectangle\bottom - Rectangle\top - 1
+    EndProcedure
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 127
+; FirstLine = 90
 ; Folding = -
 ; EnableXP
