@@ -74,16 +74,18 @@ Procedure HandleHTTPRequest(hSocket, *pReceivedData)
   Protected *send
   Protected strImageToSend.s
   Protected qElapsedTime.q
-  Protected strClientIP.s
+  Protected strClientIP.s, qIPAddress.q
   
   ;only care about GET requests
   If PeekS(*pReceivedData, 3, #PB_UTF8) = "GET"
     qElapsedTime = ElapsedMilliseconds()
-    strClientIP = IPString(GetClientIP(hSocket)) + ":" + Str(g_iPort)
+    
+    qIPAddress = GetClientIP(hSocket)
+    strClientIP = IPString(qIPAddress)    ;TODO:Do we need this? Don't think so... + ":" + Str(g_iPort)
     
     LockMutex(g_MUTEX\Clients)
     If Not FindMapElement(g_Lists(), strClientIP)
-      CreateClientList(strClientIP)
+      CreateClientList(qIPAddress, strClientIP)
     EndIf
     ;g_Lists() now points to the Map entry for this IP address
     
@@ -132,8 +134,8 @@ Procedure ImageServerThread(Parameter)
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 23
-; FirstLine = 20
+; CursorPosition = 83
+; FirstLine = 79
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\

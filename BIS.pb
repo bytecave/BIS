@@ -24,8 +24,9 @@ Structure sUISTATE
 EndStructure
   
 Structure sLIST
-  List listClient.s()
+  List listClientImages.s()
   qTimeSinceLastRequest.q
+  qClientIP.q
 EndStructure
 
 Structure MUTEX
@@ -62,7 +63,7 @@ Declare AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i = #
 Declare ProcessWindowEvent(Event)
 Declare.s GetNextImage(strClientIP.s)
 Declare ShuffleImageList(strClientIP.s)
-Declare CreateClientList(strClientIP.s)
+Declare CreateClientList(qClientIP.q, strClientIP.s, strImagesPath.s = "")
 Declare ClearClientList()
 
 ;initialize decoders before referencing in About.pbi and main program code
@@ -303,16 +304,28 @@ EndProcedure
 Procedure ShuffleImageList(strClientIP.s)
   AddStatusEvent("Shuffling image list for >> " + strClientIP + "<< ...")
   
-  RandomizeList(g_Lists(strClientIP)\listClient())
-  ResetList(g_Lists(strClientIP)\listClient())
+  RandomizeList(g_Lists(strClientIP)\listClientImages())
+  ResetList(g_Lists(strClientIP)\listClientImages())
 EndProcedure
 
 ;MUTEX locked before calling this
-Procedure CreateClientList(strClientIP.s)
+Procedure CreateClientList(qClientIP.q, strClientIP.s, strImagesPath.s = "")
+  Protected iIdx.i, iCount.i
+  
+  ;Add to list of clients in sorted order by Client IP address
+  iIdx = CountGadgetItems(lstClientFolders)
+  While iIdx And qClientIP < GetGadgetItemData(lstClientFolders, iIdx - 1)
+    iIdx - 1
+  Wend
+  
+  AddGadgetItem(lstClientFolders, iIdx, strClientIP + #LF$ + strImagesPath)  ;need default path
+  SetGadgetItemData(lstClientFolders, iIdx, qClientIP)
+  
   AddMapElement(g_Lists(), strClientIP)
+  g_Lists()\qClientIP = qClientIP
   g_Lists()\qTimeSinceLastRequest = ElapsedMilliseconds() - g_qMinTimeBetweenImages
-
-  CopyList(g_listImages(), g_Lists()\listClient())
+  
+  CopyList(g_listImages(), g_Lists()\listClientImages())
   ShuffleImageList(strClientIP)
 EndProcedure            
 
@@ -372,7 +385,7 @@ Procedure ClearClientList()
   
   ResetMap(g_Lists())
   While NextMapElement(g_Lists())
-    ClearList(g_Lists()\listClient())
+    ClearList(g_Lists()\listClientImages())
   Wend
   ClearMap(g_Lists())
   
@@ -434,8 +447,8 @@ Procedure.s GetNextImage(strClientIP.s)
   Protected strImage.s
   Protected img.i
   
-  If NextElement(g_Lists(strClientIP)\listClient())
-    strImage = g_Lists(strClientIP)\listClient()
+  If NextElement(g_Lists(strClientIP)\listClientImages())
+    strImage = g_Lists(strClientIP)\listClientImages()
     g_iImagesServed + 1
     g_iForeverImagesServed + 1
     
@@ -745,8 +758,8 @@ Until g_fTerminateProgram
 
 ;save user preferences on exit
 SaveSettings()
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 366
-; FirstLine = 339
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 450
+; FirstLine = 445
 ; Folding = ----
 ; EnableXP
