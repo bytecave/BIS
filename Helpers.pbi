@@ -26,9 +26,7 @@ EndProcedure
   Shared s_iWindowX, s_iWindowY
   Protected strPrefs.s
   Protected strImagesPath.s
-  Protected strIP.s, strPath.s
-  Protected iCount.i
-  ;Protected fFoundDefault.i = #False
+  Protected i.i, iIP.i
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   OpenPreferences(strPrefs)
@@ -39,51 +37,40 @@ EndProcedure
   g_iPort = ReadPreferenceInteger("Port", g_iPort)
   g_iForeverImagesServed = ReadPreferenceInteger("ForeverImagesServed", g_iForeverImagesServed)
   g_strServerIP = ReadPreferenceString("ServerIP", g_strServerIP)
-  
+
   s_iWindowX = ReadPreferenceInteger("WindowX", #PB_Ignore)
   s_iWindowY = ReadPreferenceInteger("WIndowY", #PB_Ignore)
   
-  Repeat
-    strIP = ReadPreferenceString("ClientIP" + Str(iCount), "END")
-    
-    If strIP = "END"
-      Break
-    Else
-      strPath = ReadPreferenceString("ImagePath" + Str(iCount), "")
-      
-      If FileSize(strPath) = -2  ;if it's a valid directory
-        If strIP = #DEFAULTCLIENTIP
-          g_UIState\HaveDefaultFolderInList = #True
-          ;fFoundDefault = #True
-          ;SetGadgetText(txtImagesPath, strPath)
-        EndIf
-        
-        AddGadgetItem(lstClientFolders, -1, strIP + #LF$ + strPath)
-      EndIf
-    EndIf
-    
-    iCount + 1
-  ForEver
-  
-  If Not g_UIState\HaveDefaultFolderInList
-    SetGadgetState(ipClientAddress, MakeIPAddress(255, 255, 255, 255))  ;#DEFAULTCLIENTIP
-    DisableGadget(ipClientAddress, 1)
-  Else
-    HideGadget(lblDefaultFolder, 1)
+  g_strDefaultFolder = ReadPreferenceString("DefaultFolder", "")  
+  If Not FileSize(g_strDefaultFolder) = -2   ;if it's a valid directory
+    g_strDefaultFolder = ""
   EndIf
+  
+  For i = 0 To 13
+    iIP = ReadPreferenceInteger("ClientIP" + Str(i), 0)
+    
+    If iIP
+      SetGadgetText(txtIP(i), IPString(iIP))
+      SetGadgetAttribute(btnIP(i), #PB_Button_Image, g_imgPlaceholder)
+      DisableGadget(btnIP(i), 0)
+      
+      strImagesPath = ReadPreferenceString("ImagePath" + Str(i), "")
+      If Not FileSize(strImagesPath) = -2  ;if it's a valid directory
+        strImagesPath = g_strDefaultFolder
+      EndIf
+      
+      CreateClientList(iIP, IPString(iIP), strImagesPath)
+    Else
+      Break
+    EndIf
+  Next
   
   ClosePreferences()
 EndProcedure
 
-;Set initial path to path from settings file, if it's a valid path
-;If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
-;  GetImagesPath(0)
-;EndIf
-
-
 Procedure SaveSettings()
-  Protected strPrefs.s, strIP.s, strPath.s
-  Protected iCount.i
+  Protected strPrefs.s
+  Protected i.i
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   
@@ -94,20 +81,18 @@ Procedure SaveSettings()
     WritePreferenceInteger("Port", g_iPort)
     WritePreferenceInteger("ForeverImagesServed", g_iForeverImagesServed)
     WritePreferenceString("ServerIP", g_strServerIP)
+    WritePreferenceString("DefaultFolder", g_strDefaultFolder)
     
     WritePreferenceInteger("WindowX", WindowX(wndMain, #PB_Window_FrameCoordinate))
     WritePreferenceInteger("WindowY", WindowY(wndMain, #PB_Window_FrameCoordinate))
     
-    iCount = CountGadgetItems(lstClientFolders)
-    While iCount
-      iCount - 1
+    ResetMap(g_mapClients())
+    Repeat
+      WritePreferenceInteger("ClientIP" + Str(i), g_mapClients()\iClientIP)
+      WritePreferenceString("ImagePath" + Str(i), g_mapClients()\strImagesPath)
       
-      strIP = GetGadgetItemText(lstClientFolders, iCount , 0)  ;ip address
-      strPath = GetGadgetItemText(lstClientFolders, iCount, 1) ;image folder
-      
-      WritePreferenceString("ClientIP" + Str(iCount), strIP)
-      WritePreferenceString("ImagePath" + Str(iCount), strPath)
-    Wend
+      i + 1
+    Until Not NextMapElement(g_mapClients())
 
     ClosePreferences()   
     
@@ -115,25 +100,10 @@ Procedure SaveSettings()
   EndIf
 EndProcedure
 
-Procedure ColorClientIPList()
-  Protected i.i, iItems.i
-  Dim rgRowColor.q(1)
-  
-  ProcedureReturn
-  Debug "Color Client IP List"
-  
-  rgRowColor(0) = RGB(230, 250, 255)  ;blueish
-  rgRowColor(1) = RGB(240, 240, 240)  ;grayish
-  
-  iItems = CountGadgetItems(lstClientFolders)
-  
-  For i = 0 To iItems
-    SetGadgetItemColor(lstClientFolders, i, #PB_Gadget_BackColor, rgRowColor(i % 2), #PB_All)
-  Next
+Procedure ShowClientDetails(EventType)
 EndProcedure
-
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 73
-; FirstLine = 37
+; CursorPosition = 60
+; FirstLine = 42
 ; Folding = -
 ; EnableXP

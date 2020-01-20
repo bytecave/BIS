@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 beta 1 LTS (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
     <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-17 21:53" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-01-19 16:09" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,7 +17,7 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="8f5d01a513585156d5d7e641370dafd3"/>
+      <fingerprint md5="e1c31fe8cfe3e4deb14f85a48e4bb294"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -25,15 +25,15 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="0a53348aa5785099b35e37bb910a345f"/>
+      <fingerprint md5="475bd4f42a6ebd5e659bf7fcd6035811"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="1764c86a9f20d1b8f9eb5bc509e422d9"/>
+      <fingerprint md5="bb20c336358a69a0824b4340e8319015"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="856be5e6bccc74ab95cb2592625b2e8b"/>
+      <fingerprint md5="db5f56ee9b44c05db7fb0f9973be0507"/>
     </file>
   </section>
   <section name="targets">

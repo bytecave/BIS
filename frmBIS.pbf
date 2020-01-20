@@ -9,15 +9,46 @@
 
 Global wndMain
 
-Global lblTitle, btnAbout, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, cmbServerIP, ipClientAddress, btnImagesPath, btnAddFolder, btnRemoveFolder, btnControl, imgSearching, lstClientFolders, lstEvents, lblStatus, lblDefaultFolder, lblNoNetwork, imgLast_1, imgLast_2, imgLast_3, txtImagesPath
+Global lblTitle, btnAbout, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, cmbServerIP, ipClientAddress, btnImagesPath, btnAddFolder, btnRemoveFolder, btnControl, imgSearching, lstEvents, lblStatus, lblDefaultFolder, lblNoNetwork, txtImagesPath, btnDefaultFolder, txtDefaultFolder
 
 Global Img_wndMain_0, Img_wndMain_1, Img_wndMain_2
+
+Enumeration FormGadget
+  #btn0
+  #btn1
+  #btn2
+  #btn3
+  #btn4
+  #btn5
+  #btn6
+  #btn7
+  #btn8
+  #btn9
+  #btn10
+  #btn11
+  #btn12
+  #btn13
+  #txt0
+  #txt1
+  #txt2
+  #txt3
+  #txt4
+  #txt5
+  #txt6
+  #txt7
+  #txt8
+  #txt9
+  #txt10
+  #txt11
+  #txt12
+  #txt13
+EndEnumeration
 
 UsePNGImageDecoder()
 
 Img_wndMain_0 = LoadImage(#PB_Any,"resources\logo.png")
 Img_wndMain_1 = LoadImage(#PB_Any,"resources\searching.gif")
-Img_wndMain_2 = LoadImage(#PB_Any,"resources\placeholder.png")
+Img_wndMain_2 = LoadImage(#PB_Any,"D:\CODE\BIS\resources\defaultfolder.png")
 
 Enumeration FormFont
   #Font_wndMain_0
@@ -36,6 +67,7 @@ LoadFont(#Font_wndMain_4,"Consolas", 12, #PB_Font_Bold | #PB_Font_Italic)
 Declare ChangeMinTime(EventType)
 Declare ChangePort(EventType)
 Declare GetImagesPath(EventType)
+Declare ShowClientDetails(EventType)
 Declare DisplayAboutBox(EventType)
 Declare ToggleImageServer(EventType)
 Declare ChangeServerIP(EventType)
@@ -77,11 +109,9 @@ Procedure OpenwndMain(x = 0, y = 0, width = 800, height = 600)
   SetGadgetFont(btnControl, FontID(#Font_wndMain_3))
   DisableGadget(btnControl, 1)
   imgSearching = ImageGadget(#PB_Any, 700, 140, 45, 60, ImageID(Img_wndMain_1))
-  lstClientFolders = ListIconGadget(#PB_Any, 20, 220, 620, 40, "Column 1", 100, #PB_ListIcon_MultiSelect | #PB_ListIcon_GridLines | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
-  GadgetToolTip(lstClientFolders, "Image folder for associated IP address")
-  lstEvents = ListViewGadget(#PB_Any, 20, 300, 620, 270)
+  lstEvents = ListViewGadget(#PB_Any, 130, 470, 650, 100)
   SetGadgetColor(lstEvents, #PB_Gadget_FrontColor,RGB(0,0,0))
-  lblStatus = TextGadget(#PB_Any, 20, 60, 620, 20, "Select default [255.255.255.255] images folder.")
+  lblStatus = TextGadget(#PB_Any, 20, 60, 620, 20, "Select default images folder.")
   SetGadgetFont(lblStatus, FontID(#Font_wndMain_4))
   lblDefaultFolder = TextGadget(#PB_Any, 20, 131, 120, 19, "Set Default", #PB_Text_Center)
   SetGadgetColor(lblDefaultFolder, #PB_Gadget_FrontColor,RGB(0,128,255))
@@ -89,10 +119,51 @@ Procedure OpenwndMain(x = 0, y = 0, width = 800, height = 600)
   lblNoNetwork = TextGadget(#PB_Any, 640, 80, 140, 25, "NO NETWORK", #PB_Text_Center)
   SetGadgetColor(lblNoNetwork, #PB_Gadget_FrontColor,RGB(255,0,0))
   SetGadgetFont(lblNoNetwork, FontID(#Font_wndMain_3))
-  imgLast_1 = ImageGadget(#PB_Any, 670, 220, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
-  imgLast_2 = ImageGadget(#PB_Any, 670, 340, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
-  imgLast_3 = ImageGadget(#PB_Any, 670, 460, 110, 110, ImageID(Img_wndMain_2), #PB_Image_Border)
   txtImagesPath = TextGadget(#PB_Any, 20, 180, 620, 25, "Press button above to select path to images", #PB_Text_Border)
+  ButtonImageGadget(#btn0, 20, 220, 100, 100, 0)
+  DisableGadget(#btn0, 1)
+  ButtonImageGadget(#btn1, 130, 220, 100, 100, 0)
+  DisableGadget(#btn1, 1)
+  ButtonImageGadget(#btn2, 240, 220, 100, 100, 0)
+  DisableGadget(#btn2, 1)
+  ButtonImageGadget(#btn3, 350, 220, 100, 100, 0)
+  DisableGadget(#btn3, 1)
+  ButtonImageGadget(#btn4, 460, 220, 100, 100, 0)
+  DisableGadget(#btn4, 1)
+  ButtonImageGadget(#btn5, 570, 220, 100, 100, 0)
+  DisableGadget(#btn5, 1)
+  ButtonImageGadget(#btn6, 680, 220, 100, 100, 0)
+  DisableGadget(#btn6, 1)
+  ButtonImageGadget(#btn7, 20, 340, 100, 100, 0)
+  DisableGadget(#btn7, 1)
+  ButtonImageGadget(#btn8, 130, 340, 100, 100, 0)
+  DisableGadget(#btn8, 1)
+  ButtonImageGadget(#btn9, 240, 340, 100, 100, 0)
+  DisableGadget(#btn9, 1)
+  ButtonImageGadget(#btn10, 350, 340, 100, 100, 0)
+  DisableGadget(#btn10, 1)
+  ButtonImageGadget(#btn11, 460, 340, 100, 100, 0)
+  DisableGadget(#btn11, 1)
+  ButtonImageGadget(#btn12, 570, 340, 100, 100, 0)
+  DisableGadget(#btn12, 1)
+  ButtonImageGadget(#btn13, 680, 340, 100, 100, 0)
+  DisableGadget(#btn13, 1)
+  TextGadget(#txt0, 25, 320, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt1, 130, 320, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt2, 240, 320, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt3, 350, 320, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt4, 460, 320, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt5, 570, 320, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt6, 680, 320, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt7, 20, 440, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt8, 130, 440, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt9, 240, 440, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt10, 350, 440, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt11, 460, 440, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt12, 570, 440, 100, 20, "", #PB_Text_Center)
+  TextGadget(#txt13, 680, 440, 100, 20, "", #PB_Text_Center)
+  btnDefaultFolder = ButtonImageGadget(#PB_Any, 25, 475, 80, 80, ImageID(Img_wndMain_2))
+  txtDefaultFolder = TextGadget(#PB_Any, 25, 555, 80, 20, "Default Folder", #PB_Text_Center)
 EndProcedure
 
 Procedure wndMain_Events(event)
@@ -118,6 +189,32 @@ Procedure wndMain_Events(event)
           GetImagesPath(EventType())          
         Case btnControl
           ToggleImageServer(EventType())          
+        Case #btn1
+          ShowClientDetails(EventType())          
+        Case #btn2
+          ShowClientDetails(EventType())          
+        Case #btn3
+          ShowClientDetails(EventType())          
+        Case #btn4
+          ShowClientDetails(EventType())          
+        Case #btn5
+          ShowClientDetails(EventType())          
+        Case #btn6
+          ShowClientDetails(EventType())          
+        Case #btn7
+          ShowClientDetails(EventType())          
+        Case #btn8
+          ShowClientDetails(EventType())          
+        Case #btn9
+          ShowClientDetails(EventType())          
+        Case #btn10
+          ShowClientDetails(EventType())          
+        Case #btn11
+          ShowClientDetails(EventType())          
+        Case #btn12
+          ShowClientDetails(EventType())          
+        Case #btn13
+          ShowClientDetails(EventType())          
       EndSelect
   EndSelect
   ProcedureReturn #True

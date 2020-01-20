@@ -14,19 +14,19 @@ EnableExplicit
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "config.bis"
 #BISTITLE = "ByteCave Image Server"
-#DEFAULTCLIENTIP = "255.255.255.255"
+#DEFAULTCLIENTIP = "0.0.0.0"
 
 Structure sUISTATE
-  IPMultiSelect.i
   HaveValidIP.i
   HaveImagePath.i
-  HaveDefaultFolderInList.i
 EndStructure
   
-Structure sLIST
+Structure sCLIENT
   List listClientImages.s()
   qTimeSinceLastRequest.q
-  qClientIP.q
+  iClientIP.i
+  strImagesPath.s
+  iGadget.i
 EndStructure
 
 Structure MUTEX
@@ -47,13 +47,17 @@ Global g_iRunAtLogin.i
 Global g_iMinimizeToTray.i
 Global g_iForeverImagesServed.i
 Global g_strServerIP.s
-Global g_strPathFromPrefs.s
+Global g_strDefaultFolder.s
+Global g_imgPlaceholder.i
 Global g_qMinTimeBetweenImages.q = #DEFAULTMINTIME
 Global g_iPort.i = #DEFAULTSERVERPORT
 
 Global NewList g_listImages.s()
 Global NewList g_listRotate.s()
-Global NewMap g_Lists.sLIST()
+Global NewMap g_mapClients.sCLIENT()
+
+Global Dim btnIP.i(13)
+Global Dim txtIP.i(13)
 
 Define Event
 Define s_imgAppIcon.i
@@ -63,7 +67,7 @@ Declare AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i = #
 Declare ProcessWindowEvent(Event)
 Declare.s GetNextImage(strClientIP.s)
 Declare ShuffleImageList(strClientIP.s)
-Declare CreateClientList(qClientIP.q, strClientIP.s, strImagesPath.s = "")
+Declare CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "")
 Declare ClearClientList()
 
 ;initialize decoders before referencing in About.pbi and main program code
@@ -85,6 +89,8 @@ DataSection
     IncludeBinary "resources\logo.png"
   Searching:
     IncludeBinary "resources\searching.gif"
+  DefaultFolder:
+    IncludeBinary "resources\defaultfolder.png"
   Placeholder:
     IncludeBinary "resources\placeholder.png"
 EndDataSection
@@ -114,26 +120,30 @@ Procedure PlaySearchAnimation(*hGIF)
 EndProcedure
 
 Procedure GetImagesPath(EventType)
-  Protected strImagesPath.s
+  Protected strImagesPath.s, strCurrentPath.s
   
-  If g_strPathFromPrefs = ""
-    strImagesPath = PathRequester("Select images folder", ".\")
-  Else
-    strImagesPath = g_strPathFromPrefs
-    g_strPathFromPrefs = ""
+  strCurrentPath = GetGadgetText(txtImagesPath)
+  strImagesPath = strCurrentPath
+  
+  If strImagesPath = ""
+    strImagesPath = g_strDefaultFolder
   EndIf
   
+  strImagesPath = PathRequester("Select images folder", strImagesPath)
+  
   If strImagesPath <> ""
-    If GetGadgetText(txtImagesPath) <> strImagesPath
+    If strCurrentPath <> strImagesPath
       AddStatusEvent("Changed image path: " + strImagesPath)
+      strCurrentPath = strImagesPath
     EndIf
     
     SetGadgetText(txtImagesPath, strImagesPath)
     SetGadgetColor(txtImagesPath, #PB_Gadget_FrontColor, $000000)
     DisableGadget(btnControl, 0)
-    
   EndIf
- EndProcedure
+  
+  ProcedureReturn strCurrentPath
+EndProcedure
  
 Procedure GetImagesList(strDir.s)
   NewList Directories.s()
@@ -208,26 +218,26 @@ Procedure AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i =
 EndProcedure
 
 Procedure GetServerIPs()
-  Protected qIP.q
+  Protected iIP.i
   Protected iIdx.i = -1
-  Protected iNumIP
+  Protected iNumIP.i
   
   If InitNetwork()
     ExamineIPAddresses()
     
     If ExamineIPAddresses()
       Repeat
-        qIP = NextIPAddress()
+        iIP = NextIPAddress()
         
-        If qIP
-          AddGadgetItem(cmbServerIP, -1, IPString(qIP))
+        If iIP
+          AddGadgetItem(cmbServerIP, -1, IPString(iIP))
           iNumIP + 1
           
-          If IPString(qIP) = g_strServerIP
+          If IPString(iIP) = g_strServerIP
             iIdx = iNumIP - 1
           EndIf
         EndIf
-      Until qIP = 0
+      Until iIP = 0
       
       If iNumIP = 1
         iIdx = 0
@@ -304,28 +314,23 @@ EndProcedure
 Procedure ShuffleImageList(strClientIP.s)
   AddStatusEvent("Shuffling image list for >> " + strClientIP + "<< ...")
   
-  RandomizeList(g_Lists(strClientIP)\listClientImages())
-  ResetList(g_Lists(strClientIP)\listClientImages())
+  RandomizeList(g_mapClients(strClientIP)\listClientImages())
+  ResetList(g_mapClients(strClientIP)\listClientImages())
 EndProcedure
 
 ;MUTEX locked before calling this
-Procedure CreateClientList(qClientIP.q, strClientIP.s, strImagesPath.s = "")
-  Protected iIdx.i, iCount.i
+Procedure CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "")
+  If strImagesPath = ""
+    strImagesPath = g_strDefaultFolder
+  EndIf
   
-  ;Add to list of clients in sorted order by Client IP address
-  iIdx = CountGadgetItems(lstClientFolders)
-  While iIdx And qClientIP < GetGadgetItemData(lstClientFolders, iIdx - 1)
-    iIdx - 1
-  Wend
+  AddMapElement(g_mapClients(), strClientIP)
+  g_mapClients()\iClientIP = iClientIP
+  g_mapClients()\strImagesPath = strImagesPath
+  ;g_mapClients()\iGadget ????
+  g_mapClients()\qTimeSinceLastRequest = ElapsedMilliseconds() - g_qMinTimeBetweenImages
   
-  AddGadgetItem(lstClientFolders, iIdx, strClientIP + #LF$ + strImagesPath)  ;need default path
-  SetGadgetItemData(lstClientFolders, iIdx, qClientIP)
-  
-  AddMapElement(g_Lists(), strClientIP)
-  g_Lists()\qClientIP = qClientIP
-  g_Lists()\qTimeSinceLastRequest = ElapsedMilliseconds() - g_qMinTimeBetweenImages
-  
-  CopyList(g_listImages(), g_Lists()\listClientImages())
+  CopyList(g_listImages(), g_mapClients()\listClientImages())
   ShuffleImageList(strClientIP)
 EndProcedure            
 
@@ -363,10 +368,10 @@ Procedure UpdateStatusBar()
   EndIf
   
   LockMutex(g_MUTEX\Clients)
-  ResetMap(g_Lists())
+  ResetMap(g_mapClients())
   
-  While NextMapElement(g_Lists())
-    If ElapsedMilliseconds() - g_Lists()\qTimeSinceLastRequest < #ACTIVECLIENTTIMEOUT
+  While NextMapElement(g_mapClients())
+    If ElapsedMilliseconds() - g_mapClients()\qTimeSinceLastRequest < #ACTIVECLIENTTIMEOUT
       iActiveConnections + 1
     EndIf
   Wend
@@ -383,11 +388,11 @@ EndProcedure
 Procedure ClearClientList()
   LockMutex(g_MUTEX\Clients)
   
-  ResetMap(g_Lists())
-  While NextMapElement(g_Lists())
-    ClearList(g_Lists()\listClientImages())
+  ResetMap(g_mapClients())
+  While NextMapElement(g_mapClients())
+    ClearList(g_mapClients()\listClientImages())
   Wend
-  ClearMap(g_Lists())
+  ClearMap(g_mapClients())
   
   UnlockMutex(g_MUTEX\Clients)
 EndProcedure
@@ -440,15 +445,13 @@ Procedure RotateImages(Parameter)
   ClearList(g_listRotate())
 EndProcedure
 
-;TODO:Rotate only last 5 images?
-
 ;MUTEX locked before calling this
 Procedure.s GetNextImage(strClientIP.s)
   Protected strImage.s
   Protected img.i
   
-  If NextElement(g_Lists(strClientIP)\listClientImages())
-    strImage = g_Lists(strClientIP)\listClientImages()
+  If NextElement(g_mapClients(strClientIP)\listClientImages())
+    strImage = g_mapClients(strClientIP)\listClientImages()
     g_iImagesServed + 1
     g_iForeverImagesServed + 1
     
@@ -562,7 +565,47 @@ Procedure ToggleImageServer(EventType)
   UpdateStatusBar()
 EndProcedure
 
+Procedure InitializeUI()
+  Protected i.i
+  
+  ;map UI image button and IP text label handles to arrays
+  For i = #btn0 To #btn13
+    btnIP(i) = i
+  Next
+  
+  For i = #txt0 To #txt13
+    txtIP(i) = i
+  Next
+    
+  HideGadget(imgSearching, 1)
+  HideGadget(lblNoNetwork, 1)
+  DisableGadget(btnAddFolder, 1)
+  DisableGadget(btnRemoveFolder, 1)
+  
+  ResizeWindow(wndMain, s_iWindowX, s_iWindowY, #PB_Ignore, #PB_Ignore)
+  HideWindow(wndMain, 0)
+  
+  ;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
+  ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
+  ResizeGadget(lblDefaultFolder, GadgetX(ipClientAddress), GadgetY(ipClientAddress), #PB_Ignore, #PB_Ignore)
+  
+  SetGadgetText(edtMinTime, Str(g_qMinTimeBetweenImages))
+  SetGadgetText(edtPort, Str(g_iPort))
+  ChangePort(#CHANGEPORT)
+EndProcedure
+
 Procedure SetUIState()
+  If g_strDefaultFolder = ""
+    HideGadget(ipClientAddress, 1)
+    HideGadget(lblDefaultFolder, 0)
+    DisableGadget(btnDefaultFolder, 1)
+  Else
+    HideGadget(ipClientAddress, 0)
+    HideGadget(lblDefaultFolder, 1)
+    DisableGadget(btnDefaultFolder, 0)
+  EndIf
+  
+
   If g_UIState\IPMultiSelect
     HideGadget(lblDefaultFolder, 0)
     SetGadgetState(ipClientAddress, MakeIPAddress(0, 0, 0, 0))
@@ -703,31 +746,20 @@ EndIf
 ;Replace the images with those embedded in the executable
 Img_wndMain_0 = CatchImage(#PB_Any, ?LOGO)
 Img_wndMain_1 = CatchImage(#PB_Any, ?Searching)
-Img_wndMain_2 = CatchImage(#PB_Any, ?Placeholder)
+Img_wndMain_2 = CatchImage(#PB_Any, ?DefaultFolder)
 
 s_imgAppIcon = CatchImage(#PB_Any, ?AppIcon)
+s_imgPlaceholder = CatchImage(#PB_Any, ?Placeholder)
 
 OpenwndMain()
 HideWindow(wndMain, 1)
 
-HideGadget(imgSearching, 1)
-HideGadget(lblNoNetwork, 1)
-DisableGadget(btnAddFolder, 1)
-DisableGadget(btnRemoveFolder, 1)
-
-AddGadgetColumn(lstClientFolders, 0, "Client IP", 100)
-AddGadgetColumn(lstClientFolders, 1, "Image Folder", GadgetWidth(lstClientFolders) - 125)
-RemoveGadgetColumn(lstClientFolders, 2)
+;AddGadgetColumn(lstClientFolders, 0, "Client IP", 100)
+;AddGadgetColumn(lstClientFolders, 1, "Image Folder", GadgetWidth(lstClientFolders) - 125)
+;RemoveGadgetColumn(lstClientFolders, 2)
 
 LoadSettings()
-
-ColorClientIPList()
-
-ResizeWindow(wndMain, s_iWindowX, s_iWindowY, #PB_Ignore, #PB_Ignore)
-HideWindow(wndMain, 0)
-
-
-
+InitializeUI()
 GetServerIPs()
 
 ;Set initial path to path from settings file, if it's a valid path
@@ -736,15 +768,6 @@ GetServerIPs()
 ;EndIf
 
 UpdateStatusBar()
-
-;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
-;ResizeGadget(lblDefaultFolder, GadgetX(ipClientAddress), GadgetY(ipClientAddress), #PB_Ignore, #PB_Ignore)
-ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
-
-
-SetGadgetText(edtMinTime, Str(g_qMinTimeBetweenImages))
-SetGadgetText(edtPort, Str(g_iPort))
-ChangePort(#CHANGEPORT)
 
 ;auto-start server if old preferences were read from config file
 ;If g_strServerIP <> "" And GetGadgetText(txtImagesPath) <> ""
@@ -758,8 +781,8 @@ Until g_fTerminateProgram
 
 ;save user preferences on exit
 SaveSettings()
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 450
-; FirstLine = 445
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 138
+; FirstLine = 120
 ; Folding = ----
 ; EnableXP

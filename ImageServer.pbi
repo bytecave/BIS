@@ -74,23 +74,23 @@ Procedure HandleHTTPRequest(hSocket, *pReceivedData)
   Protected *send
   Protected strImageToSend.s
   Protected qElapsedTime.q
-  Protected strClientIP.s, qIPAddress.q
+  Protected strClientIP.s, iIPAddress.i
   
   ;only care about GET requests
   If PeekS(*pReceivedData, 3, #PB_UTF8) = "GET"
     qElapsedTime = ElapsedMilliseconds()
     
-    qIPAddress = GetClientIP(hSocket)
-    strClientIP = IPString(qIPAddress)    ;TODO:Do we need this? Don't think so... + ":" + Str(g_iPort)
+    iIPAddress = GetClientIP(hSocket)
+    strClientIP = IPString(iIPAddress)    ;TODO:Do we need this? Don't think so... + ":" + Str(g_iPort)
     
     LockMutex(g_MUTEX\Clients)
-    If Not FindMapElement(g_Lists(), strClientIP)
-      CreateClientList(qIPAddress, strClientIP)
+    If Not FindMapElement(g_mapClients(), strClientIP)
+      CreateClientList(iIPAddress, strClientIP)
     EndIf
-    ;g_Lists() now points to the Map entry for this IP address
+    ;g_Clients() now points to the Map entry for this IP address
     
-    If qElapsedTime - g_Lists()\qTimeSinceLastRequest >= g_qMinTimeBetweenImages
-      g_Lists()\qTimeSinceLastRequest = qElapsedTime
+    If qElapsedTime - g_mapClients()\qTimeSinceLastRequest >= g_qMinTimeBetweenImages
+      g_mapClients()\qTimeSinceLastRequest = qElapsedTime
       
       strImageToSend = GetNextImage(strClientIP)
       
@@ -133,9 +133,9 @@ Procedure ImageServerThread(Parameter)
     ClearClientList()
   EndIf
 EndProcedure
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 83
-; FirstLine = 79
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 102
+; FirstLine = 83
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\
