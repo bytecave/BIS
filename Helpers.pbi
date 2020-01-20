@@ -50,9 +50,13 @@ EndProcedure
     iIP = ReadPreferenceInteger("ClientIP" + Str(i), 0)
     
     If iIP
-      SetGadgetText(txtIP(i), IPString(iIP))
-      SetGadgetAttribute(btnIP(i), #PB_Button_Image, g_imgPlaceholder)
-      DisableGadget(btnIP(i), 0)
+      With g_rgUIClients(i)
+        \strIPClientMapKey = IPString(iIP)
+        
+        SetGadgetText(\hTxtIP, IPString(iIP))
+        SetGadgetAttribute(\hBtnIP, #PB_Button_Image, g_imgPlaceholder)
+        DisableGadget(\hBtnIP, 0)
+      EndWith
       
       strImagesPath = ReadPreferenceString("ImagePath" + Str(i), "")
       If Not FileSize(strImagesPath) = -2  ;if it's a valid directory
@@ -100,10 +104,9 @@ Procedure SaveSettings()
   EndIf
 EndProcedure
 
-Procedure ShowClientDetails(EventType)
-EndProcedure
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 60
-; FirstLine = 42
+
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 106
+; FirstLine = 55
 ; Folding = -
 ; EnableXP

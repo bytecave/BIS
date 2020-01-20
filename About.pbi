@@ -63,6 +63,8 @@ Procedure DisplayContent(EventType)
 EndProcedure
 
 Procedure CloseAboutBox(EventType)
+  RemoveKeyboardShortcut(wndAbout, #PB_Shortcut_Escape)
+
   DisableWindow(wndMain, #False)
   CloseWindow(wndAbout)
 EndProcedure
@@ -77,7 +79,7 @@ Procedure SetRunAtLogin(EventType)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 75
-; FirstLine = 27
+; CursorPosition = 65
+; FirstLine = 26
 ; Folding = --
 ; EnableXP

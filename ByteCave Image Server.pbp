@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 beta 1 LTS (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
     <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
@@ -8,32 +8,40 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-19 17:38" user="bytecave" host="VILM"/>
+    <lastopen date="2020-01-19 21:32" user="bytecave" host="MENWY"/>
   </section>
   <section name="files">
     <file name="About.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="797db71831efb1db9b773f1b8b59578c"/>
+      <fingerprint md5="fd13698bad23e14770a9403385c8e8c0"/>
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="e1c31fe8cfe3e4deb14f85a48e4bb294"/>
+      <fingerprint md5="06eaf4b78c51d392ba813d9f86178a97"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="7da17641e88c48d01cc49717629df272"/>
+      <fingerprint md5="b2e2783224195f9059fa51f37cb47c7e"/>
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="475bd4f42a6ebd5e659bf7fcd6035811"/>
+      <fingerprint md5="e6c0bf63c1fdcebf1c1f883aae529ba5"/>
+    </file>
+    <file name="frmClientConfig.pbf">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="39cf65e7158565c70951892480887b78"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="bb20c336358a69a0824b4340e8319015"/>
+      <fingerprint md5="e8bc8782de118455d079d9d975106415"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="db5f56ee9b44c05db7fb0f9973be0507"/>
+      <fingerprint md5="635585e71286bb18b40dca50497207aa"/>
+    </file>
+    <file name="ClientConfig.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="1a70b1bfffb519ab6b3d60c58fdf1674"/>
     </file>
   </section>
   <section name="targets">

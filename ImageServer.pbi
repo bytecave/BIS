@@ -125,7 +125,7 @@ Procedure ImageServerThread(Parameter)
           ReceiveNetworkData(hSocket, *pReceivedData, #RECEIVEBUFFER)
           HandleHTTPRequest(hSocket, *pReceivedData)
       EndIf
-    Until g_fStopNetwork
+    Until Not g_fNetworkEnabled
     
     FreeMemory(*pReceivedData)
       
@@ -133,8 +133,8 @@ Procedure ImageServerThread(Parameter)
     ClearClientList()
   EndIf
 EndProcedure
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 102
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 127
 ; FirstLine = 83
 ; Folding = -
 ; EnableXP
