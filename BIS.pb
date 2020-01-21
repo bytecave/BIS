@@ -304,11 +304,11 @@ Procedure UpdateStatusBar()
     
     AddStatusBarField(20)  ;blank space
     AddStatusBarField(24)  ;connections icon
-    AddStatusBarField(167) ;connections text
+    AddStatusBarField(135) ;connections text
     AddStatusBarField(24)  ;session images icon
-    AddStatusBarField(185) ;session images text
+    AddStatusBarField(200) ;session images text
     AddStatusBarField(24)  ;all-time images icon
-    AddStatusBarField(185) ;session images text
+    AddStatusBarField(200) ;session images text
     AddStatusBarField(24)  ;queued images icon
     AddStatusBarField(135) ;images queued for serving
     
@@ -617,7 +617,7 @@ Until g_fTerminateProgram
 
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 58
-; FirstLine = 34
+; CursorPosition = 314
+; FirstLine = 301
 ; Folding = ---
 ; EnableXP

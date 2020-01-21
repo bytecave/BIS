@@ -21,7 +21,7 @@ Procedure GetImageData(strPath.s)
     iFileLen = Lof(hFile)
     
     If iFileLen > 0
-      *pImageData = AllocateMemory(iFileLen)
+      *pImageData = AllocateMemory(iFileLen, #PB_Memory_NoClear)
       ReadData(hFile, *pImageData, iFileLen)
     EndIf
     
@@ -54,7 +54,7 @@ Procedure SendImage(hSocket.i, strImageToSend.s, strClientIP.s)
              "Content-Type: " + strContentType + #CRLF$ + #CRLF$
   
   iPacketSize = StringByteLength(strHeader, #PB_UTF8) + iImageLength
-  *pSendBuffer = AllocateMemory(iPacketSize)
+  *pSendBuffer = AllocateMemory(iPacketSize, #PB_Memory_NoClear)
   *pData = *pSendBuffer + PokeS(*pSendBuffer, strHeader, -1, #PB_UTF8)
   
   CopyMemory(*pImageData, *pData, iImageLength)
@@ -79,7 +79,7 @@ Procedure HandleHTTPRequest(hSocket, *pReceivedData)
   ;only care about GET requests
   If PeekS(*pReceivedData, 3, #PB_UTF8) = "GET"
     qElapsedTime = ElapsedMilliseconds()
-    strClientIP = IPString(GetClientIP(hSocket)) + ":" + Str(g_iPort)
+    strClientIP = IPString(GetClientIP(hSocket))
     
     LockMutex(g_MUTEX\Clients)
     If Not FindMapElement(g_Lists(), strClientIP)
@@ -132,7 +132,8 @@ Procedure ImageServerThread(Parameter)
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 4
+; CursorPosition = 56
+; FirstLine = 53
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\
