@@ -70,7 +70,7 @@ Procedure SendImage(hSocket.i, strImageToSend.s, strClientIP.s)
   FreeMemory(*pSendBuffer)
 EndProcedure
   
-Procedure HandleHTTPRequest(hSocket, *pReceivedData)
+Procedure HandleHTTPRequest(hSocket, *pReceivedData) 
   Protected *send
   Protected strImageToSend.s
   Protected qElapsedTime.q
@@ -132,7 +132,7 @@ Procedure ImageServerThread(Parameter)
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 56
+; CursorPosition = 72
 ; FirstLine = 53
 ; Folding = -
 ; EnableXP

@@ -294,7 +294,7 @@ Procedure CreateClientList(strClientIP.s)
   ShuffleImageList(strClientIP)
 EndProcedure            
 
-Procedure UpdateStatusBar()
+Procedure UpdateStatusBar() 
   Static idStatusBar.i = 0
   Protected iActiveConnections.i
   Protected idQueueIcon.i
@@ -617,7 +617,7 @@ Until g_fTerminateProgram
 
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 314
-; FirstLine = 301
+; CursorPosition = 296
+; FirstLine = 286
 ; Folding = ---
 ; EnableXP
