@@ -603,6 +603,7 @@ Procedure InitializeUI()
   ;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
   ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
   
+  SetGadgetText(edtMainImagesPath, "Press Default Folder button to set default images folder.")
   SetGadgetText(edtMinTime, Str(g_qMinTimeBetweenImages))
   SetGadgetText(edtPort, Str(g_iPort))
   ChangePort(#CHANGEPORT)
@@ -776,7 +777,7 @@ Until g_fTerminateProgram
 ;save user preferences on exit
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 68
-; FirstLine = 51
+; CursorPosition = 605
+; FirstLine = 579
 ; Folding = ---
 ; EnableXP

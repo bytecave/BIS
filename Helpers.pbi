@@ -91,12 +91,13 @@ Procedure SaveSettings()
     WritePreferenceInteger("WindowY", WindowY(wndMain, #PB_Window_FrameCoordinate))
     
     ResetMap(g_mapClients())
-    Repeat
+    
+    While NextMapElement(g_mapClients())
       WritePreferenceInteger("ClientIP" + Str(i), g_mapClients()\iClientIP)
       WritePreferenceString("ImagePath" + Str(i), g_mapClients()\strImagesPath)
       
       i + 1
-    Until Not NextMapElement(g_mapClients())
+    Wend
 
     ClosePreferences()   
     
@@ -106,7 +107,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 106
+; CursorPosition = 100
 ; FirstLine = 55
 ; Folding = -
 ; EnableXP
