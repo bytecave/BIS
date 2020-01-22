@@ -72,9 +72,10 @@ EndProcedure
   
 Procedure HandleHTTPRequest(hSocket, *pReceivedData)
   Protected *send
-  Protected strImageToSend.s
+  Protected strImageToSend.s, strClientIP.s
   Protected qElapsedTime.q
-  Protected strClientIP.s, iIPAddress.i
+  Protected fRC.i = #True
+  Protected iIPAddress.i
   
   ;only care about GET requests
   If PeekS(*pReceivedData, 3, #PB_UTF8) = "GET"
@@ -85,19 +86,26 @@ Procedure HandleHTTPRequest(hSocket, *pReceivedData)
     
     LockMutex(g_MUTEX\Clients)
     If Not FindMapElement(g_mapClients(), strClientIP)
-      CreateClientList(iIPAddress, strClientIP)
+      fRC = CreateClientList(iIPAddress, strClientIP)  ;true if UI gadget slot exists
     EndIf
-    ;g_Clients() now points to the Map entry for this IP address
     
-    If qElapsedTime - g_mapClients()\qTimeSinceLastRequest >= g_qMinTimeBetweenImages
-      g_mapClients()\qTimeSinceLastRequest = qElapsedTime
+    ;If there's no UI gadget slot available for a new connection, we ignore the request
+    If fRC
+      ;g_Clients() now points to the Map entry for this IP address
       
-      strImageToSend = GetNextImage(strClientIP)
-      
-      UnlockMutex(g_MUTEX\Clients)
-      
-      SendImage(hSocket, strImageToSend, strClientIP)
+      If qElapsedTime - g_mapClients()\qTimeSinceLastRequest >= g_qMinTimeBetweenImages
+        g_mapClients()\qTimeSinceLastRequest = qElapsedTime
+        
+        strImageToSend = GetNextImage(strClientIP)
+        
+        UnlockMutex(g_MUTEX\Clients)
+        
+        SendImage(hSocket, strImageToSend, strClientIP)
+      Else
+        UnlockMutex(g_MUTEX\Clients)
+      EndIf
     Else
+      ;Behavior is undefined if we attempt to unlock an already-unlocked mutex. Hence the multiple UnlockMutex() calls.
       UnlockMutex(g_MUTEX\Clients)
     EndIf
   EndIf
@@ -134,8 +142,8 @@ Procedure ImageServerThread(Parameter)
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 127
-; FirstLine = 83
+; CursorPosition = 110
+; FirstLine = 79
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\

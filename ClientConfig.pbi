@@ -9,7 +9,7 @@ EndDataSection
 
 XIncludeFile "frmClientConfig.pbf"
 
-Define s_fSettingDefault.i, s_fExistingClientOnEntry.i
+Define s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
 
 Procedure GetImagesPath(EventType)
   Protected strImagesPath.s
@@ -28,8 +28,8 @@ Procedure GetImagesPath(EventType)
   EndIf
 EndProcedure
 
-Procedure ClientConfigDialog(iGadget.i, fGetDefaultFolder.i)
-  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i
+Procedure ClientConfigDialog(fGetDefaultFolder.i)
+  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
   
   ;Shared variable value is saved between calls so need to reset each time dialog is displayed
   s_fSettingDefault = #False
@@ -54,8 +54,8 @@ Procedure ClientConfigDialog(iGadget.i, fGetDefaultFolder.i)
   Else
     HideGadget(lblDefaultFolder, 1)
     
-    SetGadgetText(edtConfigImagesPath, g_mapClients(g_rgUIClients(iGadget)\strIPClientMapKey)\strImagesPath)
-    SetGadgetState(ipClientAddress, g_mapClients(g_rgUIClients(iGadget)\strIPClientMapKey)\iClientIP)
+    SetGadgetText(edtConfigImagesPath, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\strImagesPath)
+    SetGadgetState(ipClientAddress, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\iClientIP)
   EndIf
   
   ;new client being added or default folder not yet set
@@ -70,24 +70,24 @@ EndProcedure
 
 ;can't click UI client button while server is running and no client ip/images path are set
 Procedure ClientConfig(EventType)
-  Protected iGadget.i
+  Shared s_iGadget.i
   
   If Not EventGadget() = btnDefaultFolder
-    iGadget = EventGadget() - #btn0
-    g_UIState\iSelectedGadget = iGadget
+    s_iGadget = EventGadget() - #btn0
+    g_UIState\iSelectedGadget = s_iGadget
     
     If g_fNetworkEnabled
       LockMutex(g_MUTEX\Clients)
-      SetGadgetText(edtMainImagesPath, g_mapClients(g_rgUIClients(iGadget)\strIPClientMapKey)\strImagesPath)
+      SetGadgetText(edtMainImagesPath, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\strImagesPath)
       UnlockMutex(g_MUTEX\Clients)
     Else
-      ClientConfigDialog(iGadget, #False)
+      ClientConfigDialog(#False)
     EndIf
   Else
     If g_fNetworkEnabled
       SetGadgetText(edtMainImagesPath, g_strDefaultFolder)
     Else
-      ClientConfigDialog(0, #True)
+      ClientConfigDialog(#True)
     EndIf
   EndIf
 EndProcedure
@@ -109,23 +109,27 @@ EndProcedure
 
     ;TODO:Do we need to LockMutex or is rotate thread guaranteed stopped here
 Procedure SetClientConfig(EventType)
-  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i
+  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
   Protected fExisting.i
-  Protected strIP.s
+  Protected strIP.s, strImagesPath.s
   
   If s_fSettingDefault
     g_strDefaultFolder = GetGadgetText(edtConfigImagesPath)
     SetGadgetText(edtMainImagesPath, g_strDefaultFolder)
   Else
     strIP = GetGadgetText(ipClientAddress)
+    strImagesPath = GetGadgetText(edtConfigImagesPath)
+    
     fExisting = FindMapElement(g_mapClients(), strIP)
     
+    
     If s_fExistingClientOnEntry
-      g_mapClients()\strImagesPath = GetGadgetText(edtConfigImagesPath)
+      g_mapClients()\strImagesPath = strImagesPath
     Else
       If fExisting
         MessageRequester("Duplicate Client IP", "Client entry already exists for IP address " + strIP + ". Please change IP address and try again.", #PB_MessageRequester_Ok | #PB_MessageRequester_Warning)
       Else
+        CreateClientList(GetGadgetState(ipClientAddress), strIP, strImagesPath, s_iGadget)
         ;got a brand new IP address, should set it in "GADGET" position
         ;do this with call to CreateClientList, passing in images path and IP address
         ;this will require iGadget from the ClientConfig() call to be a shared variable so it's available here
@@ -172,7 +176,7 @@ Procedure HandleClientConfigEvents(Event)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 139
-; FirstLine = 91
+; CursorPosition = 89
+; FirstLine = 85
 ; Folding = --
 ; EnableXP

@@ -23,7 +23,7 @@
 EndProcedure
 
  Procedure LoadSettings()
-  Shared s_iWindowX, s_iWindowY
+  Shared s_iWindowX, s_iWindowY, s_imgPlaceholder
   Protected strPrefs.s
   Protected strImagesPath.s
   Protected i.i, iIP.i
@@ -54,7 +54,7 @@ EndProcedure
         \strIPClientMapKey = IPString(iIP)
         
         SetGadgetText(\hTxtIP, IPString(iIP))
-        SetGadgetAttribute(\hBtnIP, #PB_Button_Image, g_imgPlaceholder)
+        SetGadgetAttribute(\hBtnIP, #PB_Button_Image, s_imgPlaceholder)
         DisableGadget(\hBtnIP, 0)
       EndWith
       
@@ -107,7 +107,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 100
-; FirstLine = 55
+; CursorPosition = 25
+; FirstLine = 22
 ; Folding = -
 ; EnableXP

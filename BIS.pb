@@ -16,6 +16,7 @@ EnableExplicit
 #PREFSFILENAME = "config.bis"
 #BISTITLE = "ByteCave Image Server"
 #DEFAULTCLIENTIP = "0.0.0.0"
+#AUTOSEARCH = 9999
 
 Structure sUISTATE
   iSelectedGadget.i
@@ -56,7 +57,6 @@ Global g_iMinimizeToTray.i
 Global g_iForeverImagesServed.i
 Global g_strServerIP.s
 Global g_strDefaultFolder.s
-Global g_imgPlaceholder.i
 Global g_qMinTimeBetweenImages.q = #DEFAULTMINTIME
 Global g_iPort.i = #DEFAULTSERVERPORT
 
@@ -73,7 +73,7 @@ Declare AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i = #
 Declare ProcessWindowEvent(Event)
 Declare.s GetNextImage(strClientIP.s)
 Declare ShuffleImageList(strClientIP.s)
-Declare CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "")
+Declare.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
 Declare ClearClientList()
 
 ;initialize decoders before referencing in About.pbi and main program code
@@ -287,19 +287,6 @@ Procedure ChangePort(EventType)
       SetGadgetText(edtPort, Str(g_iPort))
       SetActiveGadget(edtPort)
     EndIf
-;   ElseIf EventType = #PB_EventType_Focus
-;     Protected iSelected.i, i.i, iCount.i, iRow.i
-;     Protected strIP.s
-;   
-;     iCount = CountGadgetItems(lstClientFolders)
-;     
-;     For i = 0 To iCount - 1
-;       If GetGadgetItemState(lstClientFolders, i) = #PB_ListIcon_Selected
-;         Debug "Selected " + Str(i)
-;         iSelected + 1
-;         iRow = i
-;       EndIf
-;     Next
   EndIf
 EndProcedure
 
@@ -334,19 +321,48 @@ Procedure ShuffleImageList(strClientIP.s)
 EndProcedure
 
 ;MUTEX locked before calling this
-Procedure CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "")
-  If strImagesPath = ""
+Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
+  Protected iIdx.i
+  Protected fAvailableSlot.i = #False
+  Shared s_imgPlaceholder.i
+   
+   If strImagesPath = ""
     strImagesPath = g_strDefaultFolder
   EndIf
   
-  AddMapElement(g_mapClients(), strClientIP)
-  g_mapClients()\iClientIP = iClientIP
-  g_mapClients()\strImagesPath = strImagesPath
-  ;g_mapClients()\iGadget ????
-  g_mapClients()\qTimeSinceLastRequest = ElapsedMilliseconds() - g_qMinTimeBetweenImages
+  iIdx = iGadgetPos
   
-  CopyList(g_listImages(), g_mapClients()\listClientImages())
-  ShuffleImageList(strClientIP)
+  If iGadgetPos = #AUTOSEARCH
+    For iIdx = 0 To 13
+      If g_rgUIClients(iIdx)\strIPClientMapKey = ""
+        Break
+      EndIf
+    Next
+  EndIf
+  
+  If iIdx < 14
+    AddMapElement(g_mapClients(), strClientIP)
+    g_mapClients()\iClientIP = iClientIP
+    g_mapClients()\strImagesPath = strImagesPath
+    g_mapClients()\iGadget = iGadgetPos
+    g_mapClients()\qTimeSinceLastRequest = ElapsedMilliseconds() - g_qMinTimeBetweenImages
+    
+    If iGadgetPos = #AUTOSEARCH
+      CopyList(g_listImages(), g_mapClients()\listClientImages())
+      ShuffleImageList(strClientIP)
+    EndIf
+    
+    ;set button image list information
+    With g_rgUIClients(iIdx)
+      \strIPClientMapKey = strClientIP
+      SetGadgetText(\hTxtIP, strClientIP)
+      SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(s_imgPlaceholder))
+    EndWith
+      
+    fAvailableSlot = #True
+  EndIf
+  
+  ProcedureReturn fAvailableSlot
 EndProcedure            
 
 Procedure UpdateStatusBar()
@@ -777,7 +793,7 @@ Until g_fTerminateProgram
 ;save user preferences on exit
 SaveSettings()
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 605
-; FirstLine = 579
-; Folding = ---
+; CursorPosition = 349
+; FirstLine = 309
+; Folding = f--
 ; EnableXP
