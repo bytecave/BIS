@@ -110,18 +110,21 @@ EndProcedure
     ;TODO:Do we need to LockMutex or is rotate thread guaranteed stopped here
 Procedure SetClientConfig(EventType)
   Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
-  Protected fExisting.i
+  Protected fExisting.i, i.i
   Protected strIP.s, strImagesPath.s
   
   If s_fSettingDefault
     g_strDefaultFolder = GetGadgetText(edtConfigImagesPath)
     SetGadgetText(edtMainImagesPath, g_strDefaultFolder)
+    
+    For i = 0 To 13
+      DisableGadget(g_rgUIClients(i)\hBtnIP, 0)
+    Next
   Else
     strIP = GetGadgetText(ipClientAddress)
     strImagesPath = GetGadgetText(edtConfigImagesPath)
     
     fExisting = FindMapElement(g_mapClients(), strIP)
-    
     
     If s_fExistingClientOnEntry
       g_mapClients()\strImagesPath = strImagesPath
@@ -175,8 +178,8 @@ Procedure HandleClientConfigEvents(Event)
   EndIf
 EndProcedure
 
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 89
-; FirstLine = 85
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 112
+; FirstLine = 97
 ; Folding = --
 ; EnableXP

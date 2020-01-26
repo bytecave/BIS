@@ -48,6 +48,7 @@ Global g_UIState.sUISTATE
 Global g_fNetworkEnabled.i
 Global g_fTerminateProgram.i
 Global g_iNetworkStatus.i
+Global g_fNetworkInitialized.i
 Global g_iImagesServed.i
 Global g_iImagesQueued.i
 Global g_fSearchingImages.i
@@ -238,40 +239,46 @@ Procedure GetServerIPs()
   Protected iIdx.i = -1
   Protected iNumIP.i
   
-  If InitNetwork()
-    ExamineIPAddresses()
-    
-    If ExamineIPAddresses()
-      Repeat
-        iIP = NextIPAddress()
+  If ExamineIPAddresses()
+    Repeat
+      iIP = NextIPAddress()
+      
+      If iIP
+        AddGadgetItem(cmbServerIP, -1, IPString(iIP))
+        iNumIP + 1
         
-        If iIP
-          AddGadgetItem(cmbServerIP, -1, IPString(iIP))
-          iNumIP + 1
-          
-          If IPString(iIP) = g_strServerIP
-            iIdx = iNumIP - 1
-          EndIf
+        If IPString(iIP) = g_strServerIP
+          iIdx = iNumIP - 1
         EndIf
-      Until iIP = 0
-      
-      If iNumIP = 1
-        iIdx = 0
       EndIf
-      
-      SetGadgetState(cmbServerIP, iIdx)
-      g_strServerIP = GetGadgetText(cmbServerIP)
+    Until iIP = 0
+    
+    If iNumIP = 1
+      iIdx = 0
     EndIf
-  Else
+    
+    SetGadgetState(cmbServerIP, iIdx)
+    g_strServerIP = GetGadgetText(cmbServerIP)
+  EndIf
+EndProcedure
+
+Procedure.i InitializeNetwork()
+  Protected fRC.i = #True
+  
+  If Not InitNetwork()
     AddGadgetItem(cmbServerIP, -1, #NONETWORK)
     AddStatusEvent("Could not initialize network. Restart app to try again.", #True, #Red)
     
     HideGadget(cmbServerIP, 1)
     HideGadget(lblNoNetwork, 0)
-    ;DisableGadget(txtImagesPath, 1)
     DisableGadget(edtPort, 1)
     DisableGadget(edtMinTime, 1)
+    DisableGadget(btnDefaultFolder, 1)
+    
+    fRC = #False
   EndIf
+  
+  ProcedureReturn fRC
 EndProcedure
 
 Procedure ChangePort(EventType)
@@ -600,18 +607,9 @@ Procedure InitializeUI()
   Protected i.i
   Shared s_iWindowX, s_iWindowY
   
-  ;map UI image button and IP text label handles to arrays
-  For i = #btn0 To #btn13
-    g_rgUIClients(i - #btn0)\hBtnIP = i
-  Next
-  
-  For i = #txt0 To #txt13
-    g_rgUIClients(i - #txt0)\hTxtIP = i
-  Next
-    
   HideGadget(imgSearching, 1)
   HideGadget(lblNoNetwork, 1)
-  HideGadget(ipClientAddress, 1)
+  ;HideGadget(ipClientAddress, 1)
   
   ResizeWindow(wndMain, s_iWindowX, s_iWindowY, #PB_Ignore, #PB_Ignore)
   HideWindow(wndMain, 0)
@@ -619,13 +617,20 @@ Procedure InitializeUI()
   ;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
   ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
   
-  SetGadgetText(edtMainImagesPath, "Press Default Folder button to set default images folder.")
+  If g_strDefaultFolder = "" And g_fNetworkInitialized
+    SetGadgetText(edtMainImagesPath, "Press Default Folder button at bottom left to set default images folder.")
+  Else
+    SetGadgetText(edtMainImagesPath, g_strDefaultFolder)
+  EndIf
+  
   SetGadgetText(edtMinTime, Str(g_qMinTimeBetweenImages))
   SetGadgetText(edtPort, Str(g_iPort))
   ChangePort(#CHANGEPORT)
 EndProcedure
 
 Procedure SetUIState()
+  Protected i.i
+  
   If g_strDefaultFolder = ""
     HideGadget(ipClientAddress, 1)
     HideGadget(lblDefaultFolder, 0)
@@ -765,19 +770,14 @@ s_imgPlaceholder = CatchImage(#PB_Any, ?Placeholder)
 OpenwndMain()
 HideWindow(wndMain, 1)
 
-;AddGadgetColumn(lstClientFolders, 0, "Client IP", 100)
-;AddGadgetColumn(lstClientFolders, 1, "Image Folder", GadgetWidth(lstClientFolders) - 125)
-;RemoveGadgetColumn(lstClientFolders, 2)
-
-LoadSettings()
+If InitializeNetwork()
+  g_fNetworkInitialized = #True
+  
+  LoadSettings()
+  GetServerIPs()
+EndIf
+  
 InitializeUI()
-GetServerIPs()
-
-;Set initial path to path from settings file, if it's a valid path
-;If FileSize(g_strPathFromPrefs) = -2   ;if it's a valid directory
-;  GetImagesPath(0)
-;EndIf
-
 UpdateStatusBar()
 
 ;auto-start server if old preferences were read from config file
@@ -790,10 +790,12 @@ Repeat
   ProcessWindowEvent(Event)
 Until g_fTerminateProgram
 
-;save user preferences on exit
-SaveSettings()
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 349
-; FirstLine = 309
-; Folding = f--
+If g_fNetworkInitialized
+  ;save user preferences on exit
+  SaveSettings()
+EndIf
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 267
+; FirstLine = 261
+; Folding = -+--
 ; EnableXP

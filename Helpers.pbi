@@ -46,18 +46,19 @@ EndProcedure
     g_strDefaultFolder = ""
   EndIf
   
+  ;map UI image button and IP text label handles to arrays
+  For i = #btn0 To #btn13
+    g_rgUIClients(i - #btn0)\hBtnIP = i
+  Next
+  
+  For i = #txt0 To #txt13
+    g_rgUIClients(i - #txt0)\hTxtIP = i
+  Next
+
   For i = 0 To 13
     iIP = ReadPreferenceInteger("ClientIP" + Str(i), 0)
     
     If iIP
-      With g_rgUIClients(i)
-        \strIPClientMapKey = IPString(iIP)
-        
-        SetGadgetText(\hTxtIP, IPString(iIP))
-        SetGadgetAttribute(\hBtnIP, #PB_Button_Image, s_imgPlaceholder)
-        DisableGadget(\hBtnIP, 0)
-      EndWith
-      
       strImagesPath = ReadPreferenceString("ImagePath" + Str(i), "")
       If Not FileSize(strImagesPath) = -2  ;if it's a valid directory
         strImagesPath = g_strDefaultFolder
@@ -69,6 +70,12 @@ EndProcedure
     EndIf
   Next
   
+  If g_strDefaultFolder <> ""
+    For i = 0 To 13
+      DisableGadget(g_rgUIClients(i)\hBtnIP, 0)
+    Next
+  EndIf   
+
   ClosePreferences()
 EndProcedure
 
@@ -93,6 +100,7 @@ Procedure SaveSettings()
     ResetMap(g_mapClients())
     
     While NextMapElement(g_mapClients())
+      Debug "KEY: " + MapKey(g_mapClients())
       WritePreferenceInteger("ClientIP" + Str(i), g_mapClients()\iClientIP)
       WritePreferenceString("ImagePath" + Str(i), g_mapClients()\strImagesPath)
       
@@ -106,8 +114,8 @@ Procedure SaveSettings()
 EndProcedure
 
 
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 25
-; FirstLine = 22
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 102
+; FirstLine = 72
 ; Folding = -
 ; EnableXP

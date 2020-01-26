@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 beta 1 LTS (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
     <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-22 13:55" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-01-25 22:59" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,11 +17,11 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="d0c80d8496e05900b05c704ea27397ff"/>
+      <fingerprint md5="467ecb5060c344f25a8fd12008b3511a"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5e36ec39345b9136b3d88a1bdc3d12be"/>
+      <fingerprint md5="d9a4373e73cd897dd9dfc52258b45bc6"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -29,7 +29,7 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="c06875e55641a59911a4220de1f67da1"/>
+      <fingerprint md5="7e3359de4deada870de77191e835bd81"/>
     </file>
     <file name="frmClientConfig.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -37,7 +37,7 @@
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="384cc33907b8090e183ff84012fffb7e"/>
+      <fingerprint md5="0eb136b3c4d86d0d96ba6d4506bd2745"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
