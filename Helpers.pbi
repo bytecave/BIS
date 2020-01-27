@@ -23,7 +23,7 @@
 EndProcedure
 
  Procedure LoadSettings()
-  Shared s_iWindowX, s_iWindowY, s_imgPlaceholder
+  Shared s_iWindowX, s_iWindowY, s_imgPlaceholder, s_imgAvailable
   Protected strPrefs.s
   Protected strImagesPath.s
   Protected i.i, iIP.i
@@ -59,14 +59,14 @@ EndProcedure
     iIP = ReadPreferenceInteger("ClientIP" + Str(i), 0)
     
     If iIP
-      strImagesPath = ReadPreferenceString("ImagePath" + Str(i), "")
+      strImagesPath = ReadPreferenceString("ImagesPath" + Str(i), "")
       If Not FileSize(strImagesPath) = -2  ;if it's a valid directory
         strImagesPath = g_strDefaultFolder
       EndIf
       
-      CreateClientList(iIP, IPString(iIP), strImagesPath)
+      CreateClientList(iIP, IPString(iIP), strImagesPath, i)
     Else
-      Break
+      SetGadgetAttribute(g_rgUIClients(i)\hBtnIP, #PB_Button_Image, ImageID(s_imgAvailable))
     EndIf
   Next
   
@@ -80,8 +80,8 @@ EndProcedure
 EndProcedure
 
 Procedure SaveSettings()
-  Protected strPrefs.s
-  Protected i.i
+  Protected strPrefs.s, strImagesPath.s
+  Protected i.i, iIP.i
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   
@@ -97,16 +97,23 @@ Procedure SaveSettings()
     WritePreferenceInteger("WindowX", WindowX(wndMain, #PB_Window_FrameCoordinate))
     WritePreferenceInteger("WindowY", WindowY(wndMain, #PB_Window_FrameCoordinate))
     
-    ResetMap(g_mapClients())
+    ;ResetMap(g_mapClients())
     
-    While NextMapElement(g_mapClients())
-      Debug "KEY: " + MapKey(g_mapClients())
-      WritePreferenceInteger("ClientIP" + Str(i), g_mapClients()\iClientIP)
-      WritePreferenceString("ImagePath" + Str(i), g_mapClients()\strImagesPath)
+    For i = 0 To 13
+      With g_rgUIClients(i)
+        If \strIPClientMapKey <> ""
+          iIP = g_mapClients(\strIPClientMapKey)\iClientIP
+          strImagesPath = g_mapClients(\strIPClientMapKey)\strImagesPath
+        Else
+          iIP = 0
+          strImagesPath = ""
+        EndIf
+      EndWith
       
-      i + 1
-    Wend
-
+      WritePreferenceInteger("ClientIP" + Str(i), iIP)
+      WritePreferenceString("ImagesPath" + Str(i), strImagesPath)
+    Next
+    
     ClosePreferences()   
     
     RunAtLogin(g_iRunAtLogin)
@@ -115,7 +122,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 102
-; FirstLine = 72
+; CursorPosition = 25
+; FirstLine = 22
 ; Folding = -
 ; EnableXP

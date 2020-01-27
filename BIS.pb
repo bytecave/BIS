@@ -67,7 +67,7 @@ Global NewMap g_mapClients.sCLIENT()
 Global Dim g_rgUIClients.sUICLIENT(13)
 
 Define Event
-Define s_imgAppIcon.i, s_imgPlaceholder
+Define s_imgAppIcon.i, s_imgPlaceholder, s_imgAvailable
 Define s_iWindowX.i, s_iWindowY.i
 
 Declare AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i = #Black)
@@ -100,6 +100,8 @@ DataSection
     IncludeBinary "resources\defaultfolder.png"
   Placeholder:
     IncludeBinary "resources\placeholder.png"
+  Available:
+    IncludeBinary "resources\available.png"
 EndDataSection
 
 XIncludeFile "frmBIS.pbf"
@@ -331,7 +333,7 @@ EndProcedure
 Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
   Protected iIdx.i
   Protected fAvailableSlot.i = #False
-  Shared s_imgPlaceholder.i
+  Shared s_imgPlaceholder.i, s_iLastIP
    
    If strImagesPath = ""
     strImagesPath = g_strDefaultFolder
@@ -345,6 +347,12 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
         Break
       EndIf
     Next
+    
+    ;Last IP set = new client connected
+    s_iLastIP = MakeIPAddress(Val(StringField(strClientIP, 1, ".")),
+                              Val(StringField(strClientIP, 2, ".")),
+                              Val(StringField(strClientIP, 3, ".")),
+                              0)
   EndIf
   
   If iIdx < 14
@@ -372,7 +380,7 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
   ProcedureReturn fAvailableSlot
 EndProcedure            
 
-Procedure UpdateStatusBar()
+Procedure UpdateStatusBar(fUpdateConnections.i = #True)
   Static idStatusBar.i = 0
   Protected iActiveConnections.i
   Protected idQueueIcon.i
@@ -405,16 +413,18 @@ Procedure UpdateStatusBar()
     StatusBarImage(idStatusBar, 7, ImageID(1003), #PB_StatusBar_BorderLess)
   EndIf
   
-  LockMutex(g_MUTEX\Clients)
-  ResetMap(g_mapClients())
-  
-  While NextMapElement(g_mapClients())
-    If ElapsedMilliseconds() - g_mapClients()\qTimeSinceLastRequest < #ACTIVECLIENTTIMEOUT
-      iActiveConnections + 1
-    EndIf
-  Wend
-  
-  UnlockMutex(g_MUTEX\Clients)
+  If fUpdateConnections
+    LockMutex(g_MUTEX\Clients)
+    ResetMap(g_mapClients())
+    
+    While NextMapElement(g_mapClients())
+      If ElapsedMilliseconds() - g_mapClients()\qTimeSinceLastRequest < #ACTIVECLIENTTIMEOUT
+        iActiveConnections + 1
+      EndIf
+    Wend
+    
+    UnlockMutex(g_MUTEX\Clients)
+  EndIf
   
   StatusBarText(idStatusBar, 2, Str(iActiveConnections) + " active connections")
   StatusBarText(idStatusBar, 4, FormatNumber(g_iImagesServed, 0) + " images this session")
@@ -766,6 +776,7 @@ Img_wndMain_2 = CatchImage(#PB_Any, ?DefaultFolder)
 
 s_imgAppIcon = CatchImage(#PB_Any, ?AppIcon)
 s_imgPlaceholder = CatchImage(#PB_Any, ?Placeholder)
+s_imgAvailable = CatchImage(#PB_Any, ?Available)
 
 OpenwndMain()
 HideWindow(wndMain, 1)
@@ -778,7 +789,7 @@ If InitializeNetwork()
 EndIf
   
 InitializeUI()
-UpdateStatusBar()
+UpdateStatusBar(#False)
 
 ;auto-start server if old preferences were read from config file
 ;If g_strServerIP <> "" And GetGadgetText(txtImagesPath) <> ""
@@ -795,7 +806,7 @@ If g_fNetworkInitialized
   SaveSettings()
 EndIf
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 267
-; FirstLine = 261
-; Folding = -+--
+; CursorPosition = 427
+; FirstLine = 387
+; Folding = ----
 ; EnableXP

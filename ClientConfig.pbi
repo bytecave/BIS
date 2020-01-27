@@ -9,7 +9,7 @@ EndDataSection
 
 XIncludeFile "frmClientConfig.pbf"
 
-Define s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
+Define s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i, s_iLastIP.i
 
 Procedure GetImagesPath(EventType)
   Protected strImagesPath.s
@@ -29,7 +29,7 @@ Procedure GetImagesPath(EventType)
 EndProcedure
 
 Procedure ClientConfigDialog(fGetDefaultFolder.i)
-  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
+  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i, s_iLastIP.i
   
   ;Shared variable value is saved between calls so need to reset each time dialog is displayed
   s_fSettingDefault = #False
@@ -54,14 +54,20 @@ Procedure ClientConfigDialog(fGetDefaultFolder.i)
   Else
     HideGadget(lblDefaultFolder, 1)
     
-    SetGadgetText(edtConfigImagesPath, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\strImagesPath)
-    SetGadgetState(ipClientAddress, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\iClientIP)
+    If g_rgUIClients(s_iGadget)\strIPClientMapKey <> ""
+      SetGadgetText(edtConfigImagesPath, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\strImagesPath)
+      SetGadgetState(ipClientAddress, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\iClientIP)
+    Else
+      SetGadgetState(ipClientAddress, s_iLastIP)
+    EndIf
   EndIf
   
   ;new client being added or default folder not yet set
   If GetGadgetText(edtConfigImagesPath) = ""
     DisableGadget(btnSetClient, 1)
     DisableGadget(btnRemoveClient, 1)
+    
+    SetActiveGadget(ipClientAddress)
   ElseIf Not fGetDefaultFolder   ;existing client on entry to dialog
     s_fExistingClientOnEntry = #True
     DisableGadget(ipClientAddress, 1)
@@ -70,9 +76,16 @@ EndProcedure
 
 ;can't click UI client button while server is running and no client ip/images path are set
 Procedure ClientConfig(EventType)
-  Shared s_iGadget.i
+  Shared s_iGadget.i, s_iLastIP.i
   
   If Not EventGadget() = btnDefaultFolder
+    If s_iLastIP = 0
+      s_iLastIP = MakeIPAddress(Val(StringField(g_strServerIP, 1, ".")),
+                                Val(StringField(g_strServerIP, 2, ".")),
+                                Val(StringField(g_strServerIP, 3, ".")),
+                                0)
+    EndIf
+    
     s_iGadget = EventGadget() - #btn0
     g_UIState\iSelectedGadget = s_iGadget
     
@@ -109,8 +122,8 @@ EndProcedure
 
     ;TODO:Do we need to LockMutex or is rotate thread guaranteed stopped here
 Procedure SetClientConfig(EventType)
-  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
-  Protected fExisting.i, i.i
+  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i, s_iLastIP.i
+  Protected i.i
   Protected strIP.s, strImagesPath.s
   
   If s_fSettingDefault
@@ -124,28 +137,19 @@ Procedure SetClientConfig(EventType)
     strIP = GetGadgetText(ipClientAddress)
     strImagesPath = GetGadgetText(edtConfigImagesPath)
     
-    fExisting = FindMapElement(g_mapClients(), strIP)
-    
     If s_fExistingClientOnEntry
       g_mapClients()\strImagesPath = strImagesPath
     Else
-      If fExisting
+      If FindMapElement(g_mapClients(), strIP)
         MessageRequester("Duplicate Client IP", "Client entry already exists for IP address " + strIP + ". Please change IP address and try again.", #PB_MessageRequester_Ok | #PB_MessageRequester_Warning)
       Else
+        ;Last IP set = last client entered in dialog
+        s_iLastIP = MakeIPAddress(Val(StringField(strIP, 1, ".")),
+                                  Val(StringField(strIP, 2, ".")),
+                                  Val(StringField(strIP, 3, ".")),
+                                  0)
+
         CreateClientList(GetGadgetState(ipClientAddress), strIP, strImagesPath, s_iGadget)
-        ;got a brand new IP address, should set it in "GADGET" position
-        ;do this with call to CreateClientList, passing in images path and IP address
-        ;this will require iGadget from the ClientConfig() call to be a shared variable so it's available here
-        ;Networking code will call the same CreateClientList() function when it gets a new connection
-        ;CreateClientList() needs to work the same here as it does there, including adding to the gadget list
-        ;when user clicked a button to get here, we KNOW which gadget they used, so it's easy
-        ;when network client tries to auto-create one, it needs to create entry in g_mapClients but ALSO
-        ;  needs to create an entry in the gadget list. It will do this by searching for a free gadget space.
-        ;  it doesn't need to search the existing client gadget list because if an IP existed it would have
-        ;  been found in the network code and we wouldn't be trying to create a new client (CreateClientList())
-        
-        ;REMEMBER: CTRL-B sets "block coment," and ALT-B removes the block comments.
-        Debug "NEW IP Address"
       EndIf
     EndIf
   EndIf
@@ -154,6 +158,27 @@ Procedure SetClientConfig(EventType)
 EndProcedure
 
 Procedure RemoveClientConfig(EventType)
+  Shared s_iGadget.i, s_imgAvailable
+  
+  With g_rgUIClients(s_iGadget)
+    FindMapElement(g_mapClients(), \strIPClientMapKey)
+    ClearList(g_mapClients()\listClientImages())
+    DeleteMapElement(g_mapClients())
+    
+    \strIPClientMapKey = ""
+    SetGadgetText(\hTxtIP, "")
+    SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(s_imgAvailable))
+  EndWith
+  
+  CloseClientConfig()
+    
+  ;remove IP address from client array rgUIClients 
+  ;change image on fgUIClients button gadget to available
+  ;remove client from client list (disconnectclient?)
+  ;FindMapElement in g_mapClients
+  ;free listClientImages from g_mapClients entry
+  ;DeleteMapElement(listClientImages)
+  ;Close config dialog
 EndProcedure
 
 ;PB Form Designer attempts to load image from disk, which only works at development time
@@ -179,7 +204,7 @@ Procedure HandleClientConfigEvents(Event)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 112
-; FirstLine = 97
+; CursorPosition = 69
+; FirstLine = 41
 ; Folding = --
 ; EnableXP
