@@ -8,12 +8,12 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-21 10:29" user="bytecave" host="MENWY"/>
+    <lastopen date="2020-01-27 20:27" user="bytecave" host="MENWY"/>
   </section>
   <section name="files">
     <file name="About.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="797db71831efb1db9b773f1b8b59578c"/>
+      <fingerprint md5="600b65e5b124b56d1c313d0ae97d179f"/>
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -21,7 +21,7 @@
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="7da17641e88c48d01cc49717629df272"/>
+      <fingerprint md5="c20f66681859ffc6eed9bd7c7ad63c7f"/>
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
