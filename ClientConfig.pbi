@@ -9,7 +9,7 @@ EndDataSection
 
 XIncludeFile "frmClientConfig.pbf"
 
-Define s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i, s_iLastIP.i
+Define s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
 
 Procedure GetImagesPath(EventType)
   Protected strImagesPath.s
@@ -22,6 +22,7 @@ Procedure GetImagesPath(EventType)
   
   strImagesPath = PathRequester("Select images folder", strImagesPath)
   
+  ;if valid images path, enable Set button, even if IP address is still 0.0.0.0
   If strImagesPath <> ""
     SetGadgetText(edtConfigImagesPath, strImagesPath)
     DisableGadget(btnSetClient, 0)
@@ -29,7 +30,7 @@ Procedure GetImagesPath(EventType)
 EndProcedure
 
 Procedure ClientConfigDialog(fGetDefaultFolder.i)
-  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i, s_iLastIP.i
+  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
   
   ;Shared variable value is saved between calls so need to reset each time dialog is displayed
   s_fSettingDefault = #False
@@ -58,7 +59,7 @@ Procedure ClientConfigDialog(fGetDefaultFolder.i)
       SetGadgetText(edtConfigImagesPath, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\strImagesPath)
       SetGadgetState(ipClientAddress, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\iClientIP)
     Else
-      SetGadgetState(ipClientAddress, s_iLastIP)
+      SetGadgetState(ipClientAddress, g_iLastIP)
     EndIf
   EndIf
   
@@ -76,11 +77,11 @@ EndProcedure
 
 ;can't click UI client button while server is running and no client ip/images path are set
 Procedure ClientConfig(EventType)
-  Shared s_iGadget.i, s_iLastIP.i
+  Shared s_iGadget.i
   
   If Not EventGadget() = btnDefaultFolder
-    If s_iLastIP = 0
-      s_iLastIP = MakeIPAddress(Val(StringField(g_strServerIP, 1, ".")),
+    If g_iLastIP = 0
+      g_iLastIP = MakeIPAddress(Val(StringField(g_strServerIP, 1, ".")),
                                 Val(StringField(g_strServerIP, 2, ".")),
                                 Val(StringField(g_strServerIP, 3, ".")),
                                 0)
@@ -122,7 +123,7 @@ EndProcedure
 
     ;TODO:Do we need to LockMutex or is rotate thread guaranteed stopped here
 Procedure SetClientConfig(EventType)
-  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i, s_iLastIP.i
+  Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
   Protected i.i
   Protected strIP.s, strImagesPath.s
   
@@ -144,7 +145,7 @@ Procedure SetClientConfig(EventType)
         MessageRequester("Duplicate Client IP", "Client entry already exists for IP address " + strIP + ". Please change IP address and try again.", #PB_MessageRequester_Ok | #PB_MessageRequester_Warning)
       Else
         ;Last IP set = last client entered in dialog
-        s_iLastIP = MakeIPAddress(Val(StringField(strIP, 1, ".")),
+        g_iLastIP = MakeIPAddress(Val(StringField(strIP, 1, ".")),
                                   Val(StringField(strIP, 2, ".")),
                                   Val(StringField(strIP, 3, ".")),
                                   0)
@@ -171,14 +172,6 @@ Procedure RemoveClientConfig(EventType)
   EndWith
   
   CloseClientConfig()
-    
-  ;remove IP address from client array rgUIClients 
-  ;change image on fgUIClients button gadget to available
-  ;remove client from client list (disconnectclient?)
-  ;FindMapElement in g_mapClients
-  ;free listClientImages from g_mapClients entry
-  ;DeleteMapElement(listClientImages)
-  ;Close config dialog
 EndProcedure
 
 ;PB Form Designer attempts to load image from disk, which only works at development time
@@ -203,8 +196,8 @@ Procedure HandleClientConfigEvents(Event)
   EndIf
 EndProcedure
 
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 69
-; FirstLine = 41
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 174
+; FirstLine = 144
 ; Folding = --
 ; EnableXP

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 beta 1 LTS (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
     <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
@@ -8,32 +8,32 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-26 16:29" user="bytecave" host="VILM"/>
+    <lastopen date="2020-01-29 14:20" user="riche" host="RICHE-LAPTOP"/>
   </section>
   <section name="files">
     <file name="About.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="fd13698bad23e14770a9403385c8e8c0"/>
+      <fingerprint md5="b08681160704f771adc411d6fa0aa34c"/>
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="e801d00c4e52be8309f9c325f5720898"/>
+      <fingerprint md5="e6b7e6f394af4eacb0081bb155f00a85"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="7e28d28526a2750efa93b8ec44ea7210"/>
+      <fingerprint md5="c922c00530d6190f8105c31fa1059d2c"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="b2e2783224195f9059fa51f37cb47c7e"/>
+      <fingerprint md5="3d7e5d0757a5a2026b986100fa1bf4a7"/>
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="7e3359de4deada870de77191e835bd81"/>
+      <fingerprint md5="b998eff083d71cc6e894371cdc6ecfb3"/>
     </file>
     <file name="frmClientConfig.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="39cf65e7158565c70951892480887b78"/>
+      <fingerprint md5="64776f14192f85b49e08b94ea657c5ef"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -41,25 +41,27 @@
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="3b92713971007a28a4d72cd198ebe6d2"/>
+      <fingerprint md5="005ff0fc4846e182ad7af401012635f0"/>
     </file>
   </section>
   <section name="targets">
     <target name="Debug x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x86.Exe"/>
-      <compiler version="PureBasic 5.71 beta 1 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BISDebug_x86.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
+      <compilecount enable="1" value="0"/>
+      <buildcount enable="1" value="0"/>
       <versioninfo enable="1">
-        <field0 value="1,0,0,0"/>
-        <field1 value="1,0,0,0"/>
+        <field0 value="2,0,0,0"/>
+        <field1 value="2,0,0,0"/>
         <field2 value="ByteCave"/>
         <field3 value="ByteCave Image Server"/>
-        <field4 value="1.0"/>
-        <field5 value="1.0"/>
+        <field4 value="2.0"/>
+        <field5 value="2.0"/>
         <field6 value="ByteCave Image Server - Debug"/>
         <field7 value="BIS x86 Debug"/>
         <field9 value="(c) 2019-2020 ByteCave"/>
@@ -68,22 +70,27 @@
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
+      <constants>
+        <constant value="#BIS_VERSION = 2" enable="1"/>
+      </constants>
     </target>
     <target name="Release x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x86.Exe"/>
-      <compiler version="PureBasic 5.71 beta 1 LTS (Windows - x86)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BIS_x86.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
+      <compilecount enable="1" value="0"/>
+      <buildcount enable="1" value="0"/>
       <versioninfo enable="1">
-        <field0 value="1,0,0,0"/>
-        <field1 value="1,0,0,0"/>
+        <field0 value="2,0,0,0"/>
+        <field1 value="2,0,0,0"/>
         <field2 value="ByteCave"/>
         <field3 value="ByteCave Image Server"/>
-        <field4 value="1.0"/>
-        <field5 value="1.0"/>
+        <field4 value="2.0"/>
+        <field5 value="2.0"/>
         <field6 value="ByteCave Image Server"/>
         <field7 value="BIS x86 Release"/>
         <field9 value="(c) 2019-2020 ByteCave"/>
@@ -92,22 +99,27 @@
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
+      <constants>
+        <constant value="#BIS_VERSION = 2" enable="1"/>
+      </constants>
     </target>
     <target name="Release x64" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x64.Exe"/>
-      <compiler version="PureBasic 5.71 beta 1 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BIS_x64.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
+      <compilecount enable="1" value="0"/>
+      <buildcount enable="1" value="0"/>
       <versioninfo enable="1">
-        <field0 value="1,0,0,0"/>
-        <field1 value="1,0,0,0"/>
+        <field0 value="2,0,0,0"/>
+        <field1 value="2,0,0,0"/>
         <field2 value="ByteCave"/>
         <field3 value="ByteCave Image Server"/>
-        <field4 value="1.0"/>
-        <field5 value="1.0"/>
+        <field4 value="2.0"/>
+        <field5 value="2.0"/>
         <field6 value="ByteCave Image Server"/>
         <field7 value="BIS x64 Release"/>
         <field9 value="(c) 2019-2020 ByteCave"/>
@@ -116,22 +128,27 @@
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
+      <constants>
+        <constant value="#BIS_VERSION = 2" enable="1"/>
+      </constants>
     </target>
     <target name="Debug x64" enabled="1" default="1">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x64.Exe"/>
-      <compiler version="PureBasic 5.71 beta 1 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BISDebug_x64.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
+      <compilecount enable="1" value="7"/>
+      <buildcount enable="1" value="0"/>
       <versioninfo enable="1">
-        <field0 value="1,0,0,0"/>
-        <field1 value="1,0,0,0"/>
+        <field0 value="2,0,0,0"/>
+        <field1 value="2,0,0,0"/>
         <field2 value="ByteCave"/>
         <field3 value="ByteCave Image Server"/>
-        <field4 value="1.0"/>
-        <field5 value="1.0"/>
+        <field4 value="2.0"/>
+        <field5 value="2.0"/>
         <field6 value="ByteCave Image Server - Debug"/>
         <field7 value="BIS x64 Debug"/>
         <field9 value="(c) 2019-2020 ByteCave"/>
@@ -140,6 +157,9 @@
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
+      <constants>
+        <constant value="#BIS_VERSION = 2" enable="1"/>
+      </constants>
     </target>
   </section>
 </project>

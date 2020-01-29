@@ -2,7 +2,7 @@
 
 #RECEIVEBUFFER = 4096
 #RETRYCOUNT = 100
-#SERVERIDSTRING = "Server: " + #BISTITLE + " " + #VER_MAJORVERSION
+#SERVERIDSTRING = "Server: " + #BISTITLE + " " + #BIS_VERSION
 
 Enumeration
   #SERVERSTARTING = 5000
@@ -51,7 +51,8 @@ Procedure SendImage(hSocket.i, strImageToSend.s, strClientIP.s)
   strHeader= "HTTP/1.1 200 OK" + #CRLF$ +
              #SERVERIDSTRING + #CRLF$ +
              "Content-Length: " + Str(iImageLength) + #CRLF$ +
-             "Content-Type: " + strContentType + #CRLF$ + #CRLF$
+             "Content-Type: " + strContentType + #CRLF$ + 
+             #CRLF$
   
   iPacketSize = StringByteLength(strHeader, #PB_UTF8) + iImageLength
   *pSendBuffer = AllocateMemory(iPacketSize, #PB_Memory_NoClear)
@@ -138,12 +139,12 @@ Procedure ImageServerThread(Parameter)
     FreeMemory(*pReceivedData)
       
     CloseNetworkServer(iServerID)
-    ClearClientList()
+    ;ClearClientList()
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 110
-; FirstLine = 79
+; CursorPosition = 141
+; FirstLine = 93
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\

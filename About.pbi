@@ -37,6 +37,7 @@ Procedure DisplayAboutBox(EventType)
   
   AddKeyboardShortcut(wndAbout, #PB_Shortcut_Escape, #ABOUTESCPRESSED)
   
+  SetGadgetText(txtAboutLabel, "About ByteCave Image Server v" + Str(#BIS_VERSION) + "." + Str(#PB_Editor_BuildCount) + "-" + Str(#PB_Editor_CompileCount))
   SetGadgetState(chkTray, g_iMinimizeToTray)
   SetGadgetState(chkStartup, g_iRunAtLogin)
   
@@ -79,7 +80,7 @@ Procedure SetRunAtLogin(EventType)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 65
-; FirstLine = 26
+; CursorPosition = 39
+; FirstLine = 20
 ; Folding = --
 ; EnableXP

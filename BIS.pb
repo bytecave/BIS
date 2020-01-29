@@ -52,6 +52,7 @@ Global g_fNetworkInitialized.i
 Global g_iImagesServed.i
 Global g_iImagesQueued.i
 Global g_fSearchingImages.i
+Global g_iLastIP.i
 Global g_fMinimized.i
 Global g_iRunAtLogin.i
 Global g_iMinimizeToTray.i
@@ -75,7 +76,7 @@ Declare ProcessWindowEvent(Event)
 Declare.s GetNextImage(strClientIP.s)
 Declare ShuffleImageList(strClientIP.s)
 Declare.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
-Declare ClearClientList()
+;Declare ClearClientList()
 
 ;initialize decoders before referencing in About.pbi and main program code
 UseGIFImageDecoder()
@@ -333,7 +334,7 @@ EndProcedure
 Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
   Protected iIdx.i
   Protected fAvailableSlot.i = #False
-  Shared s_imgPlaceholder.i, s_iLastIP
+  Shared s_imgPlaceholder.i
    
    If strImagesPath = ""
     strImagesPath = g_strDefaultFolder
@@ -349,7 +350,7 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
     Next
     
     ;Last IP set = new client connected
-    s_iLastIP = MakeIPAddress(Val(StringField(strClientIP, 1, ".")),
+    g_iLastIP = MakeIPAddress(Val(StringField(strClientIP, 1, ".")),
                               Val(StringField(strClientIP, 2, ".")),
                               Val(StringField(strClientIP, 3, ".")),
                               0)
@@ -433,17 +434,17 @@ Procedure UpdateStatusBar(fUpdateConnections.i = #True)
   StatusBarText(idStatusBar, 8, "Serving " + FormatNumber(g_iImagesQueued, 0) + " images", #PB_StatusBar_BorderLess)
 EndProcedure
 
-Procedure ClearClientList()
-  LockMutex(g_MUTEX\Clients)
-  
-  ResetMap(g_mapClients())
-  While NextMapElement(g_mapClients())
-    ClearList(g_mapClients()\listClientImages())
-  Wend
-  ClearMap(g_mapClients())
-  
-  UnlockMutex(g_MUTEX\Clients)
-EndProcedure
+; Procedure ClearClientList()
+;   LockMutex(g_MUTEX\Clients)
+;   
+;   ResetMap(g_mapClients())
+;   While NextMapElement(g_mapClients())
+;     ClearList(g_mapClients()\listClientImages())
+;   Wend
+;   ClearMap(g_mapClients())
+;   
+;   UnlockMutex(g_MUTEX\Clients)
+; EndProcedure
 
 ; Procedure DisplayThumbnails(Parameter)
 ;   Static Dim idImage.i(2)
@@ -503,7 +504,7 @@ Procedure.s GetNextImage(strClientIP.s)
     g_iImagesServed + 1
     g_iForeverImagesServed + 1
     
-    ;we don't rotate images when app is minimied
+    ;we don't rotate images when app is minimized
     If Not g_fMinimized
       LockMutex(g_MUTEX\Rotate)
       
@@ -805,8 +806,8 @@ If g_fNetworkInitialized
   ;save user preferences on exit
   SaveSettings()
 EndIf
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 427
-; FirstLine = 387
-; Folding = ----
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 517
+; FirstLine = 757
+; Folding = ---
 ; EnableXP
