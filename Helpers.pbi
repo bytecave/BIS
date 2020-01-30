@@ -1,4 +1,6 @@
-﻿Procedure RunAtLogin(iRunAtLogin.i)
+﻿;This software provided under MIT license. Copyright 2019-2020, ByteCave
+
+Procedure RunAtLogin(iRunAtLogin.i)
   Protected ihKey.i, iRC.i = #False
   Protected strPath.s, cTerminatorSize.c = '!'
   Protected strRegPath.s = "Software\Microsoft\Windows\CurrentVersion\Run"
@@ -66,6 +68,6 @@ Procedure SaveSettings()
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 40
+; CursorPosition = 2
 ; Folding = -
 ; EnableXP
