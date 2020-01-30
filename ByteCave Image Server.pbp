@@ -8,12 +8,12 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-29 14:51" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-01-29 16:07" user="bytecave" host="MENWY"/>
   </section>
   <section name="files">
     <file name="About.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="a6963c34427561e476cf1c65942318d0"/>
+      <fingerprint md5="5c6770248589edd0dd8755fd880336a6"/>
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -40,13 +40,13 @@
     <target name="Debug x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BISDebug_x86.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="0"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="1"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -69,13 +69,13 @@
     <target name="Release x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BIS_x86.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="0"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="1"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -103,8 +103,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="0"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="1"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -132,8 +132,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="2"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="4"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
