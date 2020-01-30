@@ -41,7 +41,6 @@ Procedure DisplayAboutBox(EventType)
   SetGadgetState(chkTray, g_iMinimizeToTray)
   SetGadgetState(chkStartup, g_iRunAtLogin)
   
-  SetGadgetText(txtAboutLabel, "About ByteCave Image Server v1.0")
   fAbout = #True
   
   DisplayContent(0)
@@ -79,6 +78,6 @@ Procedure SetRunAtLogin(EventType)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 39
+; CursorPosition = 43
 ; Folding = --
 ; EnableXP
