@@ -22,11 +22,11 @@
   EndIf
 EndProcedure
 
-Procedure DisableClientButtons(iMode.i)
+Procedure DisableClientButtons(fDisable)
   Protected i.i
   
-  For i = 0 To 13
-    DisableGadget(g_rgUIClients(i)\hBtnIP, iMode)
+  For i = 0 To #LASTCLIENT
+    DisableGadget(g_rgUIClients(i)\hBtnIP, fDisable)
   Next
 EndProcedure
 
@@ -55,15 +55,15 @@ Procedure LoadSettings()
   EndIf
   
   ;map UI image button and IP text label handles to arrays
-  For i = #btn0 To #btn13
+  For i = #btn0 To #btn0 + #LASTCLIENT
     g_rgUIClients(i - #btn0)\hBtnIP = i
   Next
   
-  For i = #txt0 To #txt13
+  For i = #txt0 To #txt0 + #LASTCLIENT
     g_rgUIClients(i - #txt0)\hTxtIP = i
   Next
 
-  For i = 0 To 13
+  For i = 0 To #LASTCLIENT
     iIP = ReadPreferenceInteger("ClientIP" + Str(i), 0)
     
     If iIP
@@ -78,7 +78,7 @@ Procedure LoadSettings()
     EndIf
   Next
   
-  DisableClientButtons(0)
+  DisableClientButtons(#False)
   ClosePreferences()
 EndProcedure
 
@@ -100,9 +100,7 @@ Procedure SaveSettings()
     WritePreferenceInteger("WindowX", WindowX(wndMain, #PB_Window_FrameCoordinate))
     WritePreferenceInteger("WindowY", WindowY(wndMain, #PB_Window_FrameCoordinate))
     
-    ;ResetMap(g_mapClients())
-    
-    For i = 0 To 13
+    For i = 0 To #LASTCLIENT
       With g_rgUIClients(i)
         If \strIPClientMapKey <> ""
           iIP = g_mapClients(\strIPClientMapKey)\iClientIP
@@ -125,5 +123,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 101
+; FirstLine = 81
 ; Folding = -
 ; EnableXP

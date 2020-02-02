@@ -10,7 +10,6 @@ EnableExplicit
 #DEFAULTMINTIME = 2000
 #DEFAULTSERVERPORT = 80
 #UPDATESEARCHIMAGE = #PB_Event_FirstCustomValue + 1
-#GETDEFAULTFOLDER = #PB_Event_FirstCustomValue + 2
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "config.bis"
@@ -18,18 +17,13 @@ EnableExplicit
 #DEFAULTCLIENTIP = "0.0.0.0"
 #AUTOSEARCH = 9999
 
-Structure sUISTATE
-  iSelectedGadget.i
-  HaveValidIP.i
-  HaveImagePath.i
-EndStructure
-  
 Structure sCLIENT
   List listClientImages.s()
   qTimeSinceLastRequest.q
   iClientIP.i
   strImagesPath.s
   iGadget.i
+  fAskedForImage.i
 EndStructure
 
 Structure sTHUMBINFO
@@ -49,7 +43,6 @@ Structure MUTEX
 EndStructure
 
 Global g_MUTEX.MUTEX
-Global g_UIState.sUISTATE
 Global g_fNetworkEnabled.i
 Global g_fTerminateProgram.i
 Global g_iNetworkStatus.i
@@ -72,17 +65,15 @@ Global g_iPort.i = #DEFAULTSERVERPORT
 Global NewList g_listDefaultImages.s()
 Global NewList g_listThumbnails.sTHUMBINFO()
 Global NewMap g_mapClients.sCLIENT()
-Global Dim g_rgUIClients.sUICLIENT(13)
 
 Define Event
 Define s_imgAppIcon.i, s_iWindowX.i, s_iWindowY.i
 
 Declare AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i = #Black)
 Declare ProcessWindowEvent(Event)
-Declare.s GetNextImage(strClientIP.s)
 Declare ShuffleImageList(strClientIP.s)
+Declare.s GetNextImage(strClientIP.s)
 Declare.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
-;Declare ClearClientList()
 
 ;initialize decoders before referencing in About.pbi and main program code
 UseGIFImageDecoder()
@@ -108,10 +99,14 @@ DataSection
   Placeholder:
     IncludeBinary "resources\placeholder.png"
   Available:
-    IncludeBinary "resources\available2.png"
+    IncludeBinary "resources\available.png"
 EndDataSection
 
+;Change #LASTCLIENT to match number of client buttons - 1
 XIncludeFile "frmBIS.pbf"
+#LASTCLIENT = 13
+Global Dim g_rgUIClients.sUICLIENT(#LASTCLIENT)
+
 XIncludeFile "ImageServer.pbi"
 XIncludeFile "About.pbi"
 XIncludeFile "Helpers.pbi"
@@ -213,6 +208,7 @@ Procedure GetServerIPs()
   Protected iIdx.i = -1
   Protected iNumIP.i
   
+  ;get all IP addresses on system and add to combobox list
   If ExamineIPAddresses()
     Repeat
       iIP = NextIPAddress()
@@ -221,6 +217,7 @@ Procedure GetServerIPs()
         AddGadgetItem(cmbServerIP, -1, IPString(iIP))
         iNumIP + 1
         
+        ;if existing IP selected from settings, set it to current item in combo list
         If IPString(iIP) = g_strServerIP
           iIdx = iNumIP - 1
         EndIf
@@ -243,11 +240,11 @@ Procedure.i InitializeNetwork()
     AddGadgetItem(cmbServerIP, -1, #NONETWORK)
     AddStatusEvent("Could not initialize network. Restart app to try again.", #True, #Red)
     
-    HideGadget(cmbServerIP, 1)
-    HideGadget(lblNoNetwork, 0)
-    DisableGadget(edtPort, 1)
-    DisableGadget(edtMinTime, 1)
-    DisableGadget(btnDefaultFolder, 1)
+    HideGadget(cmbServerIP, #True)
+    HideGadget(lblNoNetwork, #False)
+    DisableGadget(edtPort, #True)
+    DisableGadget(edtMinTime, #True)
+    DisableGadget(btnDefaultFolder, #True)
     
     fRC = #False
   EndIf
@@ -293,7 +290,7 @@ Procedure ChangeServerIP(EventType)
   EndIf
 EndProcedure
 
-;MUTEX locked before calling this
+;Client MUTEX locked before calling this
 Procedure ShuffleImageList(strClientIP.s)
   AddStatusEvent("Shuffling image list for >> " + strClientIP + "<< ...")
   
@@ -301,7 +298,7 @@ Procedure ShuffleImageList(strClientIP.s)
   ResetList(g_mapClients(strClientIP)\listClientImages())
 EndProcedure
 
-;When network is running, MUTEX is locked before calling this
+;When network is running, Client MUTEX is locked before calling this
 Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
   Protected iIdx.i
   Protected fAvailableSlot.i = #False
@@ -312,8 +309,9 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
   
   iIdx = iGadgetPos
   
+  ;if adding via client network connection, search for free gadget to display thumbnails/store client IP
   If iGadgetPos = #AUTOSEARCH
-    For iIdx = 0 To 13
+    For iIdx = 0 To #LASTCLIENT
       If g_rgUIClients(iIdx)\strIPClientMapKey = ""
         Break
       EndIf
@@ -326,13 +324,16 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
                               0)
   EndIf
   
-  If iIdx < 14
+  ;if we found a valid slot or one was passed in
+  If iIdx <= #LASTCLIENT
     AddMapElement(g_mapClients(), strClientIP)
+    
     g_mapClients()\iClientIP = iClientIP
     g_mapClients()\strImagesPath = strImagesPath
     g_mapClients()\iGadget = iIdx
     g_mapClients()\qTimeSinceLastRequest = ElapsedMilliseconds() - g_qMinTimeBetweenImages
     
+    ;create list based off default path when auto-addded
     If iGadgetPos = #AUTOSEARCH
       CopyList(g_listDefaultImages(), g_mapClients()\listClientImages())
       ShuffleImageList(strClientIP)
@@ -341,9 +342,10 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
     ;set button image list information
     With g_rgUIClients(iIdx)
       \strIPClientMapKey = strClientIP
+      
       SetGadgetText(\hTxtIP, strClientIP)
       SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(g_imgPlaceholder))
-      DisableGadget(\hBtnIP, 0)
+      DisableGadget(\hBtnIP, #False)
     EndWith
       
     fAvailableSlot = #True
@@ -390,7 +392,7 @@ Procedure UpdateStatusBar(fUpdateConnections.i = #True)
     ResetMap(g_mapClients())
     
     While NextMapElement(g_mapClients())
-      If ElapsedMilliseconds() - g_mapClients()\qTimeSinceLastRequest < #ACTIVECLIENTTIMEOUT
+      If ElapsedMilliseconds() - g_mapClients()\qTimeSinceLastRequest < #ACTIVECLIENTTIMEOUT And g_mapClients()\fAskedForImage
         iActiveConnections + 1
       EndIf
     Wend
@@ -415,6 +417,7 @@ Procedure DisplayThumbnails(Parameter)
        LockMutex(g_MUTEX\Thumbnail)
        
        If FirstElement(g_listThumbnails())
+         ;get image and client gadget UI slot from queue 
          img = LoadImage(#PB_Any, g_listThumbnails()\strImage)
          iGadget = g_listThumbnails()\iGadget
          
@@ -428,6 +431,8 @@ Procedure DisplayThumbnails(Parameter)
        Else
          UnlockMutex(g_MUTEX\Thumbnail)
        EndIf
+       
+     ;drain queue and display all thumbnails asked even after network is stopped  
      Until Not g_fNetworkEnabled And ListSize(g_listThumbnails()) = 0
    Else
      Delay(1)
@@ -460,6 +465,9 @@ Procedure.s GetNextImage(strClientIP.s)
       ShuffleImageList(strClientIP)
       strImage = GetNextImage(strClientIP)
     EndIf
+    
+    ;for counting active connections, need to know if client requested at least one image
+    \fAskedForImage = #True
   EndWith
   
   ProcedureReturn strImage
@@ -471,12 +479,14 @@ Procedure CreateImageLists()
   
   g_iImagesQueued = 0
   
+  ;get images for default folder
   ClearList(g_listDefaultImages())
   GetImagesList(g_strDefaultFolder, g_listDefaultImages())
   
   If g_iImagesQueued = 0
     AddStatusEvent("No images found in default folder. Select a different path.", #True, #Red)
   Else
+    ;add to temporary map we used so we can count unique images being served
     ResetList(g_listDefaultImages())
     While NextElement(g_listDefaultImages())
       AddMapElement(mapUniqueImages(), g_listDefaultImages())
@@ -514,9 +524,9 @@ Procedure CreateImageLists()
     ClearMap(mapUniqueImages())
     
     ;Enable buttons with valid IP
-    For i = 0 To 13
+    For i = 0 To #LASTCLIENT
       If g_rgUIClients(i)\strIPClientMapKey <> ""
-        DisableGadget(g_rgUIClients(i)\hBtnIP, 0)
+        DisableGadget(g_rgUIClients(i)\hBtnIP, #False)
       EndIf
     Next
   EndIf
@@ -556,11 +566,12 @@ Procedure ToggleImageServer(EventType)
     EndIf
     
     SetGadgetText(edtMainImagesPath, "[Default Folder]: " + g_strDefaultFolder)
-
-    HideGadget(btnControl, 1)
-    HideGadget(imgSearching, 0)
-    DisableClientButtons(1)
-    DisableGadget(btnDefaultFolder, 1)
+    
+    ;Disable UI controls while searching
+    HideGadget(btnControl, #True)
+    HideGadget(imgSearching, #False)
+    DisableClientButtons(#True)
+    DisableGadget(btnDefaultFolder, #True)
     
     g_fSearchingImages = #True
     CreateThread(@PlaySearchAnimation(), Img_wndMain_1)
@@ -569,16 +580,17 @@ Procedure ToggleImageServer(EventType)
     CreateImageLists()
       
     g_fSearchingImages = #False
-    HideGadget(imgSearching, 1)
-    HideGadget(btnControl, 0)
+    HideGadget(imgSearching, #True)
+    HideGadget(btnControl, #False)
     
+    ;if there we no image paths found that didn't contain any images
     If g_iImagesQueued
       AddStatusEvent(Str(g_iImagesQueued) + " images found.")
       
       SetGadgetText(btnControl, "STOP")
-      DisableGadget(edtPort, 1)
-      DisableGadget(edtMinTime, 1)
-      DisableGadget(cmbServerIP, 1)
+      DisableGadget(edtPort, #True)
+      DisableGadget(edtMinTime, #True)
+      DisableGadget(cmbServerIP, #True)
       
       AddStatusEvent("Starting image server...", #True)
 
@@ -595,19 +607,18 @@ Procedure ToggleImageServer(EventType)
         Case #SERVERNOTSTARTED
           AddStatusEvent("Cannot initialize server on port "+ Str(g_iPort) + ".", #True, #Red)
         Case #SERVERSTARTED
-          SetGadgetColor(lblStatus, #PB_Gadget_FrontColor, #Black)
           strStatus = "Connect String: http://" + g_strServerIP
           
           If g_iPort <> 80
             strStatus + ":" + Str(g_iPort)
           EndIf
           
-          AddStatusEvent(strStatus, #True)
+          AddStatusEvent(strStatus, #True, #Black)
           AddWindowTimer(wndMain, 0, #STATUSUPDATEINTERVAL)
           DisableGadget(btnAbout, #True)
           
           ;clear any error (no images found) red text in the button area
-          For i = 0 To 13
+          For i = 0 To #LASTCLIENT
             SetGadgetColor(g_rgUIClients(i)\hTxtIP, #PB_Gadget_FrontColor, #PB_Default)
           Next
           
@@ -621,19 +632,19 @@ Procedure ToggleImageServer(EventType)
     g_iImagesQueued = 0
     
     SetGadgetText(btnControl, "START")
-    DisableGadget(edtPort, 0)
-    DisableGadget(edtMinTime, 0)
-    DisableGadget(cmbServerIP, 0)
-    DisableGadget(btnAbout, 0)
+    DisableGadget(edtPort, #False)
+    DisableGadget(edtMinTime, #False)
+    DisableGadget(cmbServerIP, #False)
+    DisableGadget(btnAbout, #False)
     
     SetGadgetState(btnControl, 0)
     AddStatusEvent("Image server stopped.")
     RemoveWindowTimer(wndMain, 0)
     
-    DisableClientButtons(0)
+    DisableClientButtons(#False)
   EndIf
   
-  DisableGadget(btnDefaultFolder, 0)
+  DisableGadget(btnDefaultFolder, #False)
   UpdateStatusBar()
 EndProcedure
 
@@ -641,12 +652,12 @@ Procedure InitializeUI()
   Protected i.i
   Shared s_iWindowX, s_iWindowY
   
-  HideGadget(imgSearching, 1)
-  HideGadget(lblNoNetwork, 1)
-  ;HideGadget(ipClientAddress, 1)
+  HideGadget(imgSearching, #True)
+  HideGadget(lblNoNetwork, #True)
   
+  ;reposition window to last position from settings, if any
   ResizeWindow(wndMain, s_iWindowX, s_iWindowY, #PB_Ignore, #PB_Ignore)
-  HideWindow(wndMain, 0)
+  HideWindow(wndMain, #False)
   
   ;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
   ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
@@ -732,7 +743,7 @@ g_imgPlaceholder = CatchImage(#PB_Any, ?Placeholder)
 g_imgAvailable = CatchImage(#PB_Any, ?Available)
 
 OpenwndMain()
-HideWindow(wndMain, 1)
+HideWindow(wndMain, #True)
 
 If InitializeNetwork()
   g_fNetworkInitialized = #True
@@ -759,7 +770,7 @@ If g_fNetworkInitialized
   SaveSettings()
 EndIf
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 753
-; FirstLine = 718
+; CursorPosition = 770
+; FirstLine = 728
 ; Folding = ----
 ; EnableXP

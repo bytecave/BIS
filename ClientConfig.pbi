@@ -89,7 +89,6 @@ Procedure ClientConfig(EventType)
     EndIf
     
     s_iGadget = EventGadget() - #btn0
-    g_UIState\iSelectedGadget = s_iGadget
     
     If g_fNetworkEnabled
       strIP = g_rgUIClients(s_iGadget)\strIPClientMapKey
@@ -202,7 +201,7 @@ Procedure HandleClientConfigEvents(Event)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 36
-; FirstLine = 31
+; CursorPosition = 91
+; FirstLine = 70
 ; Folding = --
 ; EnableXP

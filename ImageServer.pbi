@@ -83,7 +83,7 @@ Procedure HandleHTTPRequest(hSocket, *pReceivedData)
     qElapsedTime = ElapsedMilliseconds()
     
     iIPAddress = GetClientIP(hSocket)
-    strClientIP = IPString(iIPAddress)    ;TODO:Do we need this? Don't think so... + ":" + Str(g_iPort)
+    strClientIP = IPString(iIPAddress)
     
     LockMutex(g_MUTEX\Clients)
     If Not FindMapElement(g_mapClients(), strClientIP)
@@ -142,7 +142,8 @@ Procedure ImageServerThread(Parameter)
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 4
+; CursorPosition = 85
+; FirstLine = 79
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\

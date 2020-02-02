@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-01 22:23" user="bytecave" host="VILM"/>
+    <lastopen date="2020-02-02 10:30" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,11 +17,11 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="130938c5ef10eabca0743e3dc3ee8c3e"/>
+      <fingerprint md5="d2c330792c2967873bdd4ea660e38f7f"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="f35c6d79ec06d562a00d30a22a9526ae"/>
+      <fingerprint md5="0351b18a4c3d06147d6e3b63c41c6d28"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -29,7 +29,7 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="436426b23ac76b0830dd9412a19a79c5"/>
+      <fingerprint md5="431b056768d4721f4c3416b103c9898d"/>
     </file>
     <file name="frmClientConfig.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -37,11 +37,11 @@
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="d3aae57be710b0d39df3962361c9c1e2"/>
+      <fingerprint md5="577eaf324849350cd88ca35fe0e5f274"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="1ee17b5601abc0923595e8d481f0448b"/>
+      <fingerprint md5="ba8d282161c8883ec910942228fa3865"/>
     </file>
   </section>
   <section name="targets">
@@ -53,8 +53,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="1"/>
-      <buildcount enable="1" value="1"/>
+      <compilecount enable="1" value="2"/>
+      <buildcount enable="1" value="2"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -82,8 +82,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="1"/>
-      <buildcount enable="1" value="1"/>
+      <compilecount enable="1" value="2"/>
+      <buildcount enable="1" value="2"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -111,8 +111,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="1"/>
-      <buildcount enable="1" value="1"/>
+      <compilecount enable="1" value="2"/>
+      <buildcount enable="1" value="2"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -140,8 +140,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="108"/>
-      <buildcount enable="1" value="1"/>
+      <compilecount enable="1" value="114"/>
+      <buildcount enable="1" value="2"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
