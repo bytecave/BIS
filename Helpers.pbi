@@ -22,8 +22,16 @@
   EndIf
 EndProcedure
 
- Procedure LoadSettings()
-  Shared s_iWindowX, s_iWindowY, s_imgPlaceholder, s_imgAvailable
+Procedure DisableClientButtons(iMode.i)
+  Protected i.i
+  
+  For i = 0 To 13
+    DisableGadget(g_rgUIClients(i)\hBtnIP, iMode)
+  Next
+EndProcedure
+
+Procedure LoadSettings()
+  Shared s_iWindowX, s_iWindowY
   Protected strPrefs.s
   Protected strImagesPath.s
   Protected i.i, iIP.i
@@ -66,16 +74,11 @@ EndProcedure
       
       CreateClientList(iIP, IPString(iIP), strImagesPath, i)
     Else
-      SetGadgetAttribute(g_rgUIClients(i)\hBtnIP, #PB_Button_Image, ImageID(s_imgAvailable))
+      SetGadgetAttribute(g_rgUIClients(i)\hBtnIP, #PB_Button_Image, ImageID(g_imgAvailable))
     EndIf
   Next
   
-  If g_strDefaultFolder <> ""
-    For i = 0 To 13
-      DisableGadget(g_rgUIClients(i)\hBtnIP, 0)
-    Next
-  EndIf   
-
+  DisableClientButtons(0)
   ClosePreferences()
 EndProcedure
 
@@ -122,7 +125,5 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 25
-; FirstLine = 22
 ; Folding = -
 ; EnableXP

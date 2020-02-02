@@ -2,7 +2,7 @@
 
 #RECEIVEBUFFER = 4096
 #RETRYCOUNT = 100
-#SERVERIDSTRING = "Server: " + #BISTITLE + " " + #BIS_VERSION
+#SERVERIDSTRING = "Server: " + #BIS_TITLE + " " + #BIS_VERSION
 
 Enumeration
   #SERVERSTARTING = 5000
@@ -61,7 +61,7 @@ Procedure SendImage(hSocket.i, strImageToSend.s, strClientIP.s)
   CopyMemory(*pImageData, *pData, iImageLength)
   FreeMemory(*pImageData)
   
-  ;TODO:This should modify client list instead: AddStatusEvent(strClientIP + ": " + strImageToSend)
+  AddStatusEvent(strClientIP + ": " + strImageToSend)
   
   Repeat
     iSentBytes + SendNetworkData(hSocket, *pSendBuffer + iSentBytes, iPacketSize - iSentBytes)
@@ -87,12 +87,12 @@ Procedure HandleHTTPRequest(hSocket, *pReceivedData)
     
     LockMutex(g_MUTEX\Clients)
     If Not FindMapElement(g_mapClients(), strClientIP)
-      fRC = CreateClientList(iIPAddress, strClientIP)  ;true if UI gadget slot exists
+      fRC = CreateClientList(iIPAddress, strClientIP)  ;returns true if UI gadget slot exists
     EndIf
     
     ;If there's no UI gadget slot available for a new connection, we ignore the request
     If fRC
-      ;g_Clients() now points to the Map entry for this IP address
+      ;After successful call to CreateClientList(), g_mapClients() points to the Map entry for this IP address
       
       If qElapsedTime - g_mapClients()\qTimeSinceLastRequest >= g_qMinTimeBetweenImages
         g_mapClients()\qTimeSinceLastRequest = qElapsedTime
@@ -139,12 +139,10 @@ Procedure ImageServerThread(Parameter)
     FreeMemory(*pReceivedData)
       
     CloseNetworkServer(iServerID)
-    ;ClearClientList()
   EndIf
 EndProcedure
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 141
-; FirstLine = 93
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 4
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\

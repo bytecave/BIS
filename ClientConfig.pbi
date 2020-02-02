@@ -78,6 +78,7 @@ EndProcedure
 ;can't click UI client button while server is running and no client ip/images path are set
 Procedure ClientConfig(EventType)
   Shared s_iGadget.i
+  Protected strIP.s
   
   If Not EventGadget() = btnDefaultFolder
     If g_iLastIP = 0
@@ -91,15 +92,17 @@ Procedure ClientConfig(EventType)
     g_UIState\iSelectedGadget = s_iGadget
     
     If g_fNetworkEnabled
+      strIP = g_rgUIClients(s_iGadget)\strIPClientMapKey
+      
       LockMutex(g_MUTEX\Clients)
-      SetGadgetText(edtMainImagesPath, g_mapClients(g_rgUIClients(s_iGadget)\strIPClientMapKey)\strImagesPath)
+      SetGadgetText(edtMainImagesPath, "[" + strIP + "]: " + g_mapClients(strIP)\strImagesPath)
       UnlockMutex(g_MUTEX\Clients)
     Else
       ClientConfigDialog(#False)
     EndIf
   Else
     If g_fNetworkEnabled
-      SetGadgetText(edtMainImagesPath, g_strDefaultFolder)
+      SetGadgetText(edtMainImagesPath, "[Default Folder]: " + g_strDefaultFolder)
     Else
       ClientConfigDialog(#True)
     EndIf
@@ -109,31 +112,20 @@ EndProcedure
 Procedure CloseClientConfig()
   RemoveKeyboardShortcut(wndClientConfig, #PB_Shortcut_Escape)
   
-  ;TODO:Are these auto-reset every time the Client Config window is open? Maybe we don't have to do the stuff below...
-;   HideGadget(lblDefaultFolder, 1)
-;   HideGadget(ipClientAddress, 0)
-;   HideGadget(btnRemoveClient, 0)
-;   
-;   DisableGadget(ipClientAddress, 0)
-;   DisableGadget(btnRemoveClient, 0)
-;   DisableGadget(btnSetClient, 0)
   DisableWindow(wndMain, #False)
   CloseWindow(wndClientConfig)
 EndProcedure
 
-    ;TODO:Do we need to LockMutex or is rotate thread guaranteed stopped here
 Procedure SetClientConfig(EventType)
   Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
-  Protected i.i
+  Protected i.i, fRC.i = #True
   Protected strIP.s, strImagesPath.s
   
   If s_fSettingDefault
     g_strDefaultFolder = GetGadgetText(edtConfigImagesPath)
-    SetGadgetText(edtMainImagesPath, g_strDefaultFolder)
+    SetGadgetText(edtMainImagesPath, "[" + "Default Folder]: " + g_strDefaultFolder)
     
-    For i = 0 To 13
-      DisableGadget(g_rgUIClients(i)\hBtnIP, 0)
-    Next
+    DisableClientButtons(#False)
   Else
     strIP = GetGadgetText(ipClientAddress)
     strImagesPath = GetGadgetText(edtConfigImagesPath)
@@ -143,8 +135,11 @@ Procedure SetClientConfig(EventType)
     Else
       If FindMapElement(g_mapClients(), strIP)
         MessageRequester("Duplicate Client IP", "Client entry already exists for IP address " + strIP + ". Please change IP address and try again.", #PB_MessageRequester_Ok | #PB_MessageRequester_Warning)
+        SetActiveGadget(ipClientAddress)
+        
+        fRC = #False
       Else
-        ;Last IP set = last client entered in dialog
+        ;New IP address so let's set it as Last IP set = last client entered in dialog
         g_iLastIP = MakeIPAddress(Val(StringField(strIP, 1, ".")),
                                   Val(StringField(strIP, 2, ".")),
                                   Val(StringField(strIP, 3, ".")),
@@ -155,11 +150,21 @@ Procedure SetClientConfig(EventType)
     EndIf
   EndIf
   
-  CloseClientConfig()
+  If fRC
+    SetGadgetColor(g_rgUIClients(s_iGadget)\hTxtIP, #PB_Gadget_FrontColor, #PB_Default)
+    
+    If s_fSettingDefault
+      SetGadgetText(edtMainImagesPath, "[" + "Default Folder]: " + g_strDefaultFolder)
+    Else
+      SetGadgetText(edtMainImagesPath, "[" + strIP + "]: " + strImagesPath)
+    EndIf
+    
+    CloseClientConfig()
+  EndIf
 EndProcedure
 
 Procedure RemoveClientConfig(EventType)
-  Shared s_iGadget.i, s_imgAvailable
+  Shared s_iGadget.i
   
   With g_rgUIClients(s_iGadget)
     FindMapElement(g_mapClients(), \strIPClientMapKey)
@@ -168,7 +173,7 @@ Procedure RemoveClientConfig(EventType)
     
     \strIPClientMapKey = ""
     SetGadgetText(\hTxtIP, "")
-    SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(s_imgAvailable))
+    SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(g_imgAvailable))
   EndWith
   
   CloseClientConfig()
@@ -196,8 +201,8 @@ Procedure HandleClientConfigEvents(Event)
   EndIf
 EndProcedure
 
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 174
-; FirstLine = 144
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 36
+; FirstLine = 31
 ; Folding = --
 ; EnableXP

@@ -14,7 +14,7 @@ EnableExplicit
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "config.bis"
-#BISTITLE = "ByteCave Image Server"
+#BIS_TITLE = "ByteCave Image Server"
 #DEFAULTCLIENTIP = "0.0.0.0"
 #AUTOSEARCH = 9999
 
@@ -29,7 +29,12 @@ Structure sCLIENT
   qTimeSinceLastRequest.q
   iClientIP.i
   strImagesPath.s
-  iGadget.i  ;TODO:needed?
+  iGadget.i
+EndStructure
+
+Structure sTHUMBINFO
+  strImage.s
+  iGadget.i
 EndStructure
 
 Structure sUICLIENT
@@ -39,7 +44,7 @@ Structure sUICLIENT
 EndStructure
 
 Structure MUTEX
-  Rotate.i
+  Thumbnail.i
   Clients.i
 EndStructure
 
@@ -56,20 +61,21 @@ Global g_iLastIP.i
 Global g_fMinimized.i
 Global g_iRunAtLogin.i
 Global g_iMinimizeToTray.i
+Global g_imgPlaceholder.i 
+Global g_imgAvailable.i
 Global g_iForeverImagesServed.i
 Global g_strServerIP.s
 Global g_strDefaultFolder.s
 Global g_qMinTimeBetweenImages.q = #DEFAULTMINTIME
 Global g_iPort.i = #DEFAULTSERVERPORT
 
-Global NewList g_listImages.s()
-Global NewList g_listRotate.s()
+Global NewList g_listDefaultImages.s()
+Global NewList g_listThumbnails.sTHUMBINFO()
 Global NewMap g_mapClients.sCLIENT()
 Global Dim g_rgUIClients.sUICLIENT(13)
 
 Define Event
-Define s_imgAppIcon.i, s_imgPlaceholder, s_imgAvailable
-Define s_iWindowX.i, s_iWindowY.i
+Define s_imgAppIcon.i, s_iWindowX.i, s_iWindowY.i
 
 Declare AddStatusEvent(strStatusEvent.s, fSetGadgetStatus = #False, iColor.i = #Black)
 Declare ProcessWindowEvent(Event)
@@ -102,14 +108,14 @@ DataSection
   Placeholder:
     IncludeBinary "resources\placeholder.png"
   Available:
-    IncludeBinary "resources\available.png"
+    IncludeBinary "resources\available2.png"
 EndDataSection
 
 XIncludeFile "frmBIS.pbf"
 XIncludeFile "ImageServer.pbi"
 XIncludeFile "About.pbi"
-XIncludeFile "ClientConfig.pbi"
 XIncludeFile "Helpers.pbi"
+XIncludeFile "ClientConfig.pbi"
 
 Procedure PlaySearchAnimation(*hGIF)
   Protected iFrameCount.i, iFrame.i
@@ -130,42 +136,7 @@ Procedure PlaySearchAnimation(*hGIF)
   Until g_fSearchingImages = #False
 EndProcedure
 
-; Procedure OLD_GetImagesPath(EventType)
-;   Protected strImagesPath.s, strCurrentPath.s
-;   
-;   If EventType = #GETDEFAULTFOLDER
-;     strCurrentPath = g_strDefaultFolder
-;     SetGadgetText(txtImagesPath, g_strDefaultFolder)
-;   EndIf
-;   
-;   strCurrentPath = GetGadgetText(txtImagesPath)
-;   strImagesPath = strCurrentPath
-;   
-;   If strImagesPath = ""
-;     strImagesPath = g_strDefaultFolder
-;   EndIf
-;   
-;   strImagesPath = PathRequester("Select images folder", strImagesPath)
-;   
-;   If strImagesPath <> ""
-;     If strCurrentPath <> strImagesPath
-;       AddStatusEvent("Changed image path: " + strImagesPath)
-;     EndIf
-;     
-;     SetGadgetText(txtImagesPath, strImagesPath)
-;     SetGadgetColor(txtImagesPath, #PB_Gadget_FrontColor, $000000)
-;   EndIf
-;   
-;   If EventType = #GETDEFAULTFOLDER
-;     g_strDefaultFolder = strImagesPath
-;   Else
-;     FindMapElement(g_mapClients( kkk
-;   EndIf
-;   
-;   ProcedureReturn strCurrentPath
-; EndProcedure
-
-Procedure GetImagesList(strDir.s)
+Procedure GetImagesList(strDir.s, List listImages.s())   ;Lists in PureBasic are always passed by reference
   NewList Directories.s()
   Protected strFileName.s
   Protected iDirectory.i
@@ -193,8 +164,8 @@ Procedure GetImagesList(strDir.s)
                 EndIf
                 
                 g_iImagesQueued + 1
-                AddElement(g_listImages())
-                g_listImages() = strDir + strFileName
+                AddElement(listImages())
+                listImages() = strDir + strFileName
               EndSelect
             
           Case #PB_DirectoryEntry_Directory
@@ -216,7 +187,7 @@ Procedure GetImagesList(strDir.s)
     
     If g_fSearchingImages
       ForEach Directories()
-        GetImagesList(Directories())
+        GetImagesList(Directories(), listImages())
       Next
     EndIf
     
@@ -330,11 +301,10 @@ Procedure ShuffleImageList(strClientIP.s)
   ResetList(g_mapClients(strClientIP)\listClientImages())
 EndProcedure
 
-;MUTEX locked before calling this
+;When network is running, MUTEX is locked before calling this
 Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", iGadgetPos.i = #AUTOSEARCH)
   Protected iIdx.i
   Protected fAvailableSlot.i = #False
-  Shared s_imgPlaceholder.i
    
    If strImagesPath = ""
     strImagesPath = g_strDefaultFolder
@@ -360,11 +330,11 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
     AddMapElement(g_mapClients(), strClientIP)
     g_mapClients()\iClientIP = iClientIP
     g_mapClients()\strImagesPath = strImagesPath
-    g_mapClients()\iGadget = iGadgetPos
+    g_mapClients()\iGadget = iIdx
     g_mapClients()\qTimeSinceLastRequest = ElapsedMilliseconds() - g_qMinTimeBetweenImages
     
     If iGadgetPos = #AUTOSEARCH
-      CopyList(g_listImages(), g_mapClients()\listClientImages())
+      CopyList(g_listDefaultImages(), g_mapClients()\listClientImages())
       ShuffleImageList(strClientIP)
     EndIf
     
@@ -372,7 +342,8 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
     With g_rgUIClients(iIdx)
       \strIPClientMapKey = strClientIP
       SetGadgetText(\hTxtIP, strClientIP)
-      SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(s_imgPlaceholder))
+      SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(g_imgPlaceholder))
+      DisableGadget(\hBtnIP, 0)
     EndWith
       
     fAvailableSlot = #True
@@ -434,132 +405,177 @@ Procedure UpdateStatusBar(fUpdateConnections.i = #True)
   StatusBarText(idStatusBar, 8, "Serving " + FormatNumber(g_iImagesQueued, 0) + " images", #PB_StatusBar_BorderLess)
 EndProcedure
 
-; Procedure ClearClientList()
-;   LockMutex(g_MUTEX\Clients)
-;   
-;   ResetMap(g_mapClients())
-;   While NextMapElement(g_mapClients())
-;     ClearList(g_mapClients()\listClientImages())
-;   Wend
-;   ClearMap(g_mapClients())
-;   
-;   UnlockMutex(g_MUTEX\Clients)
-; EndProcedure
-
-; Procedure DisplayThumbnails(Parameter)
-;   Static Dim idImage.i(2)
-;   Dim img.i(2)
-;   Static iPass.i = 0
-;   Static Count.i = 0
-;   Static fInit.i = #False
-;   
-;   If Not g_fMinimized
-;     If Not fInit
-;       idImage(0) = imgLast_1
-;       idImage(1) = imgLast_2
-;       idImage(2) = imgLast_3
-;     EndIf
-;     
-;     Repeat
-;       Delay(1)
-;       
-;       LockMutex(g_MUTEX\Rotate)
-;       
-;       If FirstElement(g_listRotate())
-;         If IsImage(img(iPass))
-;           FreeImage(img(iPass))
-;         EndIf
-;         
-;         img(iPass) = LoadImage(#PB_Any, g_listRotate())
-;         DeleteElement(g_listRotate(), 1)
-;         UnlockMutex(g_MUTEX\Rotate)
-;         
-;         If IsImage(img(iPass))
-;           ResizeImage(img(iPass), 110, 110, #PB_Image_Raw)
-;           SetGadgetState(idImage(iPass), ImageID(img(iPass)))
-;           
-;           iPass + 1
-;           If iPass = 3
-;             iPass = 0
-;           EndIf
-;         EndIf
-;       Else
-;         UnlockMutex(g_MUTEX\Rotate)
-;       EndIf
-;     Until Not g_fNetworkEnabled And ListSize(g_listRotate()) = 0
-;   Else
-;     Delay(1)
-;   EndIf
-;   
-;   ClearList(g_listRotate())
-; EndProcedure
+Procedure DisplayThumbnails(Parameter)
+  Protected img.i, iGadget.i
+  
+  If Not g_fMinimized
+     Repeat
+       Delay(1)
+       
+       LockMutex(g_MUTEX\Thumbnail)
+       
+       If FirstElement(g_listThumbnails())
+         img = LoadImage(#PB_Any, g_listThumbnails()\strImage)
+         iGadget = g_listThumbnails()\iGadget
+         
+         DeleteElement(g_listThumbnails())
+         UnlockMutex(g_MUTEX\Thumbnail)
+         
+         If IsImage(img)
+           ResizeImage(img, 100, 100, #PB_Image_Raw)
+           SetGadgetAttribute(g_rgUIClients(iGadget)\hBtnIP, #PB_Button_Image, ImageID(img))
+         EndIf
+       Else
+         UnlockMutex(g_MUTEX\Thumbnail)
+       EndIf
+     Until Not g_fNetworkEnabled And ListSize(g_listThumbnails()) = 0
+   Else
+     Delay(1)
+   EndIf
+   
+   ClearList(g_listThumbnails())
+EndProcedure
 
 ;MUTEX locked before calling this
 Procedure.s GetNextImage(strClientIP.s)
   Protected strImage.s
-  Protected img.i
   
-  If NextElement(g_mapClients(strClientIP)\listClientImages())
-    strImage = g_mapClients(strClientIP)\listClientImages()
-    g_iImagesServed + 1
-    g_iForeverImagesServed + 1
-    
-    ;we don't rotate images when app is minimized
-    If Not g_fMinimized
-      LockMutex(g_MUTEX\Rotate)
+  With g_mapClients()  ;g_mapClients() points to correct entry for this IP address on call -- g_mapClients(strClientIP)
+    If NextElement(\listClientImages())
+      strImage = \listClientImages()
+      g_iImagesServed + 1
+      g_iForeverImagesServed + 1
       
-      AddElement(g_listRotate())
-      g_listRotate() = strImage
-      
-      UnlockMutex(g_MUTEX\Rotate)
+      ;we don't display thumbnails when app is minimized
+      If Not g_fMinimized
+        LockMutex(g_MUTEX\Thumbnail)
+        
+        AddElement(g_listThumbnails())
+        g_listThumbnails()\strImage = strImage
+        g_listThumbnails()\iGadget = \iGadget
+        
+        UnlockMutex(g_MUTEX\Thumbnail)
+      EndIf
+    Else
+      ShuffleImageList(strClientIP)
+      strImage = GetNextImage(strClientIP)
     EndIf
-  Else
-    ShuffleImageList(strClientIP)
-    strImage = GetNextImage(strClientIP)
-  EndIf
-    
+  EndWith
+  
   ProcedureReturn strImage
 EndProcedure  
+
+Procedure CreateImageLists()
+  Protected NewMap mapUniqueImages.s()  ;used solely to count unique images
+  Protected i.i
+  
+  g_iImagesQueued = 0
+  
+  ClearList(g_listDefaultImages())
+  GetImagesList(g_strDefaultFolder, g_listDefaultImages())
+  
+  If g_iImagesQueued = 0
+    AddStatusEvent("No images found in default folder. Select a different path.", #True, #Red)
+  Else
+    ResetList(g_listDefaultImages())
+    While NextElement(g_listDefaultImages())
+      AddMapElement(mapUniqueImages(), g_listDefaultImages())
+    Wend
     
+    ;Get image list for each IP address in button area
+    ResetMap(g_mapClients())
+    
+    While NextMapElement(g_mapClients())
+      g_iImagesQueued = 0
+      
+      With g_mapClients()
+        ClearList(\listClientImages())
+        GetImagesList(\strImagesPath, \listClientImages())
+        
+        If g_iImagesQueued = 0
+          AddStatusEvent("No images found for " + g_rgUIClients(\iGadget)\strIPClientMapKey + ". Select a different path.", #True, #Red)
+          SetGadgetAttribute(g_rgUIClients(\iGadget)\hBtnIP, #PB_Button_Image, ImageID(g_imgPlaceholder))
+          SetGadgetColor(g_rgUIClients(\iGadget)\hTxtIP, #PB_Gadget_FrontColor, #Red)
+          
+          Break
+        Else
+          ResetList(\listClientImages())
+          While NextElement(\listClientImages())
+            AddMapElement(mapUniqueImages(), \listClientImages())
+          Wend
+        EndIf
+      EndWith
+    Wend
+  EndIf
+  
+  If g_iImagesQueued > 0
+    g_iImagesQueued = MapSize(mapUniqueImages())
+    
+    ClearMap(mapUniqueImages())
+    
+    ;Enable buttons with valid IP
+    For i = 0 To 13
+      If g_rgUIClients(i)\strIPClientMapKey <> ""
+        DisableGadget(g_rgUIClients(i)\hBtnIP, 0)
+      EndIf
+    Next
+  EndIf
+EndProcedure
+
+Procedure.i ReadyToStart()
+  Protected fRC.i = #False
+  
+  If GetGadgetState(cmbServerIP) = -1
+    AddStatusEvent("Please Select an IP address For the image server.", #True, #Red)
+    SetActiveGadget(cmbServerIP)
+  ElseIf g_strDefaultFolder = ""
+    AddStatusEvent("Press Default Folder button at bottom left to set default images folder.", #True, #Red)
+  Else
+    fRC = #True
+  EndIf
+  
+  If Not fRC
+    SetGadgetState(btnControl, 0)
+  EndIf
+  
+  ProcedureReturn fRC
+EndProcedure
+
 Procedure ToggleImageServer(EventType)  
   Protected fInitialized.i = #False
   Protected strStatus.s
+  Protected i.i
   
   If EventType = #STARTSERVER
     SetGadgetState(btnControl, 1)
   EndIf
   
   If GetGadgetState(btnControl) = 1 ;Toggled On
-    If GetGadgetState(cmbServerIP) = -1
-      AddStatusEvent("Please Select an IP address For the image server.", #True, #Red)
-      SetGadgetState(btnControl, 0)
-      SetActiveGadget(cmbServerIP)
-      
+    If Not ReadyToStart()
       ProcedureReturn
     EndIf
     
+    SetGadgetText(edtMainImagesPath, "[Default Folder]: " + g_strDefaultFolder)
+
     HideGadget(btnControl, 1)
     HideGadget(imgSearching, 0)
-    g_fSearchingImages = #True
+    DisableClientButtons(1)
+    DisableGadget(btnDefaultFolder, 1)
     
+    g_fSearchingImages = #True
     CreateThread(@PlaySearchAnimation(), Img_wndMain_1)
     
-    ClearList(g_listImages())
-    g_iImagesQueued = 0
-    GetImagesList(GetGadgetText(edtMainImagesPath))
+    ;will set g_iImagesQueued to number of unique images too
+    CreateImageLists()
+      
     g_fSearchingImages = #False
-    
     HideGadget(imgSearching, 1)
     HideGadget(btnControl, 0)
     
-    If g_iImagesQueued = 0
-      AddStatusEvent("No images found. Select a different path.", #True, #Red)
-      
-    Else      
+    If g_iImagesQueued
       AddStatusEvent(Str(g_iImagesQueued) + " images found.")
       
       SetGadgetText(btnControl, "STOP")
-      DisableGadget(btnImagesPath, 1)
       DisableGadget(edtPort, 1)
       DisableGadget(edtMinTime, 1)
       DisableGadget(cmbServerIP, 1)
@@ -569,7 +585,7 @@ Procedure ToggleImageServer(EventType)
       g_iNetworkStatus = #SERVERSTARTING
       g_fNetworkEnabled = #True
       CreateThread(@ImageServerThread(), 0)
-      ;CreateThread(@DisplayThumbnails(), 0)
+      CreateThread(@DisplayThumbnails(), 0)
       
       While g_iNetworkStatus = #SERVERSTARTING
         Delay(1)
@@ -590,6 +606,11 @@ Procedure ToggleImageServer(EventType)
           AddWindowTimer(wndMain, 0, #STATUSUPDATEINTERVAL)
           DisableGadget(btnAbout, #True)
           
+          ;clear any error (no images found) red text in the button area
+          For i = 0 To 13
+            SetGadgetColor(g_rgUIClients(i)\hTxtIP, #PB_Gadget_FrontColor, #PB_Default)
+          Next
+          
           fInitialized = #True
       EndSelect
     EndIf
@@ -600,17 +621,19 @@ Procedure ToggleImageServer(EventType)
     g_iImagesQueued = 0
     
     SetGadgetText(btnControl, "START")
-    DisableGadget(btnImagesPath, 0)
     DisableGadget(edtPort, 0)
     DisableGadget(edtMinTime, 0)
     DisableGadget(cmbServerIP, 0)
-    DisableGadget(btnAbout, #False)
+    DisableGadget(btnAbout, 0)
     
     SetGadgetState(btnControl, 0)
     AddStatusEvent("Image server stopped.")
     RemoveWindowTimer(wndMain, 0)
+    
+    DisableClientButtons(0)
   EndIf
   
+  DisableGadget(btnDefaultFolder, 0)
   UpdateStatusBar()
 EndProcedure
 
@@ -628,81 +651,16 @@ Procedure InitializeUI()
   ;Fix up gadget positions as these start in a position visible in Form Designer, but not the correct UI position
   ResizeGadget(lblNoNetwork, GadgetX(cmbServerIP), GadgetY(cmbServerIP), #PB_Ignore, #PB_Ignore)
   
-  If g_strDefaultFolder = "" And g_fNetworkInitialized
+  If g_strDefaultFolder = ""
     SetGadgetText(edtMainImagesPath, "Press Default Folder button at bottom left to set default images folder.")
+    AddStatusEvent("Press Default Folder button at bottom left to set default images folder.")
   Else
-    SetGadgetText(edtMainImagesPath, g_strDefaultFolder)
+    SetGadgetText(edtMainImagesPath, "[Default Folder]: " + g_strDefaultFolder)
   EndIf
   
   SetGadgetText(edtMinTime, Str(g_qMinTimeBetweenImages))
   SetGadgetText(edtPort, Str(g_iPort))
   ChangePort(#CHANGEPORT)
-EndProcedure
-
-Procedure SetUIState()
-  Protected i.i
-  
-  If g_strDefaultFolder = ""
-    HideGadget(ipClientAddress, 1)
-    HideGadget(lblDefaultFolder, 0)
-    DisableGadget(btnDefaultFolder, 1)
-  Else
-    HideGadget(ipClientAddress, 0)
-    HideGadget(lblDefaultFolder, 1)
-    DisableGadget(btnDefaultFolder, 0)
-  EndIf
-EndProcedure
-  
-Procedure ProcessClientListEvents(EventType)
-  Protected iSelected.i, i.i, iCount.i, iRow.i
-  Protected strIP.s
-  
-  Select EventType()
-;       Case #PB_EventType_LeftClick, #PB_EventType_Change
-;         iCount = CountGadgetItems(lstClientFolders)
-;         
-;         For i = 0 To iCount - 1
-;           If GetGadgetItemState(lstClientFolders, i) = #PB_ListIcon_Selected
-;             iSelected + 1
-;             iRow = i
-;           EndIf
-;         Next
-;         
-;         If iSelected = 1
-;           strIP = GetGadgetItemText(lstClientFolders, iRow, 0)
-;           
-;           SetGadgetState(ipClientAddress, MakeIPAddress(Val(StringField(strIP, 1, ".")),
-;                                                         Val(StringField(strIP, 2, ".")),
-;                                                         Val(StringField(strIP, 3, ".")),
-;                                                         Val(StringField(strIP, 4, "."))))
-;           SetGadgetText(txtImagesPath, GetGadgetItemText(lstClientFolders, iRow, 1))
-;           ;do we need something like this? g_strPathFromPrefs = txtpath
-;           
-;           HideGadget(lblDefaultFolder, 1)
-;           DisableGadget(btnAddFolder, 0)
-;           SetGadgetText(btnAddFolder, "Update")
-;           
-;           ;g_UIState\HaveFolder = #True
-;           g_UIState\HaveValidIP = #True
-;         Else
-;           ;SetGadgetState(ipClientAddress, MakeIPAddress(0, 0, 0, 0))
-;           ;SetGadgetText(lblDefaultFolder, "Multiselect")
-;           ;HideGadget(lblDefaultFolder, 0)
-;           ;DisableGadget(btnImagesPath, 1)
-;           ;DisableGadget(btnAddFolder, 1)
-;           ;SetGadgetText(txtImagesPath, "Click Remove to remove selected.")
-;           
-;           g_UIState\IPMultiSelect = #True
-;           ;g_UIState\HaveFolder = #False
-;           g_UIState\HaveValidIP = #False
-;           
-;           SetUIState()
-;         EndIf
-;         
-;         If GetGadgetText(ipClientAddress) <> #DEFAULTCLIENTIP
-;           DisableGadget(btnRemoveFolder, 0)
-;         EndIf
-     EndSelect
 EndProcedure
 
 Procedure ProcessWindowEvent(Event)
@@ -711,13 +669,7 @@ Procedure ProcessWindowEvent(Event)
   Select EventWindow()
     Case wndMain
       Select Event
-    Case #PB_Event_Gadget
-      Select EventGadget()
-        ;Case lstClientFolders
-        ;  ProcessClientListEvents(EventType())
-      EndSelect
-      
-    Case #PB_Event_CloseWindow
+        Case #PB_Event_CloseWindow
           g_fTerminateProgram = #True
         Case #UPDATESEARCHIMAGE
           SetGadgetState(imgSearching, ImageID(Img_wndMain_1))
@@ -726,23 +678,23 @@ Procedure ProcessWindowEvent(Event)
         Case #PB_Event_MinimizeWindow
           If Not g_fMinimized And g_iMinimizeToTray = #PB_Checkbox_Checked
             AddSysTrayIcon(0, WindowID(wndMain), ImageID(s_imgAppIcon))
-            SysTrayIconToolTip(0, #BISTITLE)
+            SysTrayIconToolTip(0, #BIS_TITLE)
             HideWindow(wndMain, #True)
-          
+              
             g_fMinimized = #True
-        EndIf
-            
+          EndIf
+                
         Case #PB_Event_RestoreWindow
           g_fMinimized = #False
-          
-       Case #PB_Event_SysTray
+              
+        Case #PB_Event_SysTray
           Select EventType()
             Case #PB_EventType_LeftClick, #PB_EventType_RightClick, #PB_EventType_LeftDoubleClick, #PB_EventType_RightDoubleClick
               If g_fMinimized And g_iMinimizeToTray = #PB_Checkbox_Checked
                 RemoveSysTrayIcon(0)
                 HideWindow(wndMain, #False)
                 SetWindowState(wndMain, #PB_Window_Normal)  
-                 
+                     
                 g_fMinimized = #False
               EndIf
           EndSelect
@@ -760,7 +712,7 @@ EndProcedure
 
 ;Start Main Program
 g_MUTEX\Clients = CreateMutex()
-g_MUTEX\Rotate = CreateMutex()
+g_MUTEX\Thumbnail = CreateMutex()
 
 ;PB Form Designer attempts to load images from disk, which only works at development time
 ;So free these at run time, and fall through to CatchImage statements below that work at both dev and run time
@@ -776,8 +728,8 @@ Img_wndMain_1 = CatchImage(#PB_Any, ?Searching)
 Img_wndMain_2 = CatchImage(#PB_Any, ?DefaultFolder)
 
 s_imgAppIcon = CatchImage(#PB_Any, ?AppIcon)
-s_imgPlaceholder = CatchImage(#PB_Any, ?Placeholder)
-s_imgAvailable = CatchImage(#PB_Any, ?Available)
+g_imgPlaceholder = CatchImage(#PB_Any, ?Placeholder)
+g_imgAvailable = CatchImage(#PB_Any, ?Available)
 
 OpenwndMain()
 HideWindow(wndMain, 1)
@@ -793,9 +745,9 @@ InitializeUI()
 UpdateStatusBar(#False)
 
 ;auto-start server if old preferences were read from config file
-;If g_strServerIP <> "" And GetGadgetText(txtImagesPath) <> ""
-;  ToggleImageServer(#STARTSERVER)
-;EndIf
+If g_strServerIP <> "" And g_strDefaultFolder <> ""
+  ToggleImageServer(#STARTSERVER)
+EndIf
 
 Repeat
   Event = WaitWindowEvent(1)
@@ -806,8 +758,8 @@ If g_fNetworkInitialized
   ;save user preferences on exit
   SaveSettings()
 EndIf
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 517
-; FirstLine = 757
-; Folding = ---
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 753
+; FirstLine = 718
+; Folding = ----
 ; EnableXP

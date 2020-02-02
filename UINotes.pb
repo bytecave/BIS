@@ -151,8 +151,13 @@ abbrpath(path.s,"/",5)
       SendMessage_(GadgetID(ListIconID), #LVM_GETITEMRECT, 0, Rectangle)
       ProcedureReturn Rectangle\bottom - Rectangle\top - 1
     EndProcedure
+    
+    
+    Even If we have no connected clients, still need a "default" images List. When new clients Not already in button gadget List connect, 
+            THIS will be the List that is copied And shuffled.
+      
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 127
-; FirstLine = 90
+; CursorPosition = 136
+; FirstLine = 116
 ; Folding = -
 ; EnableXP

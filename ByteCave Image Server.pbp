@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 beta 1 LTS (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
     <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-01-29 14:20" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-02-01 22:23" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,31 +17,31 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="e6b7e6f394af4eacb0081bb155f00a85"/>
+      <fingerprint md5="130938c5ef10eabca0743e3dc3ee8c3e"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="c922c00530d6190f8105c31fa1059d2c"/>
+      <fingerprint md5="f35c6d79ec06d562a00d30a22a9526ae"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="3d7e5d0757a5a2026b986100fa1bf4a7"/>
+      <fingerprint md5="b2a8e54116c1f1162d7f12bcbd0aebf2"/>
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="b998eff083d71cc6e894371cdc6ecfb3"/>
+      <fingerprint md5="436426b23ac76b0830dd9412a19a79c5"/>
     </file>
     <file name="frmClientConfig.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="64776f14192f85b49e08b94ea657c5ef"/>
+      <fingerprint md5="a6acc00f233ee2be2ee14be66a751c1c"/>
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="34eb6c41b5177183962bf9c05d04bbad"/>
+      <fingerprint md5="d3aae57be710b0d39df3962361c9c1e2"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="005ff0fc4846e182ad7af401012635f0"/>
+      <fingerprint md5="1ee17b5601abc0923595e8d481f0448b"/>
     </file>
   </section>
   <section name="targets">
@@ -53,8 +53,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="0"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="1"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -82,8 +82,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="0"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="1"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -111,8 +111,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="0"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="1"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -140,8 +140,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="7"/>
-      <buildcount enable="1" value="0"/>
+      <compilecount enable="1" value="108"/>
+      <buildcount enable="1" value="1"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
