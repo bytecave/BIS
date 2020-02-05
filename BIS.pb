@@ -10,7 +10,7 @@ EnableExplicit
 #DEFAULTMINTIME = 2000
 #DEFAULTSERVERPORT = 80
 #UPDATESEARCHIMAGE = #PB_Event_FirstCustomValue + 1
-#UPDATETHUMBNAIL = #PB_Event_FirstCustomValue + 2
+#UPDATETHUMBNAILTOOLTIP = #PB_Event_FirstCustomValue + 2
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "config.bis"
@@ -417,47 +417,45 @@ Procedure DisplayThumbnails(Parameter)
   Protected img.i, hButton.i, iGadget.i, iCount.i
   Protected strImage.s
   
-  If Not g_fMinimized
-     Repeat
-       Delay(1)
+  Repeat
+    Delay(1)
+     
+    If Not g_fMinimized
+      LockMutex(g_MUTEX\Thumbnail)
+     
+      If FirstElement(g_listThumbnails())
+        ;get image and client gadget UI slot from queue 
+        With g_listThumbnails()
+          strImage = \strImage
+          iGadget = \iGadget
+          iCount = \iCount
+        EndWith
        
-       LockMutex(g_MUTEX\Thumbnail)
+        DeleteElement(g_listThumbnails())
+        UnlockMutex(g_MUTEX\Thumbnail)
        
-       If FirstElement(g_listThumbnails())
-         ;get image and client gadget UI slot from queue 
-         With g_listThumbnails()
-           strImage = \strImage
-           iGadget = \iGadget
-           iCount = \iCount
-         EndWith
+        With g_rgUIClients(iGadget)
+          hButton = \hBtnIP
+          \strImageDisplayed = strImage
+          \iImagesDisplayed = iCount
          
-         DeleteElement(g_listThumbnails())
-         UnlockMutex(g_MUTEX\Thumbnail)
-         
-         With g_rgUIClients(iGadget)
-           hButton = \hBtnIP
-           \strImageDisplayed = strImage
-           \iImagesDisplayed = iCount
-           
-           PostEvent(#UPDATETHUMBNAIL, wndMain, hButton, 0, iGadget)
-         EndWith
-         
-         img = LoadImage(#PB_Any, strImage)
-         If IsImage(img)
-           ResizeImage(img, 100, 100, #PB_Image_Raw)
-           SetGadgetAttribute(hButton, #PB_Button_Image, ImageID(img))
-         EndIf
-       Else
-         UnlockMutex(g_MUTEX\Thumbnail)
-       EndIf
+          PostEvent(#UPDATETHUMBNAILTOOLTIP, wndMain, hButton, 0, iGadget)
+        EndWith
        
-     ;drain queue and display all thumbnails asked even after network is stopped  
-     Until Not g_fNetworkEnabled And ListSize(g_listThumbnails()) = 0
-   Else
-     Delay(1)
-   EndIf
+        img = LoadImage(#PB_Any, strImage)
+        If IsImage(img)
+          ResizeImage(img, 100, 100, #PB_Image_Raw)
+          SetGadgetAttribute(hButton, #PB_Button_Image, ImageID(img))
+        EndIf
+      Else
+        UnlockMutex(g_MUTEX\Thumbnail)
+      EndIf
+    EndIf
+     
+  ;drain queue and display all thumbnails asked even after network is stopped  
+  Until Not g_fNetworkEnabled And ListSize(g_listThumbnails()) = 0
    
-   ClearList(g_listThumbnails())
+  ClearList(g_listThumbnails())
 EndProcedure
 
 ;MUTEX locked before calling this
@@ -706,9 +704,9 @@ Procedure ProcessWindowEvent(Event)
           g_fTerminateProgram = #True
         Case #UPDATESEARCHIMAGE
           SetGadgetState(imgSearching, ImageID(Img_wndMain_1))
-        Case #UPDATETHUMBNAIL
+        Case #UPDATETHUMBNAILTOOLTIP
           iGadget = EventData()
-           GadgetToolTip(EventGadget(), "[Total: " + Str(g_rgUIClients(iGadget)\iImagesDisplayed) + "] Current: " + g_rgUIClients(iGadget)\strImageDisplayed)
+          GadgetToolTip(EventGadget(), "[Total: " + Str(g_rgUIClients(iGadget)\iImagesDisplayed) + "] Current: " + g_rgUIClients(iGadget)\strImageDisplayed)
         Case #PB_Event_Timer
           UpdateStatusBar()
         Case #PB_Event_MinimizeWindow
@@ -795,7 +793,7 @@ If g_fNetworkInitialized
   SaveSettings()
 EndIf
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 449
-; FirstLine = 422
+; CursorPosition = 454
+; FirstLine = 409
 ; Folding = ----
 ; EnableXP
