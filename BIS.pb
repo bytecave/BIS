@@ -431,8 +431,10 @@ Procedure DisplayThumbnails(Parameter)
            iCount = \iCount
          EndWith
          
+         DeleteElement(g_listThumbnails())
+         UnlockMutex(g_MUTEX\Thumbnail)
+         
          With g_rgUIClients(iGadget)
-           img = LoadImage(#PB_Any, strImage)
            hButton = \hBtnIP
            \strImageDisplayed = strImage
            \iImagesDisplayed = iCount
@@ -440,9 +442,7 @@ Procedure DisplayThumbnails(Parameter)
            PostEvent(#UPDATETHUMBNAIL, wndMain, hButton, 0, iGadget)
          EndWith
          
-         DeleteElement(g_listThumbnails())
-         UnlockMutex(g_MUTEX\Thumbnail)
-         
+         img = LoadImage(#PB_Any, strImage)
          If IsImage(img)
            ResizeImage(img, 100, 100, #PB_Image_Raw)
            SetGadgetAttribute(hButton, #PB_Button_Image, ImageID(img))
@@ -697,6 +697,7 @@ EndProcedure
 
 Procedure ProcessWindowEvent(Event)
   Shared s_imgAppIcon
+  Protected iGadget.i
   
   Select EventWindow()
     Case wndMain
@@ -706,7 +707,8 @@ Procedure ProcessWindowEvent(Event)
         Case #UPDATESEARCHIMAGE
           SetGadgetState(imgSearching, ImageID(Img_wndMain_1))
         Case #UPDATETHUMBNAIL
-           GadgetToolTip(EventGadget(), "[Total: " + Str(g_rgUIClients(EventData())\iImagesDisplayed) + "] Current: " + g_rgUIClients(EventData())\strImageDisplayed)
+          iGadget = EventData()
+           GadgetToolTip(EventGadget(), "[Total: " + Str(g_rgUIClients(iGadget)\iImagesDisplayed) + "] Current: " + g_rgUIClients(iGadget)\strImageDisplayed)
         Case #PB_Event_Timer
           UpdateStatusBar()
         Case #PB_Event_MinimizeWindow
@@ -793,7 +795,7 @@ If g_fNetworkInitialized
   SaveSettings()
 EndIf
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 708
-; FirstLine = 704
+; CursorPosition = 449
+; FirstLine = 422
 ; Folding = ----
 ; EnableXP

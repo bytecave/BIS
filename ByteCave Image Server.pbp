@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-04 14:55" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-02-05 10:25" user="riche" host="RICHE-LAPTOP"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,7 +17,7 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="ac8cc8351ca449e75ce5a15304a85617"/>
+      <fingerprint md5="0c16fd947c8b939705618749fb6e6849"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -53,8 +53,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="2"/>
-      <buildcount enable="1" value="2"/>
+      <compilecount enable="1" value="3"/>
+      <buildcount enable="1" value="3"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -82,8 +82,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="2"/>
-      <buildcount enable="1" value="2"/>
+      <compilecount enable="1" value="3"/>
+      <buildcount enable="1" value="3"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -111,8 +111,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="2"/>
-      <buildcount enable="1" value="2"/>
+      <compilecount enable="1" value="3"/>
+      <buildcount enable="1" value="3"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -140,8 +140,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="123"/>
-      <buildcount enable="1" value="2"/>
+      <compilecount enable="1" value="126"/>
+      <buildcount enable="1" value="3"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
