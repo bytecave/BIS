@@ -61,8 +61,6 @@ Procedure SendImage(hSocket.i, strImageToSend.s, strClientIP.s)
   CopyMemory(*pImageData, *pData, iImageLength)
   FreeMemory(*pImageData)
   
-  AddStatusEvent(strClientIP + ": " + strImageToSend)
-  
   Repeat
     iSentBytes + SendNetworkData(hSocket, *pSendBuffer + iSentBytes, iPacketSize - iSentBytes)
     iRetries + 1
@@ -141,9 +139,9 @@ Procedure ImageServerThread(Parameter)
     CloseNetworkServer(iServerID)
   EndIf
 EndProcedure
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 85
-; FirstLine = 79
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 63
+; FirstLine = 48
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\
