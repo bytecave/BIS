@@ -98,7 +98,7 @@ Procedure ClientConfig(EventType)
         
         If \strImageDisplayed = ""
           LockMutex(g_MUTEX\Clients)
-          strInfoToDisplay  + "<Images Path>: " + g_mapClients(strIP)\strImagesPath
+          strInfoToDisplay  + "<Images Folder>: " + g_mapClients(strIP)\strImagesPath
           UnlockMutex(g_MUTEX\Clients)
         Else
           strInfoToDisplay + "<Current>: " + \strImageDisplayed
@@ -113,6 +113,7 @@ Procedure ClientConfig(EventType)
   Else
     If g_fNetworkEnabled
       SetGadgetText(edtMainImagesPath, "[Default Folder]: " + g_strDefaultFolder)
+      AddStatusEvent("[Default Folder]: " + g_strDefaultFolder, #False, #Blue)
     Else
       ClientConfigDialog(#True)
     EndIf
@@ -129,11 +130,10 @@ EndProcedure
 Procedure SetClientConfig(EventType)
   Shared s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
   Protected i.i, fRC.i = #True
-  Protected strIP.s, strImagesPath.s
+  Protected strIP.s, strImagesPath.s, strStatus.s
   
   If s_fSettingDefault
     g_strDefaultFolder = GetGadgetText(edtConfigImagesPath)
-    SetGadgetText(edtMainImagesPath, "[" + "Default Folder]: " + g_strDefaultFolder)
     
     DisableClientButtons(#False)
   Else
@@ -165,10 +165,21 @@ Procedure SetClientConfig(EventType)
     
     If s_fSettingDefault
       SetGadgetText(edtMainImagesPath, "[" + "Default Folder]: " + g_strDefaultFolder)
+      strStatus = "Set default images folder to: " + g_strDefaultFolder
     Else
       SetGadgetText(edtMainImagesPath, "[" + strIP + "]: " + strImagesPath)
+      
+      strStatus = "[" + strIP + "]: "
+      If s_fExistingClientOnEntry
+        strStatus + "Changed "
+      Else
+        strStatus + "Set "
+      EndIf
+      
+      strStatus + "images folder to " + strImagesPath
     EndIf
     
+    AddStatusEvent(strStatus, #False, #Blue)
     CloseClientConfig()
   EndIf
 EndProcedure
@@ -181,7 +192,9 @@ Procedure RemoveClientConfig(EventType)
     ClearList(g_mapClients()\listClientImages())
     DeleteMapElement(g_mapClients())
     
+    AddStatusEvent("[" + \strIPClientMapKey + "]: Removed client configuration.", #False, #Red)
     \strIPClientMapKey = ""
+    
     SetGadgetText(\hTxtIP, "")
     SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(g_imgAvailable))
   EndWith
@@ -212,7 +225,7 @@ Procedure HandleClientConfigEvents(Event)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 108
-; FirstLine = 92
+; CursorPosition = 181
+; FirstLine = 147
 ; Folding = --
 ; EnableXP

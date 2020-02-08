@@ -1,4 +1,6 @@
-﻿Procedure RunAtLogin(iRunAtLogin.i)
+﻿;This software provided under MIT license. Copyright 2019-2020, ByteCave
+
+Procedure RunAtLogin(iRunAtLogin.i)
   Protected ihKey.i, iRC.i = #False
   Protected strPath.s, cTerminatorSize.c = '!'
   Protected strRegPath.s = "Software\Microsoft\Windows\CurrentVersion\Run"
@@ -77,6 +79,7 @@ Procedure LoadSettings()
       CreateClientList(iIP, IPString(iIP), strImagesPath, i, iTotalImages)
     Else
       SetGadgetAttribute(g_rgUIClients(i)\hBtnIP, #PB_Button_Image, ImageID(g_imgAvailable))
+      GadgetToolTip(g_rgUIClients(i)\hBtnIP, "Click to add image folder for specific IP address.")
     EndIf
   Next
   
@@ -126,7 +129,6 @@ Procedure SaveSettings()
   EndIf
 EndProcedure
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 114
-; FirstLine = 84
+; CursorPosition = 2
 ; Folding = -
 ; EnableXP

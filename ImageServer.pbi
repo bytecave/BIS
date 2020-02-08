@@ -139,9 +139,7 @@ Procedure ImageServerThread(Parameter)
     CloseNetworkServer(iServerID)
   EndIf
 EndProcedure
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 63
-; FirstLine = 48
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
 ; Folding = -
 ; EnableXP
 ; CurrentDirectory = binaries\

@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-08 12:36" user="bytecave" host="VILM"/>
+    <lastopen date="2020-02-08 15:58" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,11 +17,15 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="69fc030336321f4b704da4a8c952e9e0"/>
+      <fingerprint md5="bcb7e33274ea0c2d1e159bfd51190861"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="7118e6ac744df32f4025942af0b60fc3"/>
+      <fingerprint md5="e38f5c266993c4aabdc68c25f681ce82"/>
+    </file>
+    <file name="CrossPlatform.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="0307c77fbc59da59bc693877d35a56b3"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -29,7 +33,7 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="83bf2ba613f1506820c78d99aef24446"/>
+      <fingerprint md5="ab4c191c98f2f47c4bb784135048a96d"/>
     </file>
     <file name="frmClientConfig.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -37,15 +41,15 @@
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5f4f70bf32dcb0f7dc46b8fa457d1997"/>
+      <fingerprint md5="5f8260011a3a5605c18c0c1c858903d2"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="574a6900e47534b05687f69b39c395a0"/>
+      <fingerprint md5="0b6ab3d2a98d121f8126343f063ea889"/>
     </file>
-    <file name="CrossPlatform.pbi">
+    <file name="MainUI.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="f06e35ed85b85931601ba63c942f8271"/>
+      <fingerprint md5="2fc2c84379a5378f7c8ad1760d266534"/>
     </file>
   </section>
   <section name="targets">
@@ -57,8 +61,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="8"/>
-      <buildcount enable="1" value="8"/>
+      <compilecount enable="1" value="11"/>
+      <buildcount enable="1" value="11"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -86,8 +90,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="8"/>
-      <buildcount enable="1" value="8"/>
+      <compilecount enable="1" value="11"/>
+      <buildcount enable="1" value="11"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -115,8 +119,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="8"/>
-      <buildcount enable="1" value="8"/>
+      <compilecount enable="1" value="11"/>
+      <buildcount enable="1" value="11"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -144,8 +148,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="172"/>
-      <buildcount enable="1" value="8"/>
+      <compilecount enable="1" value="202"/>
+      <buildcount enable="1" value="11"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>

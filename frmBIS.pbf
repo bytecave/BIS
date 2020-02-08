@@ -9,9 +9,9 @@
 
 Global wndMain
 
-Global lblTitle, btnAbout, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, cmbServerIP, btnControl, imgSearching, lblStatus, lblNoNetwork, btnDefaultFolder, txtDefaultFolder, edtMainImagesPath, lstEvents
+Global lblTitle, btnAbout, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, cmbServerIP, btnControl, imgSearching, lblStatus, lblNoNetwork, btnDefaultFolder, txtDefaultFolder, edtMainImagesPath, lstEvents, imgArrow
 
-Global Img_wndMain_0, Img_wndMain_1, Img_wndMain_2
+Global Img_wndMain_0, Img_wndMain_1, Img_wndMain_2, Img_wndMain_3
 
 Enumeration FormGadget
   #btn0
@@ -49,6 +49,7 @@ UsePNGImageDecoder()
 Img_wndMain_0 = LoadImage(#PB_Any,"resources\logo.png")
 Img_wndMain_1 = LoadImage(#PB_Any,"resources\searching.gif")
 Img_wndMain_2 = LoadImage(#PB_Any,"resources\defaultfolder.png")
+Img_wndMain_3 = LoadImage(#PB_Any,"resources\aboutarrow.png")
 
 Enumeration FormFont
   #Font_wndMain_0
@@ -163,11 +164,13 @@ Procedure OpenwndMain(x = 0, y = 0, width = 800, height = 600)
   TextGadget(#txt13, 680, 440, 100, 20, "", #PB_Text_Center)
   SetGadgetFont(#txt13, FontID(#Font_wndMain_5))
   btnDefaultFolder = ButtonImageGadget(#PB_Any, 25, 470, 80, 80, ImageID(Img_wndMain_2))
+  GadgetToolTip(btnDefaultFolder, "Click to set default images folder.")
   txtDefaultFolder = TextGadget(#PB_Any, 20, 550, 90, 20, "Default Folder", #PB_Text_Center)
   SetGadgetFont(txtDefaultFolder, FontID(#Font_wndMain_5))
   edtMainImagesPath = EditorGadget(#PB_Any, 20, 140, 630, 70, #PB_Editor_ReadOnly | #PB_Editor_WordWrap)
   lstEvents = ListIconGadget(#PB_Any, 130, 465, 650, 105, "Column 1", 100, #PB_ListIcon_FullRowSelect)
   SetGadgetColor(lstEvents, #PB_Gadget_BackColor,RGB(247,247,247))
+  imgArrow = ImageGadget(#PB_Any, 610, 20, 31, 32, ImageID(Img_wndMain_3))
 EndProcedure
 
 Procedure wndMain_Events(event)

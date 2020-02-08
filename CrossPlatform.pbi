@@ -1,4 +1,6 @@
-﻿Procedure RemoveListHeaders()
+﻿;This software provided under MIT license. Copyright 2019-2020, ByteCave
+
+Procedure RemoveListHeaders()
 CompilerSelect #PB_Compiler_OS
   CompilerCase #PB_OS_Linux
     gtk_tree_view_set_headers_visible_(GadgetID(lstEvents), #False)
@@ -8,6 +10,6 @@ CompilerEndSelect
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 7
+; CursorPosition = 2
 ; Folding = -
 ; EnableXP
