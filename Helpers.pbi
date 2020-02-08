@@ -34,7 +34,7 @@ Procedure LoadSettings()
   Shared s_iWindowX, s_iWindowY
   Protected strPrefs.s
   Protected strImagesPath.s
-  Protected i.i, iIP.i
+  Protected i.i, iIP.i, iTotalImages.i
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   OpenPreferences(strPrefs)
@@ -72,7 +72,9 @@ Procedure LoadSettings()
         strImagesPath = g_strDefaultFolder
       EndIf
       
-      CreateClientList(iIP, IPString(iIP), strImagesPath, i)
+      iTotalImages = ReadPreferenceInteger("TotalImages" + Str(i), 0)
+      
+      CreateClientList(iIP, IPString(iIP), strImagesPath, i, iTotalImages)
     Else
       SetGadgetAttribute(g_rgUIClients(i)\hBtnIP, #PB_Button_Image, ImageID(g_imgAvailable))
     EndIf
@@ -84,7 +86,7 @@ EndProcedure
 
 Procedure SaveSettings()
   Protected strPrefs.s, strImagesPath.s
-  Protected i.i, iIP.i
+  Protected i.i, iIP.i, iTotalImages.i
   
   strPrefs = GetHomeDirectory() + #PREFSFILENAME
   
@@ -101,18 +103,21 @@ Procedure SaveSettings()
     WritePreferenceInteger("WindowY", WindowY(wndMain, #PB_Window_FrameCoordinate))
     
     For i = 0 To #LASTCLIENT
-      With g_rgUIClients(i)
-        If \strIPClientMapKey <> ""
-          iIP = g_mapClients(\strIPClientMapKey)\iClientIP
-          strImagesPath = g_mapClients(\strIPClientMapKey)\strImagesPath
-        Else
+      If g_rgUIClients(i)\strIPClientMapKey <> ""
+        With g_mapClients(g_rgUIClients(i)\strIPClientMapKey)
+          iIP = \iClientIP
+          strImagesPath = \strImagesPath
+          iTotalImages = \iTotalImages
+        EndWith
+      Else
           iIP = 0
           strImagesPath = ""
+          iTotalImages = 0
         EndIf
-      EndWith
       
       WritePreferenceInteger("ClientIP" + Str(i), iIP)
       WritePreferenceString("ImagesPath" + Str(i), strImagesPath)
+      WritePreferenceInteger("TotalImages" + Str(i), iTotalImages)
     Next
     
     ClosePreferences()   
@@ -120,10 +125,8 @@ Procedure SaveSettings()
     RunAtLogin(g_iRunAtLogin)
   EndIf
 EndProcedure
-
-
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 101
-; FirstLine = 81
+; CursorPosition = 114
+; FirstLine = 84
 ; Folding = -
 ; EnableXP

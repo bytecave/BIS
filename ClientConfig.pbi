@@ -78,7 +78,7 @@ EndProcedure
 ;can't click UI client button while server is running and no client ip/images path are set
 Procedure ClientConfig(EventType)
   Shared s_iGadget.i
-  Protected strIP.s
+  Protected strIP.s, strInfoToDisplay.s
   
   If Not EventGadget() = btnDefaultFolder
     If g_iLastIP = 0
@@ -91,11 +91,22 @@ Procedure ClientConfig(EventType)
     s_iGadget = EventGadget() - #btn0
     
     If g_fNetworkEnabled
-      strIP = g_rgUIClients(s_iGadget)\strIPClientMapKey
+      With g_rgUIClients(s_iGadget)
+        strIP = \strIPClientMapKey
+        
+        strInfoToDisplay = "<Total>: " + Str(\iTotalImages) + " "
+        
+        If \strImageDisplayed = ""
+          LockMutex(g_MUTEX\Clients)
+          strInfoToDisplay  + "<Images Path>: " + g_mapClients(strIP)\strImagesPath
+          UnlockMutex(g_MUTEX\Clients)
+        Else
+          strInfoToDisplay + "<Current>: " + \strImageDisplayed
+        EndIf
+      EndWith
       
-      LockMutex(g_MUTEX\Clients)
-      SetGadgetText(edtMainImagesPath, "[" + strIP + "]: " + g_mapClients(strIP)\strImagesPath)
-      UnlockMutex(g_MUTEX\Clients)
+      SetGadgetText(edtMainImagesPath, "[" + strIP + "]: " + strInfoToDisplay)
+      AddStatusEvent("[" + strIP + "]: " + strInfoToDisplay)
     Else
       ClientConfigDialog(#False)
     EndIf
@@ -201,7 +212,7 @@ Procedure HandleClientConfigEvents(Event)
 EndProcedure
 
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 91
-; FirstLine = 70
+; CursorPosition = 108
+; FirstLine = 92
 ; Folding = --
 ; EnableXP

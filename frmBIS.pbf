@@ -9,7 +9,7 @@
 
 Global wndMain
 
-Global lblTitle, btnAbout, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, cmbServerIP, btnControl, imgSearching, lstEvents, lblStatus, lblNoNetwork, btnDefaultFolder, txtDefaultFolder, edtMainImagesPath
+Global lblTitle, btnAbout, lblPort, edtPort, lblMinTime, edtMinTime, lblServerIP, cmbServerIP, btnControl, imgSearching, lblStatus, lblNoNetwork, btnDefaultFolder, txtDefaultFolder, edtMainImagesPath, lstEvents
 
 Global Img_wndMain_0, Img_wndMain_1, Img_wndMain_2
 
@@ -57,16 +57,14 @@ Enumeration FormFont
   #Font_wndMain_3
   #Font_wndMain_4
   #Font_wndMain_5
-  #Font_wndMain_6
 EndEnumeration
 
 LoadFont(#Font_wndMain_0,"Consolas", 24, #PB_Font_Bold)
 LoadFont(#Font_wndMain_1,"Consolas", 12, #PB_Font_Bold)
 LoadFont(#Font_wndMain_2,"Consolas", 12)
 LoadFont(#Font_wndMain_3,"Consolas", 14, #PB_Font_Bold)
-LoadFont(#Font_wndMain_4,"Consolas", 10)
-LoadFont(#Font_wndMain_5,"Consolas", 12, #PB_Font_Bold | #PB_Font_Italic)
-LoadFont(#Font_wndMain_6,"Consolas", 8)
+LoadFont(#Font_wndMain_4,"Consolas", 12, #PB_Font_Bold | #PB_Font_Italic)
+LoadFont(#Font_wndMain_5,"Consolas", 8)
 
 Declare ChangeMinTime(EventType)
 Declare ChangePort(EventType)
@@ -103,11 +101,8 @@ Procedure OpenwndMain(x = 0, y = 0, width = 800, height = 600)
   GadgetToolTip(btnControl, "Toggle to start/stop image server.")
   SetGadgetFont(btnControl, FontID(#Font_wndMain_3))
   imgSearching = ImageGadget(#PB_Any, 700, 140, 45, 60, ImageID(Img_wndMain_1))
-  lstEvents = ListViewGadget(#PB_Any, 130, 470, 650, 100)
-  SetGadgetColor(lstEvents, #PB_Gadget_FrontColor,RGB(0,0,0))
-  SetGadgetFont(lstEvents, FontID(#Font_wndMain_4))
   lblStatus = TextGadget(#PB_Any, 20, 60, 620, 20, "Welcome to the ByteCave Image Server.")
-  SetGadgetFont(lblStatus, FontID(#Font_wndMain_5))
+  SetGadgetFont(lblStatus, FontID(#Font_wndMain_4))
   lblNoNetwork = TextGadget(#PB_Any, 640, 80, 140, 25, "NO NETWORK", #PB_Text_Center)
   SetGadgetColor(lblNoNetwork, #PB_Gadget_FrontColor,RGB(255,0,0))
   SetGadgetFont(lblNoNetwork, FontID(#Font_wndMain_3))
@@ -140,38 +135,39 @@ Procedure OpenwndMain(x = 0, y = 0, width = 800, height = 600)
   ButtonImageGadget(#btn13, 680, 340, 100, 100, 0)
   DisableGadget(#btn13, 1)
   TextGadget(#txt0, 20, 320, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt0, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt0, FontID(#Font_wndMain_5))
   TextGadget(#txt1, 130, 320, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt1, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt1, FontID(#Font_wndMain_5))
   TextGadget(#txt2, 240, 320, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt2, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt2, FontID(#Font_wndMain_5))
   TextGadget(#txt3, 350, 320, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt3, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt3, FontID(#Font_wndMain_5))
   TextGadget(#txt4, 460, 320, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt4, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt4, FontID(#Font_wndMain_5))
   TextGadget(#txt5, 570, 320, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt5, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt5, FontID(#Font_wndMain_5))
   TextGadget(#txt6, 680, 320, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt6, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt6, FontID(#Font_wndMain_5))
   TextGadget(#txt7, 20, 440, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt7, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt7, FontID(#Font_wndMain_5))
   TextGadget(#txt8, 130, 440, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt8, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt8, FontID(#Font_wndMain_5))
   TextGadget(#txt9, 240, 440, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt9, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt9, FontID(#Font_wndMain_5))
   TextGadget(#txt10, 350, 440, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt10, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt10, FontID(#Font_wndMain_5))
   TextGadget(#txt11, 460, 440, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt11, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt11, FontID(#Font_wndMain_5))
   TextGadget(#txt12, 570, 440, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt12, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt12, FontID(#Font_wndMain_5))
   TextGadget(#txt13, 680, 440, 100, 20, "", #PB_Text_Center)
-  SetGadgetFont(#txt13, FontID(#Font_wndMain_6))
+  SetGadgetFont(#txt13, FontID(#Font_wndMain_5))
   btnDefaultFolder = ButtonImageGadget(#PB_Any, 25, 470, 80, 80, ImageID(Img_wndMain_2))
   txtDefaultFolder = TextGadget(#PB_Any, 20, 550, 90, 20, "Default Folder", #PB_Text_Center)
-  SetGadgetFont(txtDefaultFolder, FontID(#Font_wndMain_6))
+  SetGadgetFont(txtDefaultFolder, FontID(#Font_wndMain_5))
   edtMainImagesPath = EditorGadget(#PB_Any, 20, 140, 630, 70, #PB_Editor_ReadOnly | #PB_Editor_WordWrap)
-  SetGadgetFont(edtMainImagesPath, FontID(#Font_wndMain_4))
+  lstEvents = ListIconGadget(#PB_Any, 130, 465, 650, 105, "Column 1", 100, #PB_ListIcon_FullRowSelect)
+  SetGadgetColor(lstEvents, #PB_Gadget_BackColor,RGB(247,247,247))
 EndProcedure
 
 Procedure wndMain_Events(event)

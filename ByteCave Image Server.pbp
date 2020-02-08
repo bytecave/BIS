@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 LTS (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 beta 1 LTS (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
     <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-05 10:52" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-02-08 12:36" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,11 +17,11 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="f3c5629bade3a9aaaa8174d5373a945d"/>
+      <fingerprint md5="69fc030336321f4b704da4a8c952e9e0"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="0351b18a4c3d06147d6e3b63c41c6d28"/>
+      <fingerprint md5="7118e6ac744df32f4025942af0b60fc3"/>
     </file>
     <file name="frmAbout.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -29,7 +29,7 @@
     </file>
     <file name="frmBIS.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="431b056768d4721f4c3416b103c9898d"/>
+      <fingerprint md5="83bf2ba613f1506820c78d99aef24446"/>
     </file>
     <file name="frmClientConfig.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -37,11 +37,15 @@
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="577eaf324849350cd88ca35fe0e5f274"/>
+      <fingerprint md5="5f4f70bf32dcb0f7dc46b8fa457d1997"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
       <fingerprint md5="574a6900e47534b05687f69b39c395a0"/>
+    </file>
+    <file name="CrossPlatform.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="f06e35ed85b85931601ba63c942f8271"/>
     </file>
   </section>
   <section name="targets">
@@ -53,8 +57,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="6"/>
-      <buildcount enable="1" value="6"/>
+      <compilecount enable="1" value="8"/>
+      <buildcount enable="1" value="8"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -82,8 +86,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="6"/>
-      <buildcount enable="1" value="6"/>
+      <compilecount enable="1" value="8"/>
+      <buildcount enable="1" value="8"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -111,8 +115,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="6"/>
-      <buildcount enable="1" value="6"/>
+      <compilecount enable="1" value="8"/>
+      <buildcount enable="1" value="8"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -140,8 +144,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="131"/>
-      <buildcount enable="1" value="6"/>
+      <compilecount enable="1" value="172"/>
+      <buildcount enable="1" value="8"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
