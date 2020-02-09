@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-08 21:06" user="bytecave" host="VILM"/>
+    <lastopen date="2020-02-08 21:12" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -45,8 +45,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="4"/>
-      <buildcount enable="1" value="4"/>
+      <compilecount enable="1" value="5"/>
+      <buildcount enable="1" value="5"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -74,8 +74,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="4"/>
-      <buildcount enable="1" value="4"/>
+      <compilecount enable="1" value="5"/>
+      <buildcount enable="1" value="5"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -103,8 +103,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="4"/>
-      <buildcount enable="1" value="4"/>
+      <compilecount enable="1" value="5"/>
+      <buildcount enable="1" value="5"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
@@ -132,8 +132,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="12"/>
-      <buildcount enable="1" value="4"/>
+      <compilecount enable="1" value="13"/>
+      <buildcount enable="1" value="5"/>
       <versioninfo enable="1">
         <field0 value="1,0,0,0"/>
         <field1 value="1,0,0,0"/>
