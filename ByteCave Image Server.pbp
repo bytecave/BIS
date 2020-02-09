@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-09 15:12" user="riche" host="RICHE-LAPTOP"/>
+    <lastopen date="2020-02-09 15:37" user="riche" host="RICHE-LAPTOP"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -61,8 +61,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="14"/>
-      <buildcount enable="1" value="14"/>
+      <compilecount enable="1" value="15"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -90,8 +90,8 @@
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="14"/>
-      <buildcount enable="1" value="14"/>
+      <compilecount enable="1" value="15"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -114,13 +114,13 @@
     <target name="Release x64" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x64.Exe"/>
-      <compiler version="PureBasic 5.72 LTS Beta 1 (Windows - x54)"/>
+      <compiler version="PureBasic 5.72 LTS Beta 1 (Windows - x64)"/>
       <executable value="BIS_x64.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="14"/>
-      <buildcount enable="1" value="14"/>
+      <compilecount enable="1" value="15"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -148,8 +148,8 @@
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="205"/>
-      <buildcount enable="1" value="14"/>
+      <compilecount enable="1" value="206"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
