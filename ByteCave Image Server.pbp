@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.71 beta 1 LTS (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.72 LTS Beta 1 (Windows - x86)">
   <section name="config">
     <options closefiles="1" openmode="1" name="ByteCave Image Server"/>
     <comment>ByteCave Image Server, (c) 2019-2020 ByteCave</comment>
@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-08 21:52" user="bytecave" host="VILM"/>
+    <lastopen date="2020-02-09 15:12" user="riche" host="RICHE-LAPTOP"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -56,13 +56,13 @@
     <target name="Debug x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.72 LTS Beta 1 (Windows - x86)"/>
       <executable value="BISDebug_x86.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="12"/>
-      <buildcount enable="1" value="12"/>
+      <compilecount enable="1" value="14"/>
+      <buildcount enable="1" value="14"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -85,13 +85,13 @@
     <target name="Release x86" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x86.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.72 LTS Beta 1 (Windows - x86)"/>
       <executable value="BIS_x86.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="12"/>
-      <buildcount enable="1" value="12"/>
+      <compilecount enable="1" value="14"/>
+      <buildcount enable="1" value="14"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -114,13 +114,13 @@
     <target name="Release x64" enabled="1" default="0">
       <inputfile value="BIS.pb"/>
       <outputfile value="BIS_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.72 LTS Beta 1 (Windows - x54)"/>
       <executable value="BIS_x64.Exe"/>
       <options thread="1" xpskin="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="12"/>
-      <buildcount enable="1" value="12"/>
+      <compilecount enable="1" value="14"/>
+      <buildcount enable="1" value="14"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -143,13 +143,13 @@
     <target name="Debug x64" enabled="1" default="1">
       <inputfile value="BIS.pb"/>
       <outputfile value="BISDebug_x64.Exe"/>
-      <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
+      <compiler version="PureBasic 5.72 LTS Beta 1 (Windows - x64)"/>
       <executable value="BISDebug_x64.Exe"/>
       <options thread="1" xpskin="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="203"/>
-      <buildcount enable="1" value="12"/>
+      <compilecount enable="1" value="205"/>
+      <buildcount enable="1" value="14"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
