@@ -12,7 +12,7 @@ EnableExplicit
 #UPDATESEARCHIMAGE = #PB_Event_FirstCustomValue + 1
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
-#PREFSFILENAME = "config.bis"
+#PREFSFILENAME = "configv1.bis"
 #BISTITLE = "ByteCave Image Server"
 
 Structure sLIST
@@ -279,7 +279,7 @@ EndProcedure
 
 ;MUTEX locked before calling this
 Procedure ShuffleImageList(strClientIP.s)
-  AddStatusEvent("Shuffling image list for >> " + strClientIP + "<< ...")
+  AddStatusEvent("Shuffling image list for >> " + strClientIP + " << ...")
   
   RandomizeList(g_Lists(strClientIP)\listClient())
   ResetList(g_Lists(strClientIP)\listClient())
@@ -467,7 +467,7 @@ Procedure ToggleImageServer(EventType)
       AddStatusEvent("No images found. Select a different path.", #True, #Red)
       
     Else      
-      AddStatusEvent(Str(g_iImagesQueued) + " images found.")
+      AddStatusEvent(FormatNumber(g_iImagesQueued, 0) + " images found.")
       
       SetGadgetText(btnControl, "STOP")
       DisableGadget(btnImagesPath, 1)
@@ -616,8 +616,8 @@ Repeat
 Until g_fTerminateProgram
 
 SaveSettings()
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 296
-; FirstLine = 286
+; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
+; CursorPosition = 469
+; FirstLine = 466
 ; Folding = ---
 ; EnableXP
