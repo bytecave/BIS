@@ -13,7 +13,7 @@ EnableExplicit
 #UPDATETHUMBNAILTOOLTIP = #PB_Event_FirstCustomValue + 2
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
-#PREFSFILENAME = "config.bis"
+#PREFSFILENAME = "configv2.bis"
 #BIS_TITLE = "ByteCave Image Server"
 #DEFAULTCLIENTIP = "0.0.0.0"
 #AUTOSEARCH = 9999
@@ -619,7 +619,6 @@ If g_fNetworkInitialized
   SaveSettings()
 EndIf
 ; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 475
-; FirstLine = 447
+; CursorPosition = 15
 ; Folding = ---
 ; EnableXP
