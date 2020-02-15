@@ -137,7 +137,7 @@ Procedure DisplayThumbnails(Parameter)
       g_rgUIClients(iGadget)\iTotalImages = iCount
       
       If Not g_fMinimized
-        ;PureBasic doesn't like it when you update UI in a thread, so post event to main window
+        ;PureBasic doesn't like it when we update UI in a thread, so post event to main window
         PostEvent(#UPDATETHUMBNAIL, wndMain, 0, 0, iGadget)
       EndIf
     Else
@@ -202,7 +202,7 @@ g_imgAvailable = CatchImage(#PB_Any, ?Available)
 OpenwndMain()
 HideWindow(wndMain, #True)
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 134
+; CursorPosition = 139
 ; FirstLine = 108
 ; Folding = -
 ; EnableXP
