@@ -97,8 +97,23 @@ Procedure UpdateStatusBar(fUpdateConnections.i = #True)
   StatusBarText(idStatusBar, 8, "Serving " + FormatNumber(g_iImagesQueued, 0) + " images", #PB_StatusBar_BorderLess)
 EndProcedure
 
+Procedure UpdateThumbnail(iGadget.i)
+  Protected img.i
+  
+  With g_rgUIClients(iGadget)
+    GadgetToolTip(\hBtnIP, "[Total: " + Str(\iTotalImages) + "] Current: " + \strImageDisplayed)
+  
+    img = LoadImage(#PB_Any, \strImageDisplayed)
+    
+    If IsImage(img)
+      ResizeImage(img, 100, 100, #PB_Image_Raw)
+      SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(img))
+    EndIf
+  EndWith
+EndProcedure
+
 Procedure DisplayThumbnails(Parameter)
-  Protected img.i, hButton.i, iGadget.i, iCount.i
+  Protected iGadget.i, iCount.i
   Protected strImage.s
   
   Repeat
@@ -116,20 +131,14 @@ Procedure DisplayThumbnails(Parameter)
      
       DeleteElement(g_listThumbnails())
       UnlockMutex(g_MUTEX\Thumbnail)
-     
-      With g_rgUIClients(iGadget)
-        hButton = \hBtnIP
-        \strImageDisplayed = strImage
-        \iTotalImages = iCount
-       
-        PostEvent(#UPDATETHUMBNAILTOOLTIP, wndMain, hButton, 0, iGadget)
-      EndWith
-     
-      ;Even if app is minimized, we still set the thumbnail on the button face so it's displayed when app is restored
-      img = LoadImage(#PB_Any, strImage)
-      If IsImage(img)
-        ResizeImage(img, 100, 100, #PB_Image_Raw)
-        SetGadgetAttribute(hButton, #PB_Button_Image, ImageID(img))
+      
+      ;Update button gadget data for this IP address
+      g_rgUIClients(iGadget)\strImageDisplayed = strImage
+      g_rgUIClients(iGadget)\iTotalImages = iCount
+      
+      If Not g_fMinimized
+        ;PureBasic doesn't like it when you update UI in a thread, so post event to main window
+        PostEvent(#UPDATETHUMBNAIL, wndMain, 0, 0, iGadget)
       EndIf
     Else
       UnlockMutex(g_MUTEX\Thumbnail)
@@ -192,7 +201,8 @@ g_imgAvailable = CatchImage(#PB_Any, ?Available)
 
 OpenwndMain()
 HideWindow(wndMain, #True)
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 2
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 134
+; FirstLine = 108
 ; Folding = -
 ; EnableXP

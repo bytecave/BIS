@@ -10,7 +10,7 @@ EnableExplicit
 #DEFAULTMINTIME = 2000
 #DEFAULTSERVERPORT = 80
 #UPDATESEARCHIMAGE = #PB_Event_FirstCustomValue + 1
-#UPDATETHUMBNAILTOOLTIP = #PB_Event_FirstCustomValue + 2
+#UPDATETHUMBNAIL = #PB_Event_FirstCustomValue + 2
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "configv2.bis"
@@ -494,6 +494,7 @@ Procedure ToggleImageServer(EventType)
       Select g_iNetworkStatus
         Case #SERVERNOTSTARTED
           AddStatusEvent("Cannot initialize server on port "+ Str(g_iPort) + ".", #True, #Red)
+          
         Case #SERVERSTARTED
           GadgetToolTip(btnDefaultFolder, "Click to display default images folder name.")
           
@@ -548,20 +549,23 @@ Procedure ProcessWindowEvent(Event)
       Select Event
         Case #PB_Event_CloseWindow
           g_fTerminateProgram = #True
+          
         Case #UPDATESEARCHIMAGE
           SetGadgetState(imgSearching, ImageID(Img_wndMain_1))
-        Case #UPDATETHUMBNAILTOOLTIP
-          iGadget = EventData()
-          GadgetToolTip(EventGadget(), "[Total: " + Str(g_rgUIClients(iGadget)\iTotalImages) + "] Current: " + g_rgUIClients(iGadget)\strImageDisplayed)
+          
+        Case #UPDATETHUMBNAIL
+          UpdateThumbnail(EventData())   ;EventData() = Gadget index number
+          
         Case #PB_Event_Timer
           UpdateStatusBar()
+          
         Case #PB_Event_MinimizeWindow
           If Not g_fMinimized And g_iMinimizeToTray = #PB_Checkbox_Checked
+            g_fMinimized = #True
+            
             AddSysTrayIcon(0, WindowID(wndMain), ImageID(s_imgAppIcon))
             SysTrayIconToolTip(0, #BIS_TITLE)
             HideWindow(wndMain, #True)
-              
-            g_fMinimized = #True
           EndIf
                 
         Case #PB_Event_RestoreWindow
@@ -573,8 +577,15 @@ Procedure ProcessWindowEvent(Event)
               If g_fMinimized And g_iMinimizeToTray = #PB_Checkbox_Checked
                 RemoveSysTrayIcon(0)
                 HideWindow(wndMain, #False)
-                SetWindowState(wndMain, #PB_Window_Normal)  
+                
+                ;quickly refresh thumbnails with tooltip and image served for each IP connected
+                For iGadget = 0 To #LASTCLIENT
+                  If g_rgUIClients(iGadget)\strImageDisplayed
+                    UpdateThumbnail(iGadget)
+                  EndIf
+                Next
                      
+                SetWindowState(wndMain, #PB_Window_Normal)
                 g_fMinimized = #False
               EndIf
           EndSelect
@@ -618,7 +629,8 @@ If g_fNetworkInitialized
   ;save user preferences on exit
   SaveSettings()
 EndIf
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 15
+; IDE Options = PureBasic 5.71 LTS (Windows - x64)
+; CursorPosition = 588
+; FirstLine = 576
 ; Folding = ---
 ; EnableXP
