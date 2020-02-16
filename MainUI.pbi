@@ -102,12 +102,20 @@ Procedure UpdateThumbnail(iGadget.i)
   
   With g_rgUIClients(iGadget)
     GadgetToolTip(\hBtnIP, "[Total: " + Str(\iTotalImages) + "] Current: " + \strImageDisplayed)
-  
+    
+    ;Free the previous image that was displayed so as not to leak memory
+    If IsImage(\iPreviousImage)
+      FreeImage(\iPreviousImage)
+    EndIf
+    
     img = LoadImage(#PB_Any, \strImageDisplayed)
     
     If IsImage(img)
       ResizeImage(img, 100, 100, #PB_Image_Raw)
       SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(img))
+      
+      ;Can't FreeImage after setting image into gadget, as only the handle to the image is stored, not a copy of the image
+      \iPreviousImage = img
     EndIf
   EndWith
 EndProcedure
@@ -202,7 +210,7 @@ g_imgAvailable = CatchImage(#PB_Any, ?Available)
 OpenwndMain()
 HideWindow(wndMain, #True)
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 139
-; FirstLine = 108
+; CursorPosition = 116
+; FirstLine = 91
 ; Folding = -
 ; EnableXP

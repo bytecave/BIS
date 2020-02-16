@@ -40,6 +40,7 @@ Structure sUICLIENT
   strIPClientMapKey.s
   strImageDisplayed.s
   iTotalImages.i
+  iPreviousImage.i
 EndStructure
 
 Structure MUTEX
@@ -630,7 +631,7 @@ If g_fNetworkInitialized
   SaveSettings()
 EndIf
 ; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 588
-; FirstLine = 576
+; CursorPosition = 42
+; FirstLine = 17
 ; Folding = ---
 ; EnableXP
