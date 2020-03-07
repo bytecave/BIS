@@ -9,14 +9,18 @@ EnableExplicit
 #NONETWORK = "No Network"
 #DEFAULTMINTIME = 2000
 #DEFAULTSERVERPORT = 80
-#UPDATESEARCHIMAGE = #PB_Event_FirstCustomValue + 1
-#UPDATETHUMBNAIL = #PB_Event_FirstCustomValue + 2
 #STATUSUPDATEINTERVAL = 10000
 #ACTIVECLIENTTIMEOUT = 330000  ;5.5 minutes timeout
 #PREFSFILENAME = "configv2.bis"
 #BIS_TITLE = "ByteCave Image Server"
 #DEFAULTCLIENTIP = "0.0.0.0"
 #AUTOSEARCH = 9999
+
+Enumeration
+  #UPDATESEARCHIMAGE = #PB_Event_FirstCustomValue + 1
+  #UPDATETHUMBNAIL
+  #UPDATEIMAGEGADGETINFO
+EndEnumeration
 
 Structure sCLIENT
   List listClientImages.s()
@@ -62,7 +66,7 @@ Global g_iRunAtLogin.i
 Global g_iMinimizeToTray.i
 Global g_imgPlaceholder.i 
 Global g_imgAvailable.i
-Global g_iForeverImagesServed.i
+Global g_qForeverImagesServed.q
 Global g_strServerIP.s
 Global g_strDefaultFolder.s
 Global g_qMinTimeBetweenImages.q = #DEFAULTMINTIME
@@ -312,15 +316,12 @@ Procedure.i CreateClientList(iClientIP.i, strClientIP.s, strImagesPath.s = "", i
       ShuffleImageList(strClientIP)
     EndIf
     
-    ;set button image list information
+    ;set button image list informatiion. We may be called from network thread, so need to post event to main thread
     With g_rgUIClients(iIdx)
       \strIPClientMapKey = strClientIP
       \iTotalImages = iTotalImages
       
-      SetGadgetText(\hTxtIP, strClientIP)
-      SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(g_imgPlaceholder))
-      GadgetToolTip(\hBtnIP, "[Total: " + Str(iTotalImages) + "] Current: <none>")
-      DisableGadget(\hBtnIP, #False)
+      PostEvent(#UPDATEIMAGEGADGETINFO, wndMain, 0, 0, iIdx)
     EndWith
       
     fAvailableSlot = #True
@@ -337,7 +338,7 @@ Procedure.s GetNextImage(strClientIP.s)
     If NextElement(\listClientImages())
       strImage = \listClientImages()
       g_iImagesServed + 1
-      g_iForeverImagesServed + 1
+      g_qForeverImagesServed + 1
       \iTotalImages + 1
       
       LockMutex(g_MUTEX\Thumbnail)
@@ -557,6 +558,14 @@ Procedure ProcessWindowEvent(Event)
         Case #UPDATETHUMBNAIL
           UpdateThumbnail(EventData())   ;EventData() = Gadget index number
           
+        Case #UPDATEIMAGEGADGETINFO      ;EventData() = Gadget index number
+          With g_rgUIClients(EventData())
+            SetGadgetText(\hTxtIP, \strIPClientMapKey)
+            SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(g_imgPlaceholder))
+            GadgetToolTip(\hBtnIP, "[Total: " + Str(\iTotalImages) + "] Current: <none>")
+            DisableGadget(\hBtnIP, #False)
+          EndWith
+
         Case #PB_Event_Timer
           UpdateStatusBar()
           
@@ -630,8 +639,3 @@ If g_fNetworkInitialized
   ;save user preferences on exit
   SaveSettings()
 EndIf
-; IDE Options = PureBasic 5.71 LTS (Windows - x64)
-; CursorPosition = 42
-; FirstLine = 17
-; Folding = ---
-; EnableXP

@@ -92,7 +92,7 @@ Procedure UpdateStatusBar(fUpdateConnections.i = #True)
   
   StatusBarText(idStatusBar, 2, Str(iActiveConnections) + " active connections")
   StatusBarText(idStatusBar, 4, FormatNumber(g_iImagesServed, 0) + " images this session")
-  StatusBarText(idStatusBar, 6, FormatNumber(g_iForeverImagesServed, 0) + " images all time")
+  StatusBarText(idStatusBar, 6, FormatNumber(g_qForeverImagesServed, 0) + " images all time")
   
   StatusBarText(idStatusBar, 8, "Serving " + FormatNumber(g_iImagesQueued, 0) + " images", #PB_StatusBar_BorderLess)
 EndProcedure

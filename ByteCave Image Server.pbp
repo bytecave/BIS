@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-15 21:55" user="bytecave" host="VILM"/>
+    <lastopen date="2020-03-06 22:39" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -17,7 +17,7 @@
     </file>
     <file name="BIS.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="4b5753ab61ed47f3b27877d3d1a7cfae"/>
+      <fingerprint md5="eaf466a1643850073c24e20513dcc2f5"/>
     </file>
     <file name="ClientConfig.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -41,7 +41,7 @@
     </file>
     <file name="Helpers.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5f8260011a3a5605c18c0c1c858903d2"/>
+      <fingerprint md5="b0a7ef1409de9103a2304c43fb61b965"/>
     </file>
     <file name="ImageServer.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
@@ -49,7 +49,7 @@
     </file>
     <file name="MainUI.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5bb60d7c9c3ed778e4978d0bf093913f"/>
+      <fingerprint md5="1d6d26cf5a22ed3d5c3d4fd22720b894"/>
     </file>
   </section>
   <section name="targets">
@@ -58,11 +58,11 @@
       <outputfile value="BISDebug_x86.Exe"/>
       <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BISDebug_x86.Exe"/>
-      <options thread="1" xpskin="1" debug="1"/>
+      <options thread="1" xpskin="1" dpiaware="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="21"/>
-      <buildcount enable="1" value="21"/>
+      <compilecount enable="1" value="23"/>
+      <buildcount enable="1" value="23"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -87,11 +87,11 @@
       <outputfile value="BIS_x86.Exe"/>
       <compiler version="PureBasic 5.71 LTS (Windows - x86)"/>
       <executable value="BIS_x86.Exe"/>
-      <options thread="1" xpskin="1"/>
+      <options thread="1" xpskin="1" dpiaware="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="21"/>
-      <buildcount enable="1" value="21"/>
+      <compilecount enable="1" value="23"/>
+      <buildcount enable="1" value="23"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -116,11 +116,11 @@
       <outputfile value="BIS_x64.Exe"/>
       <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BIS_x64.Exe"/>
-      <options thread="1" xpskin="1"/>
+      <options thread="1" xpskin="1" dpiaware="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="20"/>
-      <buildcount enable="1" value="20"/>
+      <compilecount enable="1" value="22"/>
+      <buildcount enable="1" value="22"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
@@ -145,11 +145,11 @@
       <outputfile value="BISDebug_x64.Exe"/>
       <compiler version="PureBasic 5.71 LTS (Windows - x64)"/>
       <executable value="BISDebug_x64.Exe"/>
-      <options thread="1" xpskin="1" debug="1"/>
+      <options thread="1" xpskin="1" dpiaware="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="224"/>
-      <buildcount enable="1" value="20"/>
+      <compilecount enable="1" value="237"/>
+      <buildcount enable="1" value="22"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
         <field1 value="2,0,0,0"/>
