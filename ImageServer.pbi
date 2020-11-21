@@ -132,6 +132,8 @@ Procedure ImageServerThread(Parameter)
           ReceiveNetworkData(hSocket, *pReceivedData, #RECEIVEBUFFER)
           HandleHTTPRequest(hSocket, *pReceivedData)
       EndIf
+        
+      Delay(1)
     Until Not g_fNetworkEnabled
     
     FreeMemory(*pReceivedData)

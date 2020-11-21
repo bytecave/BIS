@@ -633,6 +633,7 @@ EndIf
 Repeat
   Event = WaitWindowEvent(1)
   ProcessWindowEvent(Event)
+  Delay(1)
 Until g_fTerminateProgram
 
 If g_fNetworkInitialized
