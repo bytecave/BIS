@@ -246,10 +246,10 @@ Procedure ChangeMinTime(EventType)
   If EventType = #PB_EventType_LostFocus
     iMinTime = Val(GetGadgetText(edtMinTime))
     
-    If iMinTime >= 2000 And iMinTime <= 86400
+    If iMinTime >= 0 And iMinTime <= 86400
       g_qMinTimeBetweenImages = iMinTime
     Else
-      AddStatusEvent("Please choose a minimum time between 2000 And 86400 milliseconds.", #True, #Red)
+      AddStatusEvent("Please choose a minimum time between 0 and 86400 milliseconds.", #True, #Red)
       SetGadgetText(edtMinTime, Str(g_qMinTimeBetweenImages))
       SetActiveGadget(edtMinTime)
     EndIf
