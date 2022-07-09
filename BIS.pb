@@ -205,24 +205,25 @@ Procedure GetServerIPs()
   EndIf
 EndProcedure
 
-Procedure.i InitializeNetwork()
-  Protected fRC.i = #True
-  
-  If Not InitNetwork()
-    AddGadgetItem(cmbServerIP, -1, #NONETWORK)
-    AddStatusEvent("Could not initialize network. Restart app to try again.", #True, #Red)
-    
-    HideGadget(cmbServerIP, #True)
-    HideGadget(lblNoNetwork, #False)
-    DisableGadget(edtPort, #True)
-    DisableGadget(edtMinTime, #True)
-    DisableGadget(btnDefaultFolder, #True)
-    
-    fRC = #False
-  EndIf
-  
-  ProcedureReturn fRC
-EndProcedure
+;InitNetwork deprecated in PB 6.0
+;Procedure.i InitializeNetwork()
+;  Protected fRC.i = #True
+;  
+;  If Not InitNetwork()
+;    AddGadgetItem(cmbServerIP, -1, #NONETWORK)
+;    AddStatusEvent("Could not initialize network. Restart app to try again.", #True, #Red)
+;    
+;    HideGadget(cmbServerIP, #True)
+;    HideGadget(lblNoNetwork, #False)
+;    DisableGadget(edtPort, #True)
+;    DisableGadget(edtMinTime, #True)
+;    DisableGadget(btnDefaultFolder, #True)
+;    
+;    fRC = #False
+;  EndIf
+;  
+;  ProcedureReturn fRC
+;EndProcedure
 
 Procedure ChangePort(EventType)
   Protected nPort.i
@@ -615,12 +616,13 @@ EndProcedure
 g_MUTEX\Clients = CreateMutex()
 g_MUTEX\Thumbnail = CreateMutex()
 
-If InitializeNetwork()
+;InitNetwork deprecated in PB 6.0
+;If InitializeNetwork()
   g_fNetworkInitialized = #True
   
   LoadSettings()
   GetServerIPs()
-EndIf
+;EndIf
   
 InitializeUI()
 UpdateStatusBar(#False)

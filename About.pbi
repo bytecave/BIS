@@ -52,7 +52,7 @@ Procedure DisplayContent(EventType)
   
   If fAbout
     SetGadgetText(edtAbout, PeekS(?StartAbout, ?EndAbout - ?StartAbout, #PB_Ascii))
-    SetGadgetText(btnContent, "Display ByteCave (c) 2019-2020, MIT License")
+    SetGadgetText(btnContent, "Display ByteCave (c) 2019-2022, MIT License")
     
     fAbout = #False
   Else

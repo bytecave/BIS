@@ -8,7 +8,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-12-03 19:09" user="bytecave" host="VILM"/>
+    <lastopen date="2021-04-08 18:21" user="bytecave" host="VILM"/>
   </section>
   <section name="files">
     <file name="About.pbi">
@@ -148,7 +148,7 @@
       <options thread="1" xpskin="1" dpiaware="1" debug="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="247"/>
+      <compilecount enable="1" value="248"/>
       <buildcount enable="1" value="24"/>
       <versioninfo enable="1">
         <field0 value="2,0,0,0"/>
