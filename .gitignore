@@ -3,3 +3,10 @@
 
 *.Exe
 BIS.zip
+!/Binaries/*.zip
+!/Binaries/*.Exe
+
+/build/
+/WALLPICS/
+/BIS-CODEX-HANDOFF-2026-10-24.md
+/REVIEW-2026-10-24.md

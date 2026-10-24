@@ -1,4 +1,4 @@
-﻿;This software provided under MIT license. Copyright 2019-2020, ByteCave
+﻿;This software provided under MIT license. Copyright 2019-2026, ByteLord
 
 Procedure RemoveListHeaders()
 CompilerSelect #PB_Compiler_OS

@@ -1,4 +1,4 @@
-﻿;This software provided under MIT license. Copyright 2019-2020, ByteCave
+﻿;This software provided under MIT license. Copyright 2019-2026, ByteLord
 
 #ABOUTESCPRESSED = 1000
 
@@ -17,7 +17,7 @@ EndDataSection
 XIncludeFile "frmAbout.pbf"
 
 Procedure HandleAboutEvents(Event)
-  If EventMenu() = #ABOUTESCPRESSED
+  If Event = #PB_Event_Menu And EventMenu() = #ABOUTESCPRESSED
     CloseAboutBox(Event)
   Else
     Select Event
@@ -37,7 +37,7 @@ Procedure DisplayAboutBox(EventType)
   
   AddKeyboardShortcut(wndAbout, #PB_Shortcut_Escape, #ABOUTESCPRESSED)
   
-  SetGadgetText(txtAboutLabel, "About ByteCave Image Server v" + Str(#BIS_VERSION) + "." + Str(#PB_Editor_BuildCount) + "-" + Str(#PB_Editor_CompileCount))
+  SetGadgetText(txtAboutLabel, "About " + #BIS_TITLE + " v" + #BIS_VERSION)
   SetGadgetState(chkTray, g_iMinimizeToTray)
   SetGadgetState(chkStartup, g_iRunAtLogin)
   
@@ -52,12 +52,12 @@ Procedure DisplayContent(EventType)
   
   If fAbout
     SetGadgetText(edtAbout, PeekS(?StartAbout, ?EndAbout - ?StartAbout, #PB_Ascii))
-    SetGadgetText(btnContent, "Display ByteCave (c) 2019-2020, MIT License")
+    SetGadgetText(btnContent, "Display ByteLord (c) 2019-2026, MIT License")
     
     fAbout = #False
   Else
     SetGadgetText(edtAbout, PeekS(?StartLicense, ?EndLicense - ?StartLicense, #PB_Ascii))
-    SetGadgetText(btnContent, "Read about ByteCave Image Server")
+    SetGadgetText(btnContent, "Read about ByteLord Image Server")
     
     fAbout = #True
   EndIf

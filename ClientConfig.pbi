@@ -1,4 +1,4 @@
-﻿;This software provided under MIT license. Copyright 2019-2020, ByteCave
+﻿;This software provided under MIT license. Copyright 2019-2026, ByteLord
 
 #CONFIGESCPRESSED = 1000
 
@@ -79,6 +79,7 @@ EndProcedure
 Procedure ClientConfig(EventType)
   Shared s_iGadget.i
   Protected strIP.s, strInfoToDisplay.s
+  If g_fSearchingImages : ProcedureReturn : EndIf
   
   If Not EventGadget() = btnDefaultFolder
     If g_iLastIP = 0
@@ -141,9 +142,16 @@ Procedure SetClientConfig(EventType)
     strImagesPath = GetGadgetText(edtConfigImagesPath)
     
     If s_fExistingClientOnEntry
-      g_mapClients()\strImagesPath = strImagesPath
+      If FindMapElement(g_mapClients(), g_rgUIClients(s_iGadget)\strIPClientMapKey)
+        g_mapClients()\strImagesPath = strImagesPath
+      Else
+        fRC = #False
+      EndIf
     Else
-      If FindMapElement(g_mapClients(), strIP)
+      If GetGadgetState(ipClientAddress) = 0
+        MessageRequester("Invalid Client IP", "Please enter a client IPv4 address.")
+        fRC = #False
+      ElseIf FindMapElement(g_mapClients(), strIP)
         MessageRequester("Duplicate Client IP", "Client entry already exists for IP address " + strIP + ". Please change IP address and try again.", #PB_MessageRequester_Ok | #PB_MessageRequester_Warning)
         SetActiveGadget(ipClientAddress)
         
@@ -197,6 +205,11 @@ Procedure RemoveClientConfig(EventType)
     
     SetGadgetText(\hTxtIP, "")
     SetGadgetAttribute(\hBtnIP, #PB_Button_Image, ImageID(g_imgAvailable))
+    If IsImage(\iThumbnail) : FreeImage(\iThumbnail) : EndIf
+    \iThumbnail = 0
+    \strImageDisplayed = ""
+    \iTotalImages = 0
+    GadgetToolTip(\hBtnIP, "Click to add image folder for specific IP address.")
   EndWith
   
   CloseClientConfig()
@@ -212,7 +225,7 @@ EndIf
 Img_wndClientConfig_0 = CatchImage(#PB_Any, ?SelectFolder)
 
 Procedure HandleClientConfigEvents(Event)
-  If EventMenu() = #CONFIGESCPRESSED
+  If Event = #PB_Event_Menu And EventMenu() = #CONFIGESCPRESSED
     CloseClientConfig()
   Else
     Select Event
