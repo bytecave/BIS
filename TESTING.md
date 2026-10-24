@@ -1,4 +1,4 @@
-# BIS 2.1.0 validation
+# BIS 2.1.1 validation
 
 Run from the repository root in PowerShell 7:
 
@@ -24,7 +24,7 @@ test; the default is local `WALLPICS` if it exists.
 pwsh -NoProfile -File .\Package.ps1
 ```
 
-This rebuilds all four production targets and creates `Binaries/BIS-2.1.0.zip`.
+This rebuilds all four production targets and creates `Binaries/BIS-2.1.1.zip`.
 The ZIP contains only `BIS_x64.Exe`, `BIS_x86.Exe`, `BISDebug_x64.Exe`,
 and `BISDebug_x86.Exe`. The same four executables are copied directly into Binaries.
 Packaging extracts the archive into an isolated build directory, compares every
@@ -53,6 +53,11 @@ partial, failed and stalled sends; recursive Unicode/extension discovery;
 missing, invalid and duplicate preferences; settings round trips; cancellation
 on close; thumbnail replacement/removal; occupied ports; ten start/stop cycles;
 configured/unassigned button state; and immediate port reuse.
+Folder-selection regressions open and close About, then click Select folder,
+cancel, reopen and save in both default-folder and client settings across repeated
+dialog lifecycles. A native smoke test also opens and cancels the real Windows
+folder chooser for both modes on every target, verifying its owner and the
+preserved path. It closes only dialogs belonging to the isolated test process.
 
 Raw TCP tests cover two complete no-repeat cycles, byte-exact image responses,
 JPEG MIME, three-part fragmented GET, pipelined bytes, unsupported methods,
@@ -76,7 +81,7 @@ timeout. It does not overwrite current source or resources.
 ## Manual checks
 
 1. Run `build/x64/Release/BIS_x64.Exe`. Check the ByteLord logo, title, About text,
-   version 2.1.0, copyright 2019-2026, and layout at your usual display scale.
+   version 2.1.1, copyright 2019-2026, and layout at your usual display scale.
    Check the x86 Release UI as well, including a higher DPI display if available.
 2. Set the default folder to WALLPICS, select the intended local address and a
    free port, then start. Refresh the displayed HTTP URL in your usual browser.

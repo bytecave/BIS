@@ -84,8 +84,8 @@ END
         if ($machine -ne $expected) { throw "Wrong PE machine for $exe" }
         $metadata = [Diagnostics.FileVersionInfo]::GetVersionInfo($exe)
         if ($metadata.CompanyName -ne 'ByteLord' -or $metadata.InternalName -ne $internal -or
-            $metadata.ProductName -ne 'ByteLord Image Server' -or $metadata.FileVersion -ne '2.1.0' -or
-            $metadata.ProductVersion -ne '2.1.0' -or $metadata.OriginalFilename -ne $filename -or
+            $metadata.ProductName -ne 'ByteLord Image Server' -or $metadata.FileVersion -ne '2.1.1' -or
+            $metadata.ProductVersion -ne '2.1.1' -or $metadata.OriginalFilename -ne $filename -or
             $metadata.IsDebug -ne ($mode -eq 'Debug')) {
             throw "Version resource validation failed for $exe"
         }

@@ -68,6 +68,7 @@ Procedure CloseAboutBox(EventType)
 
   DisableWindow(wndMain, #False)
   CloseWindow(wndAbout)
+  wndAbout = 0
 EndProcedure
 
 Procedure SetMinToTray(EventType)

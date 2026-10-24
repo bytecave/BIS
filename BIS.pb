@@ -22,7 +22,7 @@ EnableExplicit
 #SEARCHTIMER = 1
 
 CompilerIf Not Defined(BIS_VERSION, #PB_Constant)
-  #BIS_VERSION = "2.1.0"
+  #BIS_VERSION = "2.1.1"
 CompilerEndIf
 CompilerIf Not Defined(PB_Editor_BuildCount, #PB_Constant)
   #PB_Editor_BuildCount = 11
@@ -567,6 +567,7 @@ Procedure ProcessWindowEvent(Event)
   Shared s_imgAppIcon
   Protected iGadget.i
   Protected status.s, setStatus.i, color.i
+  If Not Event : ProcedureReturn : EndIf
   
   Select EventWindow()
     Case wndMain

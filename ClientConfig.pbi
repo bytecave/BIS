@@ -11,6 +11,23 @@ XIncludeFile "frmClientConfig.pbf"
 
 Define s_fSettingDefault.i, s_fExistingClientOnEntry.i, s_iGadget.i
 
+CompilerIf Defined(BIS_TEST, #PB_Constant)
+  Global g_fTestFolderRequester.i, g_iTestFolderCalls.i, g_iTestFolderParent.i
+  Global g_strTestFolderResult.s, g_strTestFolderInitial.s
+CompilerEndIf
+
+Procedure.s ChooseImagesDirectory(initialPath.s)
+  CompilerIf Defined(BIS_TEST, #PB_Constant)
+    If g_fTestFolderRequester
+      g_iTestFolderCalls + 1
+      g_iTestFolderParent = WindowID(wndClientConfig)
+      g_strTestFolderInitial = initialPath
+      ProcedureReturn g_strTestFolderResult
+    EndIf
+  CompilerEndIf
+  ProcedureReturn PathRequester("Select images folder", initialPath, WindowID(wndClientConfig))
+EndProcedure
+
 Procedure GetImagesPath(EventType)
   Protected strImagesPath.s
   
@@ -20,7 +37,7 @@ Procedure GetImagesPath(EventType)
     strImagesPath = g_strDefaultFolder
   EndIf
   
-  strImagesPath = PathRequester("Select images folder", strImagesPath)
+  strImagesPath = ChooseImagesDirectory(strImagesPath)
   
   ;if valid images path, enable Set button, even if IP address is still 0.0.0.0
   If strImagesPath <> ""
@@ -126,6 +143,7 @@ Procedure CloseClientConfig()
   
   DisableWindow(wndMain, #False)
   CloseWindow(wndClientConfig)
+  wndClientConfig = 0
 EndProcedure
 
 Procedure SetClientConfig(EventType)

@@ -12,6 +12,55 @@ Procedure Expect(condition.i, label.s)
   EndIf
 EndProcedure
 
+Procedure ClickConfigControl(gadget.i)
+  Protected event.i, deadline.q = ElapsedMilliseconds() + 100
+  SendMessage_(GadgetID(gadget), #BM_CLICK, 0, 0)
+  Repeat
+    event = WaitWindowEvent(1)
+    If event : ProcessWindowEvent(event) : EndIf
+  Until ElapsedMilliseconds() >= deadline
+EndProcedure
+
+Procedure FolderSelectionTests()
+  Shared s_iGadget
+  Protected mode.i, cycle.i, calls.i
+  Protected originalDefault.s = g_strDefaultFolder
+  Protected originalClient.s = g_mapClients("127.0.0.1")\strImagesPath
+  g_fTestFolderRequester = #True
+  s_iGadget = 0
+  For cycle = 1 To 3
+    For mode = #False To #True
+      DisplayAboutBox(0)
+      CloseAboutBox(0)
+      Expect(Bool(wndAbout = 0), "closed About window cannot intercept a reused window ID")
+      ClientConfigDialog(mode)
+      HideWindow(wndClientConfig, #True)
+      calls = g_iTestFolderCalls
+      g_strTestFolderResult = g_testImages + "nested\"
+      ClickConfigControl(btnImagesPath)
+      Expect(Bool(g_iTestFolderCalls = calls + 1), "folder button is routed to the requester after About")
+      Expect(Bool(g_iTestFolderParent = WindowID(wndClientConfig)), "folder chooser belongs to the configuration dialog")
+      Expect(Bool(GetGadgetText(edtConfigImagesPath) = g_strTestFolderResult), "chosen folder appears in client/default dialog")
+      Expect(Bool(Not (GetWindowLongPtr_(GadgetID(btnSetClient), #GWL_STYLE) & #WS_DISABLED)), "choosing a folder enables Set")
+      calls = g_iTestFolderCalls
+      g_strTestFolderResult = ""
+      ClickConfigControl(btnImagesPath)
+      Expect(Bool(g_iTestFolderCalls = calls + 1), "folder chooser can be reopened")
+      Expect(Bool(GetGadgetText(edtConfigImagesPath) = g_testImages + "nested\"), "cancelling the chooser preserves the selected folder")
+      ClickConfigControl(btnSetClient)
+      Expect(Bool(wndClientConfig = 0), "Set closes and clears the client configuration window")
+      If mode
+        Expect(Bool(g_strDefaultFolder = g_testImages + "nested\"), "default folder selection is saved")
+      Else
+        Expect(Bool(g_mapClients("127.0.0.1")\strImagesPath = g_testImages + "nested\"), "client folder selection is saved")
+      EndIf
+    Next
+  Next
+  g_fTestFolderRequester = #False
+  g_strDefaultFolder = originalDefault
+  g_mapClients("127.0.0.1")\strImagesPath = originalClient
+EndProcedure
+
 Procedure ResetTestClients()
   StopImageServer()
   ClearMap(g_mapClients())
@@ -102,6 +151,7 @@ Procedure CoreTests()
   SetClientConfig(0)
   Expect(Bool(g_mapClients("127.0.0.1")\strImagesPath = g_testImages + "nested\"), "edit selected client after status refresh")
   Expect(Bool(g_mapClients("127.0.0.2")\strImagesPath = g_testImages), "other client path unchanged")
+  FolderSelectionTests()
   ; Per-client lists and cursors are independent.
   AddElement(g_mapClients("127.0.0.2")\listClientImages())
   g_mapClients()\listClientImages() = "only-B"
@@ -277,9 +327,11 @@ Procedure ServeTests()
 EndProcedure
 
 OpenConsole()
+XIncludeFile "FolderRequester.pbi"
 Select ProgramParameter(0)
   Case "core" : CoreTests()
+  Case "folder-native" : NativeFolderTests()
   Case "server" : ServeTests()
-  Default : PrintN("Expected core or server mode") : End 1
+  Default : PrintN("Expected core, folder-native or server mode") : End 1
 EndSelect
 End 0

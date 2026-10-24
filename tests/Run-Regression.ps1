@@ -68,7 +68,7 @@ function Read-Response($Client) {
     Check ($bodyLength -eq [long]$headers['content-length']) 'exact Content-Length with no trailing NUL'
     Check ($headers['connection'] -eq 'close') 'response declares connection close'
     Check ($headers['cache-control'] -eq 'no-store') 'random responses bypass browser cache'
-    Check ($headers['server'] -eq 'ByteLord Image Server 2.1.0') "server identity and version: $($headers['server'])"
+    Check ($headers['server'] -eq 'ByteLord Image Server 2.1.1') "server identity and version: $($headers['server'])"
     $body = [byte[]]::new($bodyLength)
     [Array]::Copy($data, $separator + 4, $body, 0, $bodyLength)
     return [pscustomobject]@{Status=[int]($lines[0] -split ' ')[1]; Headers=$headers; Body=$body}
@@ -111,6 +111,8 @@ function With-Server([string]$Scenario, [scriptblock]$Test, [int]$ExpectedImages
 }
 $core = Start-TestProcess @('core', $run, "$(Free-Port)", $ImageFolder) 'core'
 Wait-TestProcess $core 45000 'core'
+$native = Start-TestProcess @('folder-native', $run) 'folder-native'
+Wait-TestProcess $native 15000 'folder-native'
 $hashes = @{}
 foreach ($file in Get-ChildItem "$run\fixtures" -File -Recurse -Attributes !ReparsePoint | Where-Object { $_.Extension -in '.png','.jpg','.bmp' }) {
     $hashes[(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash] = $file.Extension.ToLowerInvariant()
