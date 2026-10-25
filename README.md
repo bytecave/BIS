@@ -34,12 +34,7 @@ Support: https://github.com/bytelordgames/BIS/issues
 
 License
 ===========================================================================
-BIS is licensed under the BSD 3-Clause License (BSD-3-Clause). Source and binary
-redistributions, with or without modification, are permitted subject to the
-copyright notice, license conditions and disclaimer in [LICENSE.md](LICENSE.md).
-ByteLord and contributor names may not be used to endorse derived products
-without prior written permission. The full license is also available from the
-About dialog in every executable.
+BIS is licensed under the BSD 3-Clause License (BSD-3-Clause). Source and binary redistributions, with or without modification, are permitted subject to the copyright notice, license conditions and disclaimer in [LICENSE.md](LICENSE.md). ByteLord and contributor names may not be used to endorse derived products without prior written permission. The full license is also available from the About dialog in every executable.
 
 Build and validation
 ===========================================================================
