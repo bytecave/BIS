@@ -113,7 +113,8 @@ EndProcedure
 
 Procedure CoreTests()
   Shared s_iGadget
-  Protected i.i, j.i, file.i, previous.i, blocker.i, port.i
+  Protected i.i, j.i, file.i, previous.i, blocker.i, port.i, buttonDC.i, expectedColor.i
+  Protected paintDeadline.q
   Protected image.s, key.s
   Protected *data
   Protected NewMap seen.i()
@@ -221,17 +222,36 @@ Procedure CoreTests()
   CreateImageLists()
   Expect(Bool(g_fTerminateProgram And Not g_fSearchingImages And g_iImagesQueued = 0), "close cancels discovery")
   g_fTerminateProgram = #False
-  ; Main-thread thumbnail replacement releases the previous image.
+  ; Replacement must update the button as well as retain a valid image object.
+  HideWindow(wndMain, #False)
   For i = 1 To 30
     previous = g_rgUIClients(0)\iThumbnail
     AddElement(g_listThumbnails())
-    g_listThumbnails()\strImage = g_testImages + "a.png"
+    If i % 2
+      g_listThumbnails()\strImage = g_testImages + "a.png"
+      expectedColor = RGB(0, 50, 90)
+    Else
+      g_listThumbnails()\strImage = g_testImages + "nested\unicode-" + Chr($56FE) + ".PNG"
+      expectedColor = RGB(120, 50, 90)
+    EndIf
     g_listThumbnails()\iGadget = 0
     g_listThumbnails()\iCount = i
     DisplayThumbnails(0)
     Expect(Bool(IsImage(g_rgUIClients(0)\iThumbnail)), "current thumbnail is valid")
+    Expect(Bool(ImageWidth(g_rgUIClients(0)\iThumbnail) = 100 And ImageHeight(g_rgUIClients(0)\iThumbnail) = 100), "thumbnail is sized for the client button")
+    Expect(Bool(GetGadgetAttribute(g_rgUIClients(0)\hBtnIP, #PB_Button_Image) = ImageID(g_rgUIClients(0)\iThumbnail)), "client button displays the current thumbnail")
+    RefreshClientButtons()
+    Expect(Bool(GetGadgetAttribute(g_rgUIClients(0)\hBtnIP, #PB_Button_Image) = ImageID(g_rgUIClients(0)\iThumbnail)), "client refresh preserves the displayed thumbnail")
+    paintDeadline = ElapsedMilliseconds() + 10
+    Repeat
+      ProcessWindowEvent(WaitWindowEvent(1))
+    Until ElapsedMilliseconds() >= paintDeadline
+    buttonDC = GetDC_(GadgetID(g_rgUIClients(0)\hBtnIP))
+    Expect(Bool(GetPixel_(buttonDC, 50, 50) = expectedColor), "client button paints the latest image pixels")
+    ReleaseDC_(GadgetID(g_rgUIClients(0)\hBtnIP), buttonDC)
     If previous : Expect(Bool(Not IsImage(previous)), "previous thumbnail is freed") : EndIf
   Next
+  HideWindow(wndMain, #True)
   previous = g_rgUIClients(0)\iThumbnail
   s_iGadget = 0
   ClientConfigDialog(#False)
@@ -317,6 +337,15 @@ Procedure ServeTests()
     Delay(1)
   Wend
   StopImageServer()
+  ForEach g_mapClients()
+    If g_mapClients()\fAskedForImage
+      i = g_mapClients()\iGadget
+      Expect(Bool(g_rgUIClients(i)\strIPClientMapKey = MapKey(g_mapClients())), "HTTP client owns the displayed slot")
+      Expect(Bool(IsImage(g_rgUIClients(i)\iThumbnail)), "completed HTTP image has a decoded thumbnail")
+      Expect(Bool(GetGadgetAttribute(g_rgUIClients(i)\hBtnIP, #PB_Button_Image) = ImageID(g_rgUIClients(i)\iThumbnail)), "completed HTTP image is attached to the client button")
+      Expect(Bool(g_rgUIClients(i)\iTotalImages = g_mapClients()\iTotalImages), "thumbnail count matches completed HTTP responses")
+    EndIf
+  Next
   file = CreateFile(#PB_Any, g_testRoot + scenario + ".stats")
   WriteStringN(file, Str(g_iImagesServed))
   WriteStringN(file, Str(g_iForeverImagesServed))

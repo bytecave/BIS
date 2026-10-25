@@ -8,48 +8,48 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2020-02-08 15:58" user="ByteLord" host="VILM"/>
+    <lastopen date="2026-10-25 02:17" user="bytec" host="MENWY"/>
   </section>
   <section name="files">
     <file name="About.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="b08681160704f771adc411d6fa0aa34c"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="1" panelstate="+"/>
+      <fingerprint md5="51848307dceaa06d73ea2e5a8a2953a4"/>
     </file>
     <file name="BIS.pb">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="bcb7e33274ea0c2d1e159bfd51190861"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="2" panelstate="+"/>
+      <fingerprint md5="2846c0b46b5fc1eca7d24bfe46e5700b"/>
     </file>
     <file name="ClientConfig.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="e38f5c266993c4aabdc68c25f681ce82"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="3" panelstate="+"/>
+      <fingerprint md5="8a24cacccee4e5fb0830fcf7e751837e"/>
     </file>
     <file name="CrossPlatform.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="0307c77fbc59da59bc693877d35a56b3"/>
-    </file>
-    <file name="frmAbout.pbf">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="b2a8e54116c1f1162d7f12bcbd0aebf2"/>
-    </file>
-    <file name="frmBIS.pbf">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="ab4c191c98f2f47c4bb784135048a96d"/>
-    </file>
-    <file name="frmClientConfig.pbf">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="a6acc00f233ee2be2ee14be66a751c1c"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="4" panelstate="+"/>
+      <fingerprint md5="9166baff93cb6c68c0aa23d4f82a9da0"/>
     </file>
     <file name="Helpers.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5f8260011a3a5605c18c0c1c858903d2"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="5" panelstate="+"/>
+      <fingerprint md5="c2ef2b7b2ec78f16df8f8e124e039380"/>
     </file>
     <file name="ImageServer.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="0b6ab3d2a98d121f8126343f063ea889"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="6" panelstate="+"/>
+      <fingerprint md5="9d2bf0210e052d4c7ec1667a4f355eae"/>
     </file>
     <file name="MainUI.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="2fc2c84379a5378f7c8ad1760d266534"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="7" panelstate="+"/>
+      <fingerprint md5="3fb2e27cee603737b17793dc33aebdf6"/>
+    </file>
+    <file name="frmAbout.pbf">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="8" panelstate="+"/>
+      <fingerprint md5="12947b66709b31900a7d3c412bac0530"/>
+    </file>
+    <file name="frmBIS.pbf">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="9" panelstate="+"/>
+      <fingerprint md5="8c3f795124e130f6858926c647fed730"/>
+    </file>
+    <file name="frmClientConfig.pbf">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" sortindex="10" panelstate="+"/>
+      <fingerprint md5="e55131859652c4de5c304eb1576ae1aa"/>
     </file>
   </section>
   <section name="targets">
@@ -58,28 +58,28 @@
       <outputfile value="BISDebug_x86.Exe"/>
       <compiler version="PureBasic 6.41 (Windows - x86)"/>
       <executable value="BISDebug_x86.Exe"/>
-      <options thread="1" xpskin="1" debug="1"/>
+      <options thread="1" xpskin="1" debug="1" optimizer="0"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="11"/>
-      <buildcount enable="1" value="11"/>
+      <compilecount enable="1" value="15"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
-        <field0 value="2,1,1,0"/>
-        <field1 value="2,1,1,0"/>
+        <field0 value="2,1,2,0"/>
+        <field1 value="2,1,2,0"/>
         <field2 value="ByteLord"/>
         <field3 value="ByteLord Image Server"/>
-        <field4 value="2.1.1"/>
-        <field5 value="2.1.1"/>
+        <field4 value="2.1.2"/>
+        <field5 value="2.1.2"/>
         <field6 value="ByteLord Image Server - Debug"/>
         <field7 value="BIS x86 Debug"/>
         <field9 value="(c) 2019-2026 ByteLord"/>
-        <field14 value="https://github.com/bytecave/BIS"/>
+        <field14 value="https://github.com/bytelordgames/BIS"/>
         <field15 value="VOS_NT_WINDOWS32"/>
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
       <constants>
-        <constant value="#BIS_VERSION = &quot;2.1.1&quot;" enable="1"/>
+        <constant value="#BIS_VERSION = &quot;2.1.2&quot;" enable="1"/>
       </constants>
     </target>
     <target name="Release x86" enabled="1" default="0">
@@ -87,28 +87,28 @@
       <outputfile value="BIS_x86.Exe"/>
       <compiler version="PureBasic 6.41 (Windows - x86)"/>
       <executable value="BIS_x86.Exe"/>
-      <options thread="1" xpskin="1"/>
+      <options thread="1" xpskin="1" optimizer="0"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="11"/>
-      <buildcount enable="1" value="11"/>
+      <compilecount enable="1" value="15"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
-        <field0 value="2,1,1,0"/>
-        <field1 value="2,1,1,0"/>
+        <field0 value="2,1,2,0"/>
+        <field1 value="2,1,2,0"/>
         <field2 value="ByteLord"/>
         <field3 value="ByteLord Image Server"/>
-        <field4 value="2.1.1"/>
-        <field5 value="2.1.1"/>
+        <field4 value="2.1.2"/>
+        <field5 value="2.1.2"/>
         <field6 value="ByteLord Image Server"/>
         <field7 value="BIS x86 Release"/>
         <field9 value="(c) 2019-2026 ByteLord"/>
-        <field14 value="https://github.com/bytecave/BIS"/>
+        <field14 value="https://github.com/bytelordgames/BIS"/>
         <field15 value="VOS_NT_WINDOWS32"/>
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
       <constants>
-        <constant value="#BIS_VERSION = &quot;2.1.1&quot;" enable="1"/>
+        <constant value="#BIS_VERSION = &quot;2.1.2&quot;" enable="1"/>
       </constants>
     </target>
     <target name="Release x64" enabled="1" default="0">
@@ -116,28 +116,28 @@
       <outputfile value="BIS_x64.Exe"/>
       <compiler version="PureBasic 6.41 (Windows - x64)"/>
       <executable value="BIS_x64.Exe"/>
-      <options thread="1" xpskin="1"/>
+      <options thread="1" xpskin="1" optimizer="1"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="11"/>
-      <buildcount enable="1" value="11"/>
+      <compilecount enable="1" value="15"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
-        <field0 value="2,1,1,0"/>
-        <field1 value="2,1,1,0"/>
+        <field0 value="2,1,2,0"/>
+        <field1 value="2,1,2,0"/>
         <field2 value="ByteLord"/>
         <field3 value="ByteLord Image Server"/>
-        <field4 value="2.1.1"/>
-        <field5 value="2.1.1"/>
+        <field4 value="2.1.2"/>
+        <field5 value="2.1.2"/>
         <field6 value="ByteLord Image Server"/>
         <field7 value="BIS x64 Release"/>
         <field9 value="(c) 2019-2026 ByteLord"/>
-        <field14 value="https://github.com/bytecave/BIS"/>
+        <field14 value="https://github.com/bytelordgames/BIS"/>
         <field15 value="VOS_NT_WINDOWS32"/>
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
       <constants>
-        <constant value="#BIS_VERSION = &quot;2.1.1&quot;" enable="1"/>
+        <constant value="#BIS_VERSION = &quot;2.1.2&quot;" enable="1"/>
       </constants>
     </target>
     <target name="Debug x64" enabled="1" default="1">
@@ -145,28 +145,28 @@
       <outputfile value="BISDebug_x64.Exe"/>
       <compiler version="PureBasic 6.41 (Windows - x64)"/>
       <executable value="BISDebug_x64.Exe"/>
-      <options thread="1" xpskin="1" debug="1"/>
+      <options thread="1" xpskin="1" debug="1" optimizer="0"/>
       <temporaryexe value="source"/>
       <icon enable="1">bis.ico</icon>
-      <compilecount enable="1" value="202"/>
-      <buildcount enable="1" value="11"/>
+      <compilecount enable="1" value="207"/>
+      <buildcount enable="1" value="15"/>
       <versioninfo enable="1">
-        <field0 value="2,1,1,0"/>
-        <field1 value="2,1,1,0"/>
+        <field0 value="2,1,2,0"/>
+        <field1 value="2,1,2,0"/>
         <field2 value="ByteLord"/>
         <field3 value="ByteLord Image Server"/>
-        <field4 value="2.1.1"/>
-        <field5 value="2.1.1"/>
+        <field4 value="2.1.2"/>
+        <field5 value="2.1.2"/>
         <field6 value="ByteLord Image Server - Debug"/>
         <field7 value="BIS x64 Debug"/>
         <field9 value="(c) 2019-2026 ByteLord"/>
-        <field14 value="https://github.com/bytecave/BIS"/>
+        <field14 value="https://github.com/bytelordgames/BIS"/>
         <field15 value="VOS_NT_WINDOWS32"/>
         <field16 value="VFT_APP"/>
         <field17 value="0409 English (United States)"/>
       </versioninfo>
       <constants>
-        <constant value="#BIS_VERSION = &quot;2.1.1&quot;" enable="1"/>
+        <constant value="#BIS_VERSION = &quot;2.1.2&quot;" enable="1"/>
       </constants>
     </target>
   </section>

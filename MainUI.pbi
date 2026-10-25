@@ -240,7 +240,7 @@ g_imgAvailable = CatchImage(#PB_Any, ?Available)
 
 OpenwndMain()
 HideWindow(wndMain, #True)
-; IDE Options = PureBasic 5.71 beta 1 LTS (Windows - x64)
-; CursorPosition = 2
-; Folding = -
+; IDE Options = PureBasic 6.41 (Windows - x86)
+; CursorPosition = 8
+; Folding = --
 ; EnableXP

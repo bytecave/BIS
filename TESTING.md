@@ -1,4 +1,9 @@
-# BIS 2.1.1 validation
+# BIS 2.1.2 validation
+
+Release verification on 2026-10-25 passed for x64 and x86, Debug and Release.
+Each target passed 393 core checks, 8 native folder-dialog checks, and 205
+HTTP/integration checks, including thumbnail image attachment and painted pixels.
+The optional WALLPICS scan found 1,476 supported images without modifying them.
 
 Run from the repository root in PowerShell 7:
 
@@ -24,7 +29,7 @@ test; the default is local `WALLPICS` if it exists.
 pwsh -NoProfile -File .\Package.ps1
 ```
 
-This rebuilds all four production targets and creates `Binaries/BIS-2.1.1.zip`.
+This rebuilds all four production targets and creates `Binaries/BIS-2.1.2.zip`.
 The ZIP contains only `BIS_x64.Exe`, `BIS_x86.Exe`, `BISDebug_x64.Exe`,
 and `BISDebug_x86.Exe`. The same four executables are copied directly into Binaries.
 Packaging extracts the archive into an isolated build directory, compares every
@@ -40,7 +45,8 @@ Each target gets a unique directory under `build/tests/` with logs, generated
 fixtures, isolated preferences and result.txt. The tests never load or save the
 real home-directory config, call startup-registration code, adjust the firewall,
 or use another computer. Each server binds only to 127.0.0.1 on an ephemeral port.
-Test processes are hidden, have timeouts and are stopped at the end. The test
+Test consoles are hidden; the core test briefly shows its own main window to
+check painted thumbnail pixels. Processes have timeouts and are stopped at the end. The test
 fixture contains a self-referencing junction to verify that scanning skips it.
 Core processes launch from a directory containing only a loose logo, exercising
 embedded-resource fallback and safe cleanup when other loose images are absent.
@@ -51,7 +57,8 @@ Core tests cover empty and missing image lists; independent client cursors;
 no-repeat cycles; editing a selected client after a status refresh; slot limits;
 partial, failed and stalled sends; recursive Unicode/extension discovery;
 missing, invalid and duplicate preferences; settings round trips; cancellation
-on close; thumbnail replacement/removal; occupied ports; ten start/stop cycles;
+on close; thumbnail replacement/removal, dimensions, button image attachment,
+preservation across refreshes, and alternating painted image pixels; occupied ports; ten start/stop cycles;
 configured/unassigned button state; and immediate port reuse.
 Folder-selection regressions open and close About, then click Select folder,
 cancel, reopen and save in both default-folder and client settings across repeated
@@ -66,6 +73,9 @@ cap, rapid disconnects, throttling/retry, a 9 MiB transfer with a delayed reader
 an aborted partial transfer, stop during blocked transmission, missing/empty
 files, empty queues, full per-IP slots, exact Content-Length, no trailing NUL,
 connection closure, non-caching responses, and completed-transfer counters.
+Completed HTTP responses also verify that each client owns the expected UI slot,
+its decoded thumbnail is attached to the button, and the thumbnail count agrees
+with the completed-response count.
 
 The original baseline can be reproduced separately:
 
@@ -81,10 +91,11 @@ timeout. It does not overwrite current source or resources.
 ## Manual checks
 
 1. Run `build/x64/Release/BIS_x64.Exe`. Check the ByteLord logo, title, About text,
-   version 2.1.1, copyright 2019-2026, and layout at your usual display scale.
+   version 2.1.2, copyright 2019-2026, and layout at your usual display scale.
    Check the x86 Release UI as well, including a higher DPI display if available.
 2. Set the default folder to WALLPICS, select the intended local address and a
    free port, then start. Refresh the displayed HTTP URL in your usual browser.
+   Include the configured port when it is not 80, such as `http://<server-ip>:8080`.
    Check thumbnails, tooltips, totals, animation, image formats and throttle
    behavior. A request within the minimum interval should return HTTP 429.
 3. Stop, add or edit an IP-specific folder, restart, and confirm that a client at

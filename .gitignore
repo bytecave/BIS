@@ -2,6 +2,16 @@
 *.7z
 
 *.Exe
+*.obj
+*.o
+*.res
+*.pdb
+*.ilk
+*.log
+*.tmp
+*.bak
+PureBasic.asm
+config.bis
 BIS.zip
 !/Binaries/*.zip
 !/Binaries/*.Exe

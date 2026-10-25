@@ -25,6 +25,7 @@ try {
         if ($target.options.thread -eq '1') { $flags += '/THREAD' }
         if ($target.options.xpskin -eq '1') { $flags += '/XP' }
         if ($target.options.debug -eq '1') { $flags += '/DEBUGGER' }
+        if ($target.options.optimizer -eq '1') { $flags += '/OPTIMIZER' }
         if ($target.icon.enable -eq '1') { $flags += @('/ICON', $target.icon.InnerText) }
         foreach ($constant in $target.constants.constant | Where-Object { $_.enable -eq '1' }) {
             $value = $constant.value -replace '^#','' -replace '\s*=\s*','='
@@ -84,8 +85,8 @@ END
         if ($machine -ne $expected) { throw "Wrong PE machine for $exe" }
         $metadata = [Diagnostics.FileVersionInfo]::GetVersionInfo($exe)
         if ($metadata.CompanyName -ne 'ByteLord' -or $metadata.InternalName -ne $internal -or
-            $metadata.ProductName -ne 'ByteLord Image Server' -or $metadata.FileVersion -ne '2.1.1' -or
-            $metadata.ProductVersion -ne '2.1.1' -or $metadata.OriginalFilename -ne $filename -or
+            $metadata.ProductName -ne 'ByteLord Image Server' -or $metadata.FileVersion -ne '2.1.2' -or
+            $metadata.ProductVersion -ne '2.1.2' -or $metadata.OriginalFilename -ne $filename -or
             $metadata.IsDebug -ne ($mode -eq 'Debug')) {
             throw "Version resource validation failed for $exe"
         }

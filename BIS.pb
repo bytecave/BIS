@@ -22,7 +22,7 @@ EnableExplicit
 #SEARCHTIMER = 1
 
 CompilerIf Not Defined(BIS_VERSION, #PB_Constant)
-  #BIS_VERSION = "2.1.1"
+  #BIS_VERSION = "2.1.2"
 CompilerEndIf
 CompilerIf Not Defined(PB_Editor_BuildCount, #PB_Constant)
   #PB_Editor_BuildCount = 11
