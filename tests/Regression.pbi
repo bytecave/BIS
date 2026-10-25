@@ -21,6 +21,31 @@ Procedure ClickConfigControl(gadget.i)
   Until ElapsedMilliseconds() >= deadline
 EndProcedure
 
+Procedure AboutLicenseTests()
+  Protected text.s
+  DisplayAboutBox(0)
+  HideWindow(wndAbout, #True)
+  text = GetGadgetText(edtAbout)
+  Expect(Bool(GetGadgetText(txtAboutLabel) = "About " + #BIS_TITLE + " v" + #BIS_VERSION), "About displays the current product version")
+  Expect(Bool(FindString(text, "BSD 3-Clause License")), "embedded README identifies the BSD license")
+  Expect(Bool(FindString(text, "BSD-3-Clause")), "embedded README includes the SPDX identifier")
+  Expect(Bool(GetGadgetText(btnContent) = "Display BSD 3-Clause License"), "About offers the current license")
+  ClickConfigControl(btnContent)
+  text = GetGadgetText(edtAbout)
+  Expect(Bool(FindString(text, "# BSD 3-Clause License")), "About opens the embedded BSD license")
+  Expect(Bool(FindString(text, "Copyright (c) 2019-2026 ByteLord")), "embedded license retains the copyright notice")
+  Expect(Bool(FindString(text, "1. Redistributions of source code")), "embedded license includes the source redistribution clause")
+  Expect(Bool(FindString(text, "2. Redistributions in binary form")), "embedded license includes the binary redistribution clause")
+  Expect(Bool(FindString(text, "3. Neither the name")), "embedded license includes the non-endorsement clause")
+  Expect(Bool(FindString(text, "THIS SOFTWARE IS PROVIDED")), "embedded license includes its disclaimer")
+  Expect(Bool(Not FindString(text, "Permission is hereby granted, free of charge")), "embedded license excludes obsolete grant text")
+  Expect(Bool(GetGadgetText(btnContent) = "Read about ByteLord Image Server"), "license view offers the README")
+  ClickConfigControl(btnContent)
+  Expect(Bool(FindString(GetGadgetText(edtAbout), "Version " + #BIS_VERSION)), "license can switch back to the current README")
+  CloseAboutBox(0)
+  Expect(Bool(wndAbout = 0), "About license test closes its dialog")
+EndProcedure
+
 Procedure FolderSelectionTests()
   Shared s_iGadget
   Protected mode.i, cycle.i, calls.i
@@ -123,6 +148,7 @@ Procedure CoreTests()
   LoadSettings(g_testRoot + "absent.bis")
   Expect(Bool(ImageWidth(Img_wndMain_0) <= 120 And ImageHeight(Img_wndMain_0) <= 62), "logo fits button without cropping")
   Expect(Bool(MapSize(g_mapClients()) = 0), "missing preferences are safe")
+  AboutLicenseTests()
   MakeTestImages()
   g_strDefaultFolder = g_testImages
   CreateClientList(MakeIPAddress(127,0,0,1), "127.0.0.1", g_testImages, 0)

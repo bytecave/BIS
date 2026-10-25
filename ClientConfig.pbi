@@ -1,4 +1,4 @@
-﻿;This software provided under MIT license. Copyright 2019-2026, ByteLord
+﻿;This software provided under the BSD 3-Clause License. Copyright 2019-2026, ByteLord
 
 #CONFIGESCPRESSED = 1000
 

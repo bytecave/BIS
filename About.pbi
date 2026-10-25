@@ -1,4 +1,4 @@
-﻿;This software provided under MIT license. Copyright 2019-2026, ByteLord
+﻿;This software provided under the BSD 3-Clause License. Copyright 2019-2026, ByteLord
 
 #ABOUTESCPRESSED = 1000
 
@@ -52,7 +52,7 @@ Procedure DisplayContent(EventType)
   
   If fAbout
     SetGadgetText(edtAbout, PeekS(?StartAbout, ?EndAbout - ?StartAbout, #PB_Ascii))
-    SetGadgetText(btnContent, "Display ByteLord (c) 2019-2026, MIT License")
+    SetGadgetText(btnContent, "Display BSD 3-Clause License")
     
     fAbout = #False
   Else

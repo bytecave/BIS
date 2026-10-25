@@ -1,10 +1,10 @@
-ByteLord Image Server, (c) 2019-2026 ByteLord. Usage under the MIT License.
+ByteLord Image Server, (c) 2019-2026 ByteLord. Licensed under the BSD 3-Clause License (BSD-3-Clause).
 
-Version 2.1.2. Windows x64 and x86, built with PureBasic 6.41.
+Version 2.1.3. Windows x64 and x86, built with PureBasic 6.41.
 
 ByteLord Image Server is an open-source mini webserver that sends a random image to your browser when a client sends any GET request. You provide a recursively processed folder containing the images to display. Those images are then shuffled and never repeated--on a per client connection basis--until all images have been displayed once. The process then repeats itself for subsequent image requests. Great for wall tablets and kiosks!
 
-Download and extract Binaries/BIS-2.1.2.zip. It contains BIS_x64.Exe and
+Download and extract Binaries/BIS-2.1.3.zip. It contains BIS_x64.Exe and
 BIS_x86.Exe for normal use, plus BISDebug_x64.Exe and BISDebug_x86.Exe for
 debugging. Run the executable matching your Windows architecture. The ZIP contains only those EXEs.
 
@@ -27,10 +27,19 @@ While image server is running:
   containing the information above.
 
 Open the Connect String shown by BIS in your browser. When using a port other
-than 80, include that port in the URL, for example http://<server-ip>:8080.
+than 80, include that port in the URL, for example `http://<server-ip>:8080`.
 
 Github home: https://github.com/bytelordgames/BIS
 Support: https://github.com/bytelordgames/BIS/issues
+
+License
+===========================================================================
+BIS is licensed under the BSD 3-Clause License (BSD-3-Clause). Source and binary
+redistributions, with or without modification, are permitted subject to the
+copyright notice, license conditions and disclaimer in [LICENSE.md](LICENSE.md).
+ByteLord and contributor names may not be used to endorse derived products
+without prior written permission. The full license is also available from the
+About dialog in every executable.
 
 Build and validation
 ===========================================================================
@@ -50,7 +59,7 @@ Use -Architecture x64 or x86 and -Configuration Debug or Release for a subset.
 Validate.ps1 also runs isolated core and loopback HTTP regression tests. If a
 WALLPICS directory exists, it scans those images without modifying them.
 Package.ps1 rebuilds all four production targets, copies the EXEs to Binaries,
-and creates Binaries/BIS-2.1.2.zip containing only those four executables. It
+and creates Binaries/BIS-2.1.3.zip containing only those four executables. It
 extracts the ZIP and verifies the file hashes, architecture, version, copyright,
 Debug flags and embedded logo. Release EXEs and ZIPs in Binaries are included in Git.
 Temporary build output, WALLPICS, and the local handoff are excluded from Git.

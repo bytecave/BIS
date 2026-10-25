@@ -1,4 +1,4 @@
-﻿;This software provided under MIT license. Copyright 2019-2026, ByteLord
+﻿;This software provided under the BSD 3-Clause License. Copyright 2019-2026, ByteLord
 
 EnableExplicit
 
@@ -22,7 +22,7 @@ EnableExplicit
 #SEARCHTIMER = 1
 
 CompilerIf Not Defined(BIS_VERSION, #PB_Constant)
-  #BIS_VERSION = "2.1.2"
+  #BIS_VERSION = "2.1.3"
 CompilerEndIf
 CompilerIf Not Defined(PB_Editor_BuildCount, #PB_Constant)
   #PB_Editor_BuildCount = 11

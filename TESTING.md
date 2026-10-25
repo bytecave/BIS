@@ -1,7 +1,7 @@
-# BIS 2.1.2 validation
+# BIS 2.1.3 validation
 
 Release verification on 2026-10-25 passed for x64 and x86, Debug and Release.
-Each target passed 393 core checks, 8 native folder-dialog checks, and 205
+Each target passed 407 core checks, 8 native folder-dialog checks, and 205
 HTTP/integration checks, including thumbnail image attachment and painted pixels.
 The optional WALLPICS scan found 1,476 supported images without modifying them.
 
@@ -29,12 +29,13 @@ test; the default is local `WALLPICS` if it exists.
 pwsh -NoProfile -File .\Package.ps1
 ```
 
-This rebuilds all four production targets and creates `Binaries/BIS-2.1.2.zip`.
+This rebuilds all four production targets and creates `Binaries/BIS-2.1.3.zip`.
 The ZIP contains only `BIS_x64.Exe`, `BIS_x86.Exe`, `BISDebug_x64.Exe`,
 and `BISDebug_x86.Exe`. The same four executables are copied directly into Binaries.
 Packaging extracts the archive into an isolated build directory, compares every
 executable to the fresh build, checks PE architecture, version, copyright and
-Debug flags, verifies the embedded title/logo, and compares file hashes.
+Debug flags, verifies the embedded title/logo and complete current README/license,
+and compares file hashes.
 It excludes documentation, checksum files, the regression executable, local
 preferences, photos, handoff and review report. Use `-PrepareOnly` to verify a package under build/packages without
 copying it into Binaries.
@@ -65,6 +66,9 @@ cancel, reopen and save in both default-folder and client settings across repeat
 dialog lifecycles. A native smoke test also opens and cancels the real Windows
 folder chooser for both modes on every target, verifying its owner and the
 preserved path. It closes only dialogs belonging to the isolated test process.
+About regressions open the embedded README, verify the BSD license label and
+SPDX identifier, switch to the full license, check the copyright, all three
+conditions and disclaimer, then switch back to the current README.
 
 Raw TCP tests cover two complete no-repeat cycles, byte-exact image responses,
 JPEG MIME, three-part fragmented GET, pipelined bytes, unsupported methods,
@@ -91,7 +95,8 @@ timeout. It does not overwrite current source or resources.
 ## Manual checks
 
 1. Run `build/x64/Release/BIS_x64.Exe`. Check the ByteLord logo, title, About text,
-   version 2.1.2, copyright 2019-2026, and layout at your usual display scale.
+   version 2.1.3, copyright 2019-2026, and layout at your usual display scale.
+   Toggle the About text to the BSD 3-Clause License and back to the README.
    Check the x86 Release UI as well, including a higher DPI display if available.
 2. Set the default folder to WALLPICS, select the intended local address and a
    free port, then start. Refresh the displayed HTTP URL in your usual browser.

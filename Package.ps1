@@ -14,6 +14,10 @@ function Verify-Package([string]$Archive, [string]$ExtractTo, $Builds, [string[]
     } finally { $zip.Dispose() }
     [IO.Compression.ZipFile]::ExtractToDirectory($Archive, $ExtractTo)
     $logo = [Convert]::ToHexString([IO.File]::ReadAllBytes((Join-Path $repo 'resources\logo.png')))
+    $documents = @{}
+    foreach ($document in @('README.md', 'LICENSE.md')) {
+        $documents[$document] = [Convert]::ToHexString([IO.File]::ReadAllBytes((Join-Path $repo $document)))
+    }
     foreach ($build in $Builds) {
         $name = Split-Path $build.Executable -Leaf
         $extracted = Join-Path $ExtractTo $name
@@ -22,6 +26,7 @@ function Verify-Package([string]$Archive, [string]$ExtractTo, $Builds, [string[]
             throw "Packaged executable differs from its fresh build: $name"
         }
         $bytes = [IO.File]::ReadAllBytes($extracted)
+        $hex = [Convert]::ToHexString($bytes)
         $machine = [BitConverter]::ToUInt16($bytes, [BitConverter]::ToInt32($bytes, 0x3c) + 4)
         $expectedMachine = if ($build.Architecture -eq 'x64') { 0x8664 } else { 0x14c }
         $metadata = [Diagnostics.FileVersionInfo]::GetVersionInfo($extracted)
@@ -34,8 +39,13 @@ function Verify-Package([string]$Archive, [string]$ExtractTo, $Builds, [string[]
         }
         if (-not [Text.Encoding]::Unicode.GetString($bytes).Contains('ByteLord Image Server') -or
             -not [Text.Encoding]::ASCII.GetString($bytes).Contains('2019-2026 ByteLord') -or
-            -not [Convert]::ToHexString($bytes).Contains($logo)) {
+            -not $hex.Contains($logo)) {
             throw "Packaged executable is missing its title, copyright text or embedded logo: $name"
+        }
+        foreach ($document in $documents.Keys) {
+            if (-not $hex.Contains($documents[$document])) {
+                throw "Packaged executable does not embed the complete current ${document}: $name"
+            }
         }
     }
 }
